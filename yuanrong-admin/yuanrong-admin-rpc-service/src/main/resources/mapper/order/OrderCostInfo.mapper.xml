@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.order.OrderCostInfoDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.order.OrderCostInfo"  useGeneratedKeys="true" keyProperty="data.orderCostInfoId">
+        INSERT INTO `orderCostInfo`(`orderInfoId`, `money`, `costId`, `costTypeIndex`, `createdTime`, `modifiedCount`, `modifiedTime`, `statusIndex`)
+        VALUES (#{data.orderInfoId},#{data.money},#{data.costId},#{data.costTypeIndex},now(),1,now(),1)
+
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.order.OrderCostInfo" parameterType="com.yuanrong.admin.bean.order.OrderCostInfo">
+        SELECT * from orderCostInfo
+    </select>
+ <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.order.OrderCostInfo">
+        select * from orderCostInfo where orderCostInfoId = #{id}
+    </select>
+
+    <!-- 插入买家已选账号报价  -->
+    <insert id="insertOrderCostInfo" parameterType="java.util.List">
+        INSERT INTO orderCostInfo(orderInfoId,money,costId,costTypeIndex,createdTime)
+        VALUES
+        <foreach collection="orderCostInfoList" item="item" separator=",">
+            (
+            #{item.orderInfoId},
+            #{item.money},
+            #{item.costId},
+            #{item.costTypeIndex},
+            now()
+            )
+        </foreach>
+    </insert>
+
+
+    <select id="getOrderCostInfoList" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.order.OrderCostInfo">
+        select * from orderCostInfo where orderInfoId = #{orderInfoId}
+    </select>
+
+    <!-- 根据卖家订单iD修改卖家订单成本价、服务费 -->
+    <update id="updateMoneyByOrderInfoId" parameterType="com.yuanrong.admin.bean.order.OrderCostInfo">
+        update orderCostInfo SET  money=#{data.money} , modifiedTime = now()
+          where costId=#{data.costId} and orderInfoId= #{data.orderInfoId} AND costTypeIndex = #{data.costTypeIndex}
+    </update>
+</mapper>

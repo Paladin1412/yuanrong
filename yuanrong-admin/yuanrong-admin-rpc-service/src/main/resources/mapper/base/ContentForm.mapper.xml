@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.base.ContentFormDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.base.ContentForm" useGeneratedKeys="true" keyProperty="data.Id">
+        INSERT INTO ContentForm
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="data.Id != null" >
+                Id,
+            </if>
+            <if test="data.contentFormName != null" >
+                contentFormName,
+            </if>
+            createTime,
+            <if test="data.statusValue != null" >
+                statusValue,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="data.Id != null" >
+                #{data.Id,jdbcType=INTEGER},
+            </if>
+            <if test="data.contentFormName != null" >
+                #{data.contentFormName,jdbcType=VARCHAR},
+            </if>
+            now(),
+            <if test="data.statusValue != null" >
+                #{data.statusValue,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <!--获取内容形式列表-->
+    <select id="list" resultType="com.yuanrong.admin.bean.base.ContentForm" >
+        SELECT
+          *
+        from
+          ContentForm c
+        WHERE 1=1
+          <if test="statusValue !=null" >
+             AND c.statusValue = #{statusValue}
+          </if>
+
+    </select>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.base.ContentForm">
+        select * from ContentForm where Id = #{id}
+    </select>
+    <select id="getByName" parameterType="java.lang.String" resultType="com.yuanrong.admin.bean.base.ContentForm">
+        select
+          *
+        from
+          ContentForm c
+        WHERE 1=1
+            <if test="str !=null and str != ''" >
+               AND c.contentFormName = #{str}
+            </if>
+    </select>
+
+    <!--前台商城——根据作者数量获取内容形式字典-->
+    <select id="getAuthorContentForm" resultType="java.util.Map" >
+        SELECT
+            c.Id AS CategoryID,
+            c.contentFormName AS CategoryName,
+            IF (IFNULL(t.num, 0) > 0, 1, 0) flag
+        FROM
+            ContentForm c
+            LEFT JOIN (
+                SELECT
+                    uc.contentformId,
+                    COUNT(uc.contentformId) AS NUM
+                FROM
+                    yrAuthorContentFormRelation uc,
+                    ContentForm c
+                WHERE
+                    uc.contentformId = c.Id
+                GROUP BY
+                    uc.contentformId
+            ) t ON c.Id = t.contentformId
+        WHERE
+            c.statusValue = 1
+            ORDER BY
+                t.NUM DESC
+    </select>
+</mapper>

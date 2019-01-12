@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.demand.DemandProductionDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.demand.DemandProduction">
+
+    </insert>
+
+    <select id="list" resultType="com.yuanrong.admin.bean.demand.DemandProduction"
+            parameterType="com.yuanrong.admin.bean.demand.DemandProduction">
+        SELECT  * FROM DemandProduction
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.demand.DemandProduction">
+      SELECT  * FROM DemandProduction WHERE demandProductionId = #{id}
+    </select>
+</mapper>

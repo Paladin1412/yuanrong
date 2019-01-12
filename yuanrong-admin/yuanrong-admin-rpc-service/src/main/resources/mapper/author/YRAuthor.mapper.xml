@@ -1,0 +1,1523 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.author.YRAuthorDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.author.YRAuthor" useGeneratedKeys="true" keyProperty="data.recId">
+        INSERT INTO yrAuthor
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="data.recId != null" >
+                recId,
+            </if>
+            <if test="data.authorNickname != null" >
+                authorNickname,
+            </if>
+            <if test="data.authorImg != null" >
+                authorImg,
+            </if>
+            <if test="data.introduction != null" >
+                introduction,
+            </if>
+            <if test="data.authorCreationTime != null" >
+                authorCreationTime,
+            </if>
+            <if test="data.createdPrice != null" >
+                createdPrice,
+            </if>
+            createdTime,
+            modifyTime,
+            <if test="data.statusIndex != null" >
+                statusIndex,
+            </if>
+            <if test="data.registeredUserInfoID != null" >
+                registeredUserInfoID,
+            </if>
+            <if test="data.creationTimeRemark != null and data.creationTimeRemark !=''" >
+                creationTimeRemark,
+            </if>
+            <if test="data.createdPriceRemark != null and data.createdPriceRemark !=''" >
+                createdPriceRemark,
+            </if>
+            <if test="data.authorStatus != null" >
+                authorStatus,
+            </if>
+            <if test="data.authorAuditFailReason != null" >
+                authorAuditFailReason,
+            </if>
+            <if test="data.yRIndex != null" >
+                yRIndex,
+            </if>
+            <if test="data.authorUnderReason != null" >
+                authorUnderReason,
+            </if>
+            <if test="data.accessTimes != null" >
+                accessTimes,
+            </if>
+            <if test="data.upTime != null" >
+                upTime,
+            </if>
+            <if test="data.sortScore != null" >
+                sortScore,
+            </if>
+            <if test="data.accessNum != null" >
+                accessNum,
+            </if>
+            <if test="data.auditUser != null" >
+                auditUser,
+            </if>
+            <if test="data.createSource != null" >
+                createSource,
+            </if>
+            <if test="data.isAnonymous != null" >
+                isAnonymous,
+            </if>
+            <if test="data.crawlerStatus != null" >
+                crawlerStatus,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="data.recId != null" >
+                #{data.recId,jdbcType=INTEGER},
+            </if>
+            <if test="data.authorNickname != null" >
+                #{data.authorNickname,jdbcType=VARCHAR},
+            </if>
+            <if test="data.authorImg != null" >
+                #{data.authorImg,jdbcType=VARCHAR},
+            </if>
+            <if test="data.introduction != null" >
+                #{data.introduction,jdbcType=VARCHAR},
+            </if>
+            <if test="data.authorCreationTime != null" >
+                #{data.authorCreationTime,jdbcType=INTEGER},
+            </if>
+            <if test="data.createdPrice != null" >
+                #{data.createdPrice,jdbcType=DECIMAL},
+            </if>
+            now(),
+            now(),
+            <if test="data.statusIndex != null" >
+                #{data.statusIndex,jdbcType=INTEGER},
+            </if>
+            <if test="data.registeredUserInfoID != null" >
+                #{data.registeredUserInfoID,jdbcType=INTEGER},
+            </if>
+            <if test="data.creationTimeRemark != null and data.creationTimeRemark !=''" >
+                #{data.creationTimeRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="data.createdPriceRemark != null and data.createdPriceRemark !=''" >
+                #{data.createdPriceRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="data.authorStatus != null" >
+                #{data.authorStatus,jdbcType=INTEGER},
+            </if>
+            <if test="data.authorAuditFailReason != null" >
+                #{data.authorAuditFailReason,jdbcType=INTEGER},
+            </if>
+            <if test="data.yRIndex != null" >
+                #{data.yRIndex,jdbcType=INTEGER},
+            </if>
+            <if test="data.authorUnderReason != null" >
+                #{data.authorUnderReason,jdbcType=VARCHAR},
+            </if>
+            <if test="data.accessTimes != null" >
+                #{data.accessTimes,jdbcType=INTEGER},
+            </if>
+            <if test="data.upTime != null" >
+                #{data.upTime},
+            </if>
+            <if test="data.sortScore != null" >
+                #{data.sortScore},
+            </if>
+            <if test="data.accessNum != null" >
+                #{data.accessNum,jdbcType=INTEGER},
+            </if>
+            <if test="data.auditUser != null" >
+                #{data.auditUser,jdbcType=VARCHAR},
+            </if>
+            <if test="data.createSource != null" >
+                #{data.createSource,jdbcType=INTEGER},
+            </if>
+            <if test="data.isAnonymous != null" >
+                #{data.isAnonymous,jdbcType=INTEGER},
+            </if>
+            <if test="data.crawlerStatus != null" >
+                #{data.crawlerStatus,jdbcType=INTEGER},
+            </if>
+        </trim>
+
+    </insert>
+
+    <!--创作者列表-->
+    <select id="listResutMap" resultType="java.util.HashMap" parameterType="com.yuanrong.admin.seach.AuthorListParamSeach">
+        SELECT
+            yra.*,
+            ru.NickName,
+            ru.sellerStatusValue,
+            ru.RecID AS userId,
+            au.RealName,
+            c.proNum,
+            d.proUpNum,
+            e.RepresentativeNum,
+            GROUP_CONCAT(
+                DISTINCT s.scenesName ORDER BY s.Id SEPARATOR '、'
+            ) AS scenesName,
+            GROUP_CONCAT(
+                DISTINCT dic.name ORDER BY dic.id SEPARATOR '、'
+            ) AS CategoryName,
+            GROUP_CONCAT(
+                DISTINCT cf.contentFormName ORDER BY cf.Id SEPARATOR '、'
+            ) AS contentFormName
+        FROM
+            yrAuthor yra
+            LEFT JOIN
+            (
+                SELECT
+                    a.recId,
+                    count( a.recId ) AS proNum
+                FROM
+                    yrAuthor a,
+                    yrProduction yp
+                WHERE
+                    a.recId = yp.yrAuthorId
+                    AND yp.statusIndex = 1
+                    GROUP BY
+                        a.recId
+            ) c ON yra.recId = c.recId
+            LEFT JOIN
+            (
+                SELECT
+                    a.recId,
+                    count( a.recId ) AS proUpNum
+                FROM
+                    yrAuthor a,
+                    yrProduction yp
+                WHERE
+                    a.recId = yp.yrAuthorId
+                    AND yp.yrProductionStatusIndex = 2
+                    AND yp.statusIndex = 1
+                    GROUP BY
+                        a.recId
+            ) d ON yra.recId = d.recId
+            LEFT JOIN
+            (
+                SELECT
+                    a.recId,
+                    count( a.recId ) AS RepresentativeNum
+                FROM
+                    yrAuthor a,
+                    yrProduction yp
+                WHERE
+                    a.recId = yp.yrAuthorId
+                    AND yp.isRepresentative = 1
+                    AND yp.yrProductionStatusIndex = 2
+                    AND yp.statusIndex = 1
+                    GROUP BY
+                        a.recId
+            ) e ON e.recId = yra.recId
+            LEFT JOIN yrAuthorArticleCategory yrc ON yrc.yrAuthorId = yra.recId
+            LEFT JOIN yrAuthorScenesRelation yrs ON yrs.userId = yra.recId
+            LEFT JOIN yrAuthorContentFormRelation yrcf ON yrcf.userId = yra.recId
+            LEFT JOIN Scenes s ON s.Id = yrs.scenesId
+            LEFT JOIN DictInfo dic ON dic.id = yrc.categoryId
+            LEFT JOIN ContentForm cf ON cf.Id = yrcf.contentformId,
+            RegisteredUserInfo ru,
+            AdminUser au
+        WHERE
+            yra.registeredUserInfoID = ru.RecID
+            AND ru.AdminUserMediaID = au.RecID
+            AND (s.statusValue = 1 OR s.statusValue IS  NULL )
+            AND (cf.statusValue = 1 OR cf.statusValue IS NULL )
+            /*创作者名称*/
+            <if test="data.authorName != null and data.authorName !=''">
+                and yra.authorNickname  LIKE CONCAT('%',#{data.authorName},'%')
+            </if>
+            /*内容领域*/
+            <if test="data.categoryIds != null and data.categoryIds !=''">
+                and dic.id IN (${data.categoryIds})
+            </if>
+            /*原创报价-Begin*/
+            <if test="data.priceBegin != null">
+                and yra.createdPrice  &gt;= #{data.priceBegin}
+            </if>
+            /*原创报价-End*/
+            <if test="data.priceEnd != null">
+                and yra.createdPrice  &lt;= #{data.priceEnd}
+            </if>
+            /*使用场景*/
+            <if test="data.scenesIds != null and data.scenesIds !=''">
+                and s.Id IN (${data.scenesIds})
+            </if>
+            /*内容形式*/
+            <if test="data.contentIds != null and data.contentIds !=''">
+                and cf.Id IN (${data.contentIds})
+            </if>
+            /*创作者状态*/
+            <if test="data.statusValue != null">
+                and yra.authorStatus = #{data.statusValue}
+            </if>
+            /*前台当前登陆用户*/
+            <if test="data.currRegisteredUserInfo != null and data.currRegisteredUserInfo.recID > 0">
+                and yra.registeredUserInfoID = #{data.currRegisteredUserInfo.recID}
+            </if>
+            /*用户名称*/
+            <if test="data.userName != null and data.userName.length!=0">
+                and
+                <foreach collection="data.userName" item="item" open="(" close=")" separator="or">
+                    ru.NickName LIKE CONCAT('%',#{item},'%')
+                </foreach>
+            </if>
+            /*用户ID*/
+            <if test="data.userId != null and data.userId.length!=0">
+                and ru.RecID IN
+                <foreach collection="data.userId" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            /*入库时间Begin*/
+            <if test="data.createTimeBegin != null and data.createTimeBegin !=''">
+                and DATE_FORMAT(yra.createdTime,'%Y-%m-%d') &gt;= #{data.createTimeBegin}
+            </if>
+            /*入库时间End*/
+            <if test="data.createTimeEnd != null and data.createTimeEnd !=''">
+                and DATE_FORMAT(yra.createdTime,'%Y-%m-%d') &lt;= #{data.createTimeEnd}
+            </if>
+            /*创建来源*/
+            <if test="data.createSource != null and data.createSource !=''">
+                and yra.createSource = #{data.createSource}
+            </if>
+            /*后台当前登陆用户*/
+            <!--<if test="data.currLoginUser != null and data.currLoginUser.underUser != null and data.currLoginUser.underUser != ''">
+                and au.RecID in (${data.currLoginUser.underUser})
+            </if>-->
+
+            GROUP BY
+                yra.recId
+    </select>
+
+    <select id="getByAuthorId" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        select *
+        from yrAuthor
+        where recId = #{id}
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        select ya.* , ru.NickName as 'registeredUserInfo.nickName' , ru.Mobile as 'registeredUserInfo.mobile'
+        from yrAuthor ya , RegisteredUserInfo ru
+        where ya.registeredUserInfoID = ru.RecID and ya.recId = #{id}
+    </select>
+
+    <select id="getYRAuhorByName" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        select
+          *
+        from
+          yrAuthor a
+        where
+          a.authorNickname = #{authorName}
+          <if test="recID !=null" >
+              AND a.registeredUserInfoID = #{recID}
+          </if>
+    </select>
+
+    <select id="getYRAuhorByName_LikeSearch" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        select
+        *
+        from
+        yrAuthor
+        where
+           registeredUserInfoID = #{data.registeredUserInfoID}
+        <if test="data.authorNickname !=null ">
+            AND   authorNickname like concat('%',#{data.authorNickname} , '%')
+        </if>
+        <if test="data.recIds !=null">
+            AND recId NOT IN (${data.recIds})
+        </if>
+        AND authorStatus = 2
+        AND  statusIndex = 1
+    </select>
+
+    <!--通过id或者手机，和作者名获取信息 -->
+    <select id="getByUIDOrPhoneAndNickname" parameterType="com.yuanrong.admin.bean.author.YRAuthor" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        SELECT
+        ra.*
+        FROM
+        yrAuthor ra
+        LEFT JOIN RegisteredUserInfo ru ON ra.registeredUserInfoID = ru.RecID
+        WHERE
+        <trim prefix="(" suffix=")" prefixOverrides="AND |OR" >
+            <if test="registeredUserInfo!=null">
+                <if test="registeredUserInfo.recID != null"> or ra.registeredUserInfoID = #{registeredUserInfo.recID}</if>
+            </if>
+            <if test="registeredUserInfo!=null">
+                <if test="registeredUserInfo.mobile != null">or  ru.Mobile = #{registeredUserInfo.mobile}</if>
+            </if>
+        </trim>
+        <if test=" authorNickname!= null  ">
+                and ra.authorNickname = #{authorNickname}
+        </if>
+    </select>
+
+    <!--创作者详情-->
+    <select id="getAuthorDetailInfo" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT
+            yra.*,
+            ru.sellerStatusValue,
+            GROUP_CONCAT( DISTINCT s.scenesName SEPARATOR '、' ) AS scenesName,
+            GROUP_CONCAT( DISTINCT s.Id SEPARATOR ',' ) AS scenesIds,
+            GROUP_CONCAT( DISTINCT dic.name SEPARATOR '、' ) AS CategoryName,
+            GROUP_CONCAT( DISTINCT cf.contentFormName SEPARATOR '、' ) AS contentFormName,
+            GROUP_CONCAT( DISTINCT cf.Id SEPARATOR ',' ) AS contentFormIds,
+            GROUP_CONCAT( DISTINCT l.lableName SEPARATOR '.' ) AS lableName,
+            GROUP_CONCAT( DISTINCT a.tagName SEPARATOR '.' ) AS parentIP,
+            GROUP_CONCAT( DISTINCT b.tagName SEPARATOR '.' ) AS sonIP
+        FROM
+            yrAuthor yra
+            LEFT JOIN yrAuthorLableRelation yral ON yra.recId = yral.userId
+            LEFT JOIN yrAuthorScenesRelation yras ON yra.recId = yras.userId
+            LEFT JOIN yrAuthorArticleCategory ruc ON yra.recId = ruc.yrAuthorId
+            LEFT JOIN yrAuthorContentFormRelation yrac ON yra.recId = yrac.userId
+            LEFT JOIN Scenes s ON yras.scenesId = s.Id
+            LEFT JOIN DictInfo dic ON ruc.categoryId = dic.id
+            LEFT JOIN ContentForm cf ON yrac.contentformId = cf.Id
+            LEFT JOIN Lable l ON yral.lableId = l.Id AND l.statusValue = 1
+            LEFT JOIN
+            (
+                SELECT
+                    yraip.yrAuthorId,
+                    ipl.tagName
+                FROM
+                    IPLable ipl,
+                    yrAuthorIPLableRelation yraip
+                WHERE
+                    ipl.recID = yraip.iPLableId
+                    AND ipl.parentID IS NULL
+            ) a ON a.yrAuthorId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    yraip.yrAuthorId,
+                    ipl.tagName
+                FROM
+                    IPLable ipl,
+                    yrAuthorIPLableRelation yraip
+                WHERE
+                    ipl.recID = yraip.iPLableId
+                    AND ipl.parentID IS NOT NULL
+            ) b ON b.yrAuthorId = yra.recId,
+            RegisteredUserInfo ru
+        WHERE
+            ru.RecID = yra.registeredUserInfoID
+            <if test = "recId != null" >
+            	AND yra.recId = #{recId}
+            </if>
+            GROUP BY
+              yra.recId
+    </select>
+
+
+
+    <!--创作者—内容形式关联表-->
+    <insert id="saveAuthorContentForm" >
+        INSERT INTO yrAuthorContentFormRelation (userId, contentformId) VALUES (#{userId},#{contentformId})
+    </insert>
+
+    <!--创作者—使用场景关联表-->
+    <insert id="saveAuthorScenes" >
+        INSERT INTO yrAuthorScenesRelation (`userId`, `scenesId`) VALUES (#{userId},#{scenesId});
+    </insert>
+
+    <!--创作者—内容分类关联表-->
+    <insert id="saveAuthorCategory" >
+        INSERT INTO yrAuthorArticleCategory (`yrAuthorId`, `categoryId`) VALUES (#{yrAuthorId},#{categoryId});
+    </insert>
+
+    <!--保存创作者—标签(内容属性、表现风格)关联表-->
+    <insert id="saveAuthorLable" >
+        INSERT INTO yrAuthorLableRelation (`userId`, `lableId`) VALUES (#{userId},#{lableId});
+    </insert>
+
+    <!--保存创作者—IP标签关联表-->
+    <insert id="saveAuthorIPLable" >
+        INSERT INTO yrAuthorIPLableRelation (`yrAuthorId`, `iPLableId`) VALUES (#{yrAuthorId},#{iPLableId});
+    </insert>
+
+    <!--批量修改价格 (flag=1 增加百分pricePercent | flag=2 减少百分pricePercent)-->
+    <update id="updateBatchPrice" parameterType="com.yuanrong.admin.bean.author.YRAuthor">
+        UPDATE yrAuthor
+            <set>
+                <if test="pricePercent != null">
+                    createdPrice = #{pricePercent}
+                </if>
+            </set>
+        where
+            recId IN
+            <foreach collection="authorIds" index="index" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+    </update>
+
+    <!--表格修改价格 -->
+    <update id="updatePriceByUserIDMoblieName" parameterType="com.yuanrong.admin.bean.author.YRAuthor">
+        UPDATE  yrAuthor ra
+        LEFT JOIN RegisteredUserInfo ru ON ra.registeredUserInfoID = ru.RecID
+        <set>
+            <if test="createdPrice != null ">
+                    createdPrice =#{createdPrice}
+            </if>
+        </set>
+        WHERE
+        <trim prefix="(" suffix=")" prefixOverrides="AND |OR" >
+            <if test="registeredUserInfo.recID != null"> or ra.registeredUserInfoID = #{registeredUserInfo.recID}</if>
+            <if test="registeredUserInfo.mobile">or  ru.Mobile = #{registeredUserInfo.mobile}</if>
+        </trim>
+        <if test=" authorNickname!= null  ">
+            and ra.authorNickname = #{authorNickname}
+        </if>
+    </update>
+    <!--删除创作者-内容形式 | 内容分类 | 使用场景关联关系-->
+    <delete id="deleteAuthorRelation"  parameterType="java.lang.Integer">
+        DELETE
+            yrc.*,
+            yrs.*,
+            yrac.*
+        FROM
+            yrAuthorContentFormRelation yrc
+            LEFT JOIN yrAuthorScenesRelation yrs ON yrc.userId = yrs.userId
+            LEFT JOIN yrAuthorArticleCategory yrac ON yrc.userId = yrac.yrAuthorId
+        WHERE
+            yrc.userId = #{recId,jdbcType=INTEGER}
+    </delete>
+
+    <!--删除创作者-标签 | IP标签关联关系-->
+    <delete id="deleteAuthorLableRelation"  parameterType="java.lang.Integer">
+        DELETE
+            yrl.*,
+            yrip.*
+        FROM
+            yrAuthorLableRelation yrl
+            LEFT JOIN yrAuthorIPLableRelation yrip ON yrl.userId = yrip.yrAuthorId
+        WHERE
+            yrl.userId = #{recId}
+    </delete>
+
+    <!--创作者修改-->
+    <update id="updateAuthor" parameterType="com.yuanrong.admin.bean.author.YRAuthor">
+        update yrAuthor
+        <set >
+            <if test="authorNickname != null" >
+                authorNickname = #{authorNickname,jdbcType=VARCHAR},
+            </if>
+            <if test="authorImg != null" >
+                authorImg = #{authorImg,jdbcType=VARCHAR},
+            </if>
+            <if test="authorCreationTime != null" >
+                authorCreationTime = #{authorCreationTime,jdbcType=INTEGER},
+            </if>
+            <if test="createdPrice != null" >
+                createdPrice = #{createdPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="createdTime != null" >
+                createdTime = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            modifyTime = now(),
+            <if test="statusIndex != null" >
+                statusIndex = #{statusIndex,jdbcType=INTEGER},
+            </if>
+            <if test="registeredUserInfoID != null" >
+                registeredUserInfoID = #{registeredUserInfoID,jdbcType=INTEGER},
+            </if>
+            <if test="creationTimeRemark != null" >
+                creationTimeRemark = #{creationTimeRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdPriceRemark != null" >
+                createdPriceRemark = #{createdPriceRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="authorStatus != null" >
+                authorStatus = #{authorStatus,jdbcType=INTEGER},
+            </if>
+            <if test="authorAuditFailReason != null" >
+                authorAuditFailReason = #{authorAuditFailReason,jdbcType=INTEGER},
+            </if>
+            <if test="yRIndex != null" >
+                yRIndex = #{yRIndex,jdbcType=INTEGER},
+            </if>
+            <if test="introduction != null" >
+                Introduction = #{introduction,jdbcType=VARCHAR},
+            </if>
+            <if test="auditUser != null" >
+                auditUser = #{auditUser,jdbcType=VARCHAR},
+            </if>
+            <if test="createSource != null" >
+                createSource = #{createSource,jdbcType=INTEGER},
+            </if>
+            <if test="isAnonymous != null" >
+                isAnonymous = #{isAnonymous,jdbcType=INTEGER},
+            </if>
+            <if test="crawlerStatus != null" >
+                crawlerStatus = #{crawlerStatus,jdbcType=INTEGER},
+            </if>
+            <if test="accessTimes != null" >
+                accessTimes = #{accessTimes,jdbcType=INTEGER},
+            </if>
+            <if test="accessNum != null" >
+                accessNum = #{accessNum,jdbcType=INTEGER},
+            </if>
+            <if test="upTime != null" >
+                upTime = #{upTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sortScore != null" >
+                sortScore = #{sortScore},
+            </if>
+        </set>
+        where recId = #{recId,jdbcType=INTEGER}
+    </update>
+
+    <!--后台—批量修改上架(待审核)、审核通过(待审核)/前台上架-->
+    <update id="batchApply" >
+        UPDATE
+            yrAuthor yra
+        SET
+            yra.authorStatus = #{authorStatus},
+            yra.modifyTime = now()
+        WHERE
+            yra.recId IN
+            <foreach collection="split" item="item" index="index"
+                     separator="," open="(" close=")">
+                #{item}
+            </foreach>
+            <if test="status !=null" >
+                <choose>
+                    <!--下架-->
+                    <when test="status == 0" >
+                        AND yra.authorStatus IN (1,2)
+                    </when>
+                    <!--申请上架-->
+                    <when test="status == 2" >
+                        AND yra.authorStatus IN (0,3)
+                    </when>
+                </choose>
+            </if>
+            <if test="userId !=null" >
+                AND yra.registeredUserInfoID = #{userId}
+            </if>
+    </update>
+
+    <!--创作者编辑页面详情-->
+    <select id="getAuthorInfoUpdate" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT
+            yra.recId,
+            yra.authorImg,
+            yra.authorNickname,
+            yra.createdPrice,
+            yra.authorCreationTime,
+            yra.authorStatus,
+            yra.Introduction,
+            yra.createdPriceRemark,
+            yra.creationTimeRemark,
+            yra.registeredUserInfoID,
+            yra.sensitiveWords,
+            ru.NickName,
+            ru.Mobile,
+            GROUP_CONCAT( DISTINCT s.Id SEPARATOR ',' ) AS scenesIds,
+            GROUP_CONCAT( DISTINCT s.scenesName SEPARATOR ',' ) AS scenesName,
+            GROUP_CONCAT( DISTINCT dic.id SEPARATOR ',' ) AS CategoryIds,
+            GROUP_CONCAT( DISTINCT cf.Id SEPARATOR ',' ) AS contentFormIds,
+            GROUP_CONCAT( DISTINCT cf.contentFormName SEPARATOR ',' ) AS contentFormName,
+            GROUP_CONCAT( DISTINCT a.recID SEPARATOR ',' ) AS parentIPIds,
+            GROUP_CONCAT( DISTINCT b.recID SEPARATOR ',' ) AS sonIPIds,
+            GROUP_CONCAT( DISTINCT c.lableId SEPARATOR ',' ) AS lableContentIds,
+            GROUP_CONCAT( DISTINCT d.lableId SEPARATOR ',' ) AS lableStyleIds
+        FROM
+            yrAuthor yra
+            LEFT JOIN
+            (
+                SELECT
+                    yra.recId,
+                    yral.lableId
+                FROM
+                    yrAuthor yra
+                    LEFT JOIN yrAuthorLableRelation yral ON yra.recId = yral.userId
+                    LEFT JOIN yrAuthorContenStyleLableRelation yracs ON yral.lableId = yracs.lableId
+                WHERE
+                    yracs.typeId = 1
+            ) c ON c.recId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    yra.recId,
+                    yral.lableId
+                FROM
+                    yrAuthor yra
+                    LEFT JOIN yrAuthorLableRelation yral ON yra.recId = yral.userId
+                    LEFT JOIN yrAuthorContenStyleLableRelation yracs ON yral.lableId = yracs.lableId
+                WHERE
+                    yracs.typeId = 2
+            ) d on d.recId = yra.recId
+            LEFT JOIN
+            (
+            SELECT
+                yraip.yrAuthorId,
+                ipl.recID
+            FROM
+                IPLable ipl,
+                yrAuthorIPLableRelation yraip
+            WHERE
+                ipl.recID = yraip.iPLableId
+                AND ipl.parentID IS NULL
+            ) a ON a.yrAuthorId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    yraip.yrAuthorId,
+                    ipl.recID
+                FROM
+                    IPLable ipl,
+                    yrAuthorIPLableRelation yraip
+                WHERE
+                    ipl.recID = yraip.iPLableId
+                    AND ipl.parentID IS NOT NULL
+            ) b ON b.yrAuthorId = yra.recId
+            LEFT JOIN yrAuthorScenesRelation yras ON yra.recId = yras.userId
+            LEFT JOIN yrAuthorArticleCategory ruc ON yra.recId = ruc.yrAuthorId
+            LEFT JOIN yrAuthorContentFormRelation yrac ON yra.recId = yrac.userId
+            LEFT JOIN Scenes s ON yras.scenesId = s.Id
+            LEFT JOIN DictInfo dic ON ruc.categoryId = dic.id
+            LEFT JOIN ContentForm cf ON yrac.contentformId = cf.Id,
+            RegisteredUserInfo ru
+        WHERE
+            ru.RecID = yra.registeredUserInfoID
+            <if test = "recId != null" >
+                AND yra.recId = #{recId}
+            </if>
+            GROUP BY
+                yra.recId
+    </select>
+
+    <!--获取创作者信息和用户信息-->
+    <select id="getUserByAuthorId" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        select
+            yra.*,
+            ru.RecID AS 'registeredUserInfo.recID',
+            ru.StatusValue AS 'registeredUserInfo.statusValue',
+            ru.sellerStatusValue AS 'registeredUserInfo.sellerStatusValue'
+        from
+            yrAuthor yra,
+            RegisteredUserInfo ru
+        where
+            yra.registeredUserInfoID = ru.RecID AND yra.recId = #{recId}
+    </select>
+
+    <!--后台——批量修改审核失败原因-->
+    <update id="batchFailReason" >
+        UPDATE yrAuthor
+        SET
+        authorAuditFailReason = #{reason}
+        ,modifyTime = now(),
+        authorStatus = #{status},
+        auditUser = #{realName}
+        where
+            recId IN
+            <foreach collection="split" item="item" index="index"
+                     separator="," open="(" close=")">
+                #{item}
+            </foreach>
+            AND authorStatus IN (1)
+    </update>
+
+    <!--前后台——批量下架/下架原因(创作者)-->
+    <update id="batchAuthorUnderReason" >
+        UPDATE
+            yrAuthor yra
+        SET
+            yra.authorUnderReason =  #{reason},
+            yra.modifyTime = now(),
+            yra.authorStatus = #{status}
+        where
+            yra.recId IN
+            <foreach collection="split" item="item" index="index"
+                     separator="," open="(" close=")">
+                #{item}
+            </foreach>
+            AND yra.authorStatus IN (1,2)
+            <if test="userId !=null" >
+                AND yra.registeredUserInfoID = #{userId}
+            </if>
+    </update>
+
+    <!--后台——批量创作者审核通过(上架)，代表作上架-->
+    <update id="batchApplyUp" >
+        UPDATE
+            yrAuthor yra
+        SET
+            yra.modifyTime = now(),
+            yra.authorStatus = #{authorStatus},
+            yra.auditUser = #{realName},
+            yra.upTime = now()
+        where
+            yra.recId IN
+            <foreach collection="split" item="item" index="index"
+                     separator="," open="(" close=")">
+                #{item}
+            </foreach>
+            AND yra.authorStatus = 1
+    </update>
+
+    <!--前台商城—创作者列表-->
+    <select id="authorList" resultType="java.util.Map" >
+        SELECT
+            yra.recId,
+            yra.authorImg,
+            yra.authorNickname,
+            yra.createdPrice,
+            yra.authorCreationTime,
+            yra.Introduction,
+            yra.sortScore,
+            t.productUrl,
+            t.productId,
+            t.title,
+            t.coverLocalUrl,
+            GROUP_CONCAT(
+                DISTINCT s.scenesName ORDER BY s.Id SEPARATOR '、'
+            ) AS scenesName,
+            GROUP_CONCAT(
+                DISTINCT dic.name ORDER BY dic.id SEPARATOR '、'
+            ) AS CategoryName,
+            GROUP_CONCAT(
+                DISTINCT cf.contentFormName ORDER BY cf.Id SEPARATOR '、'
+            ) AS contentFormName,
+            GROUP_CONCAT(
+                DISTINCT l.lableName ORDER BY yracs.typeId,l.Id SEPARATOR '.'
+            ) AS lableName,
+            IFNULL(cat.shoppingCartId,0) as flag
+        FROM
+            yrAuthor yra
+            LEFT JOIN
+            (
+                SELECT
+                    t.yrAuthorId,
+                    GROUP_CONCAT(
+                        t.recId
+                        ORDER BY
+                          t.publishTime DESC SEPARATOR '-_-'
+                    ) AS productId ,
+                    GROUP_CONCAT(
+                        IFNULL( t.productUrl, ' ' )
+                        ORDER BY
+                          t.publishTime DESC SEPARATOR '-_-'
+                    ) AS productUrl,
+                    GROUP_CONCAT(
+                        IFNULL( t.coverLocalUrl, ' ' )
+                        ORDER BY
+                          t.publishTime DESC SEPARATOR '-_-'
+                    ) AS coverLocalUrl ,
+                    GROUP_CONCAT(
+                        '[',
+                        cf.contentFormName,
+                        ']',
+                        t.title
+                        ORDER BY
+                          t.publishTime DESC SEPARATOR '-_-'
+                    ) AS title
+                FROM
+                    (
+                        SELECT
+                            a.*
+                        FROM
+                            (
+                                SELECT
+                                    t1.*,
+                                    (
+                                        SELECT
+                                            count(*) + 1
+                                        FROM
+                                            yrProduction p
+                                        WHERE
+                                            p.yrAuthorId = t1.yrAuthorId
+                                            AND p.publishTime > t1.publishTime
+                                            AND p.isRepresentative = 1
+                                            AND p.statusIndex = 1
+                                            AND p.yrProductionStatusIndex = 2
+                                    ) AS group_id
+                                FROM
+                                    yrProduction t1
+                                WHERE
+                                    t1.isRepresentative = 1
+                                    AND t1.statusIndex = 1
+                                    AND t1.yrProductionStatusIndex = 2
+                            ) a
+                        WHERE
+                            a.group_id &lt;= 3
+                    ) t,
+                    ContentForm cf
+                WHERE
+                    cf.Id = t.contentFormId
+                    GROUP BY
+                        t.yrAuthorId
+            ) t on t.yrAuthorId = yra.recId
+            LEFT JOIN yrAuthorLableRelation yral ON yra.recId = yral.userId
+            LEFT JOIN Lable l ON yral.lableId = l.Id AND l.statusValue = 1
+            LEFT JOIN shoppingCart cat ON cat.productId = yra.recId ,
+            yrAuthorContenStyleLableRelation yracs,
+            yrAuthorScenesRelation yras,
+            Scenes s,
+            yrAuthorArticleCategory ruc,
+            DictInfo dic,
+            yrAuthorContentFormRelation yrac,
+            ContentForm cf
+        WHERE
+            yra.recId = yras.userId
+            AND yras.scenesId = s.Id
+            AND yra.recId = ruc.yrAuthorId
+            AND ruc.categoryId = dic.ID
+            AND yrac.contentformId = cf.Id
+            AND yrac.userId = yra.recId
+            AND yra.authorStatus = 2
+            AND s.statusValue = 1
+            AND cf.statusValue = 1
+            AND yracs.lableId = l.Id
+            <if test="data.likeName !=null and data.likeName !=''" >
+                AND ( yra.authorNickname LIKE CONCAT('%',#{data.likeName},'%') OR yra.Introduction LIKE CONCAT('%',#{data.likeName},'%'))
+            </if>
+            <if test="data.scenes != null and data.scenes !=''" >
+                AND s.Id = #{data.scenes}
+            </if>
+            <if test="data.category != null and data.category !=''" >
+                AND dic.ID = #{data.category}
+            </if>
+            <if test="data.contentForm != null and data.contentForm !=''" >
+                AND cf.Id = #{data.contentForm}
+            </if>
+            <if test="data.creationPriceStart != null and data.creationPriceStart !=''" >
+                AND yra.createdPrice &gt;= #{data.creationPriceStart}
+            </if>
+            <if test="data.creationPriceEnd != null and data.creationPriceEnd !=''" >
+                AND yra.createdPrice &lt; #{data.creationPriceEnd}
+            </if>
+            <if test="data.creationPriceMax != null and data.creationPriceMax !=''" >
+                AND yra.createdPrice &gt;= #{data.creationPriceMax}
+            </if>
+            <if test="data.creationTimeStart != null and data.creationTimeStart !=''" >
+                AND yra.authorCreationTime &gt;= #{data.creationTimeStart}
+            </if>
+            <if test="data.creationTimeEnd != null and data.creationTimeEnd !=''" >
+                AND yra.authorCreationTime &lt; #{data.creationTimeEnd}
+            </if>
+            <if test="data.creationTimeMax != null and data.creationTimeMax !=''" >
+                AND yra.authorCreationTime &gt;= #{data.creationTimeMax}
+            </if>
+            <if test="data.lableId != null and data.lableId !=''" >
+                AND l.Id = #{data.lableId}
+            </if>
+            GROUP BY yra.recId
+    </select>
+
+    <!--前台商城—创作者详情-->
+    <select id="getAuthorInfo" resultType="com.yuanrong.admin.result.YRAuthorInfoResult" >
+        SELECT
+            yra.*,
+            if(e.proUpNum IS null,0,e.proUpNum) AS proUpNum,
+            GROUP_CONCAT(
+                DISTINCT s.scenesName ORDER BY s.Id SEPARATOR '、'
+            ) AS scenesName,
+            GROUP_CONCAT(
+                DISTINCT dic.name ORDER BY dic.Id SEPARATOR '、'
+            ) AS CategoryName,
+            GROUP_CONCAT(
+                DISTINCT dic.Id ORDER BY dic.Id SEPARATOR '、'
+            ) AS CategoryIds,
+            GROUP_CONCAT(
+                DISTINCT cf.contentFormName ORDER BY cf.Id SEPARATOR '、'
+            ) AS contentFormName,
+            GROUP_CONCAT(
+                DISTINCT l.lableName ORDER BY yracs.typeId,l.Id SEPARATOR '.'
+            ) AS lableName,
+            IF(cat.shoppingCartId IS NULL ,0 ,1) as flag
+        FROM
+            yrAuthor yra
+            LEFT JOIN yrAuthorLableRelation yral ON yra.recId = yral.userId
+            LEFT JOIN Lable l ON yral.lableId = l.Id AND l.statusValue = 1
+            LEFT JOIN
+            (
+                SELECT
+                    *
+                FROM
+                    shoppingCart cat
+                WHERE
+                    cat.cartTypeIndex = 1
+                    AND cat.registeredUserInfoId = #{registeredUserInfoId}
+            ) cat ON cat.productId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    a.recId,
+                    count( a.recId ) AS proUpNum
+                FROM
+                    yrAuthor a,
+                    yrProduction yp
+                WHERE
+                    a.recId = yp.yrAuthorId
+                    AND yp.yrProductionStatusIndex = 2
+                    AND yp.statusIndex = 1
+                    GROUP BY
+                        a.recId
+            ) e ON e.recId = yra.recId
+            LEFT JOIN yrAuthorContenStyleLableRelation yracs ON yracs.lableId = l.Id
+            LEFT JOIN yrAuthorScenesRelation yras ON yra.recId = yras.userId
+            LEFT JOIN Scenes s ON yras.scenesId = s.Id
+            LEFT JOIN yrAuthorArticleCategory ruc ON yra.recId = ruc.yrAuthorId
+            LEFT JOIN DictInfo dic ON ruc.categoryId = dic.ID
+            LEFT JOIN yrAuthorContentFormRelation yrac ON  yra.recId = yrac.userId
+            LEFT JOIN ContentForm cf ON yrac.contentformId = cf.Id
+        WHERE
+            1=1
+            AND (s.statusValue = 1 OR s.statusValue IS NULL)
+            AND (cf.statusValue = 1 OR cf.statusValue IS NULL)
+            <if test="recId != null">
+                AND yra.recId = #{recId}
+            </if>
+            GROUP BY yra.recId
+    </select>
+
+    <select id="getAuthorsByName" resultType="com.yuanrong.admin.bean.author.YRAuthor" parameterType="com.yuanrong.admin.bean.author.YRAuthor">
+        SELECT * from yrAuthor where registeredUserInfoID = #{data.webUser.recID}
+        and authorNickname like concat('%',#{data.authorNickname} , '%')
+        limit 0 ,6
+    </select>
+    <select id="getAuthorByObject" parameterType="com.yuanrong.admin.bean.author.YRAuthor" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        select * from yrAuthor
+        <where>
+            <if test="registeredUserInfoID != null ">and registeredUserInfoID= #{registeredUserInfoID}</if>
+
+        </where>
+    </select>
+    <!--获取相似创作者列表数量-->
+    <select id="getLikeAuthorNum" resultType="java.util.Map">
+        SELECT
+            COUNT( a.recId ) + 1 AS rowsn,
+            b.num
+        FROM
+            (
+                SELECT
+                    yra.recId,
+                    yra.sortScore,
+                    @rownum := @rownum + 1 AS rownum
+                FROM
+                    (
+                        SELECT * FROM yrAuthor ORDER BY sortScore
+                    ) yra,
+                    yrAuthorArticleCategory yrac,
+                    ( SELECT @rownum := 0 ) b
+                WHERE
+                    yra.recId = yrac.yrAuthorId
+                    AND yra.authorStatus = 2
+                    AND yrac.categoryId = #{categoryId}
+                    ORDER BY
+                        yra.sortScore,
+                        rownum
+            ) a,
+            (
+                SELECT
+                  count( yra.recId ) AS num
+                FROM
+                    yrAuthor yra,
+                    yrAuthorArticleCategory yrac
+                WHERE
+                    yra.recId = yrac.yrAuthorId
+                    AND yra.authorStatus = 2
+                    AND yrac.categoryId = #{categoryId}
+            ) b
+        WHERE
+            a.sortScore &lt; #{sortScore}
+    </select>
+
+    <!--获取相似创作者列表-->
+    <select id="getLikeAuthor" resultType="com.yuanrong.admin.result.YRAuthorInfoResult">
+        SELECT
+            yra.*,
+            a.scenes,
+            b.category,
+            c.contentForm,
+            d.contentLable,
+            e.representativeNum,
+            @rownum := @rownum + 1 AS rownum
+        FROM
+            (
+                    SELECT * FROM yrAuthor ORDER BY sortScore
+                ) yra
+            LEFT JOIN
+            (
+                SELECT
+                    yras.userId,
+                    GROUP_CONCAT( DISTINCT s.scenesName ORDER BY s.Id SEPARATOR '、' ) AS scenes
+                FROM
+                    yrAuthorScenesRelation yras,
+                    Scenes s
+                WHERE
+                    s.Id = yras.scenesId
+                    AND s.statusValue = 1
+                    GROUP BY
+                        yras.userId
+            ) a ON a.userId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    ruc.yrAuthorId,
+                    GROUP_CONCAT( DISTINCT dic.NAME ORDER BY dic.id SEPARATOR '、' ) AS category
+                FROM
+                    yrAuthorArticleCategory ruc,
+                    DictInfo dic
+                WHERE
+                    dic.id = ruc.categoryId
+                    GROUP BY
+                        ruc.yrAuthorId
+            ) b ON b.yrAuthorId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    yrac.userId,
+                    GROUP_CONCAT( DISTINCT cf.contentFormName ORDER BY cf.Id SEPARATOR '、' ) AS contentForm
+                FROM
+                    yrAuthorContentFormRelation yrac,
+                    ContentForm cf
+                WHERE
+                    cf.Id = yrac.contentformId
+                    AND cf.statusValue = 1
+                    GROUP BY
+                        yrac.userId
+            ) c ON c.userId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    yral.userId,
+                    GROUP_CONCAT( DISTINCT l.lableName ORDER BY yrac.typeId,l.Id SEPARATOR '.' ) AS contentLable
+                FROM
+                    yrAuthorLableRelation yral,
+                    Lable l,
+                    yrAuthorContenStyleLableRelation yrac
+                WHERE
+                    l.Id = yral.lableId
+                    AND yrac.lableId = l.Id
+                    AND l.statusValue = 1
+                    GROUP BY
+                        yral.userId
+            ) d ON d.userId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    yrp.yrAuthorId,
+                    count( yrp.recId ) AS representativeNum
+                FROM
+                    (
+                        SELECT * FROM yrAuthor ORDER BY sortScore
+                    ) yra,
+                    yrProduction yrp
+                WHERE
+                    yrp.isRepresentative = 1
+                    AND yrp.yrProductionStatusIndex = 2
+                    AND yrp.statusIndex = 1
+                    GROUP BY
+                        yrp.yrAuthorId
+                    ORDER BY
+                        yra.sortScore
+            ) e ON e.yrAuthorId = yra.recId,
+            yrAuthorArticleCategory yrac,
+            ( SELECT @rownum := 0 ) f
+        WHERE
+            yra.authorStatus = 2
+            AND yrac.yrAuthorId = yra.RecId
+            AND yra.recId != #{recid}
+            AND yrac.categoryId = #{categoryId}
+            ORDER BY
+                yra.sortScore,
+                rownum
+            LIMIT #{a},#{b}
+    </select>
+
+    <select id="list_yrAuthorByIds" resultType="com.yuanrong.admin.bean.author.YRAuthor" parameterType="java.lang.String">
+        SELECT * FROM yrAuthor WHERE recId  IN(${ids}) and  authorStatus=2
+    </select>
+
+    <!--后台—需求选购上架创作者列表-->
+    <select id="getDemandAuthorList" resultType="java.util.Map">
+        SELECT
+            yra.*,
+            ru.RecID AS userId,
+            ru.NickName AS userName,
+            au.RealName,
+            IFNULL(a.orderNum,0) as orderNum
+        FROM
+            yrAuthor yra
+            LEFT JOIN
+            (
+                SELECT
+                    os.referId AS yrAuthorId,
+                    COUNT(os.referId) AS orderNum
+                FROM
+                    orderInfoSeller os,
+                    orderInfoBuyer ob
+                WHERE
+                    os.orderInfoSellerId = ob.refreId
+                    AND ob.orderStatusValue = 2
+                    and os.orderTypeValue = 3
+                    AND DATE_FORMAT(ob.createdTime,'%Y-%m-%d') &gt;= #{date}
+                    GROUP BY os.referId
+            ) a ON a.yrAuthorId = yra.recId,
+            RegisteredUserInfo ru,
+            AdminUser au
+        WHERE
+            yra.registeredUserInfoID = ru.RecID
+            AND au.RecID = ru.AdminUserMediaID
+            <if test="likeName !=null and likeName.length >0" >
+                AND (
+                yra.recId IN
+                <foreach collection="likeName" item="arr" index="index" open="("
+                         separator="," close=")">
+                    #{arr}
+                </foreach>
+                OR
+                <foreach collection="likeName" item="arr" index="index" open="("
+                         separator=" or " close=")">
+                    <if test="arr !=''" >
+                        yra.authorNickname like concat('%' , #{arr} , '%')
+                    </if>
+                </foreach>
+                )
+            </if>
+            <if test="authorStatus != null" >
+                AND yra.authorStatus = #{authorStatus}
+            </if>
+            <if test="demandId !=null">
+                AND yra.recId NOT  IN
+                (
+                    SELECT
+                        os.referId
+                    FROM
+                        orderInfoSeller os,
+                        demand d
+                    WHERE
+                        os.demandId = d.demandId
+                        AND os.orderTypeValue = 3
+                        AND d.demandId = #{demandId}
+                )
+            </if>
+    </select>
+
+    <select id="getByRegisterUserId" resultType="com.yuanrong.admin.bean.author.YRAuthor"  parameterType="java.lang.Integer">
+        SELECT * from yrAuthor where registeredUserInfoID = #{registerUserInfoId} ORDER BY recId DESC
+    </select>
+
+    <resultMap id="BaseResultMap" type="com.yuanrong.admin.result.YRAuthorInfoResult" >
+        <id column="recId" property="recId" jdbcType="INTEGER" />
+        <result column="authorNickname" property="authorNickname" jdbcType="VARCHAR" />
+        <result column="authorImg" property="authorImg" jdbcType="VARCHAR" />
+        <result column="Introduction" property="introduction" jdbcType="VARCHAR" />
+        <result column="authorCreationTime" property="authorCreationTime" jdbcType="INTEGER" />
+        <result column="createdPrice" property="createdPrice" jdbcType="DECIMAL" />
+        <result column="registeredUserInfoID" property="registeredUserInfoID" jdbcType="INTEGER" />
+        <result column="creationTimeRemark" property="creationTimeRemark" jdbcType="VARCHAR" />
+        <result column="createdPriceRemark" property="createdPriceRemark" jdbcType="VARCHAR" />
+        <result column="authorStatus" property="authorStatus" jdbcType="INTEGER" />
+        <result column="authorAuditFailReason" property="authorAuditFailReason" jdbcType="VARCHAR" />
+        <result column="yRIndex" property="yRIndex" jdbcType="INTEGER" />
+        <result column="authorUnderReason" property="authorUnderReason" jdbcType="VARCHAR" />
+        <result column="auditUser" property="auditUser" jdbcType="VARCHAR" />
+        <result column="createSource" property="createSource" jdbcType="INTEGER" />
+        <result column="isAnonymous" property="isAnonymous" jdbcType="INTEGER" />
+        <result column="contentForm" property="contentForm" jdbcType="VARCHAR" />
+        <result column="scenes" property="scenes" jdbcType="VARCHAR" />
+        <result column="category" property="category" jdbcType="VARCHAR" />
+        <result column="contentLable" property="contentLable" jdbcType="VARCHAR" />
+        <result column="representativeNum" property="representativeNum" jdbcType="INTEGER" />
+        <result column="flag" property="flag" jdbcType="INTEGER" />
+        <collection property="yrProductions" ofType="com.yuanrong.admin.bean.author.YRProduction">
+            <id column="pro_recId" property="recId" jdbcType="INTEGER" />
+            <result column="yrAuthor_recId" property="yrAuthor.recId" jdbcType="INTEGER" />
+            <result column="title" property="title" jdbcType="VARCHAR" />
+            <result column="productUrl" property="productUrl" jdbcType="VARCHAR" />
+            <result column="productQuotedPrice" property="productQuotedPrice" jdbcType="DECIMAL" />
+            <result column="coverLocalUrl" property="coverLocalUrl" jdbcType="VARCHAR" />
+            <result column="coverUrl" property="coverUrl" jdbcType="VARCHAR" />
+            <result column="contentForm_Id" property="contentForm.Id" jdbcType="INTEGER" />
+            <result column="contentForm_contentFormName" property="contentForm.contentFormName" jdbcType="VARCHAR" />
+            <result column="scenes.Id" property="scenes.Id" jdbcType="INTEGER" />
+            <result column="pro_publishTime" property="publishTime" jdbcType="TIMESTAMP" />
+            <result column="yrProductionStatusIndex" property="yrProductionStatusIndex" jdbcType="INTEGER" />
+            <result column="publishStatusIndex" property="publishStatusIndex" jdbcType="INTEGER" />
+            <result column="isRepresentative" property="isRepresentative" jdbcType="INTEGER" />
+            <result column="productionAuditFailReasonId" property="productionAuditFailReasonId" jdbcType="VARCHAR" />
+            <result column="contentScore" property="contentScore" jdbcType="INTEGER" />
+            <result column="proUnderReasonId" property="proUnderReasonId" jdbcType="INTEGER" />
+            <result column="publishPlatform" property="publishPlatform" jdbcType="VARCHAR" />
+            <result column="tags" property="tags" jdbcType="VARCHAR" />
+            <result column="registeredUserInfoId" property="registeredUserInfoId" jdbcType="INTEGER" />
+            <result column="channelIndex" property="channelIndex" jdbcType="INTEGER" />
+            <result column="auditUser" property="auditUser" jdbcType="VARCHAR" />
+            <result column="pro_Introduction" property="introduction" jdbcType="VARCHAR" />
+            <result column="content" property="content" jdbcType="VARCHAR" />
+            <result column="localcontent" property="localcontent" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+
+    <!--C端—创作者列表-->
+    <select id="getAuthorAndProList" resultMap="BaseResultMap" parameterType="com.yuanrong.admin.seach.AuthorListParamSeach">
+        SELECT
+            yra.*,
+            a.scenes,
+            b.category,
+            c.contentForm,
+            d.contentLable,
+            IF(e.representativeNum IS NULL ,0 ,e.representativeNum) AS representativeNum,
+            IF(cat.shoppingCartId IS NULL ,0 ,1) as flag
+        FROM
+            yrAuthor yra
+            LEFT JOIN
+            (
+                SELECT
+                    yras.userId,
+                    GROUP_CONCAT( DISTINCT s.scenesName ORDER BY s.Id SEPARATOR '、' ) AS scenes
+                FROM
+                    yrAuthorScenesRelation yras,
+                    Scenes s
+                WHERE
+                    s.Id = yras.scenesId
+                    AND s.statusValue = 1
+                    GROUP BY
+                        yras.userId
+            ) a ON a.userId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    ruc.yrAuthorId,
+                    GROUP_CONCAT( DISTINCT dic.NAME ORDER BY dic.id SEPARATOR '、' ) AS category
+                FROM
+                    yrAuthorArticleCategory ruc,
+                    DictInfo dic
+                WHERE
+                    dic.id = ruc.categoryId
+                    GROUP BY
+                        ruc.yrAuthorId
+            ) b ON b.yrAuthorId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    yrac.userId,
+                    GROUP_CONCAT( DISTINCT cf.contentFormName ORDER BY cf.Id SEPARATOR '、' ) AS contentForm
+                FROM
+                    yrAuthorContentFormRelation yrac,
+                    ContentForm cf
+                WHERE
+                    cf.Id = yrac.contentformId
+                    AND cf.statusValue = 1
+                    GROUP BY
+                        yrac.userId
+            ) c ON c.userId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                    yral.userId,
+                    GROUP_CONCAT( DISTINCT l.lableName ORDER BY yracs.typeId,l.Id SEPARATOR '.' ) AS contentLable
+                FROM
+                    yrAuthorLableRelation yral,
+                    Lable l,
+                    yrAuthorContenStyleLableRelation yracs
+                WHERE
+                    l.Id = yral.lableId
+                    AND  yracs.lableId = l.Id
+                    AND l.statusValue = 1
+                    GROUP BY
+                        yral.userId
+            ) d ON d.userId = yra.recId
+            LEFT JOIN
+            (
+                SELECT
+                  yrp.yrAuthorId,
+                  count( yrp.recId )  AS representativeNum
+                FROM
+                  yrProduction yrp
+                WHERE
+                    yrp.isRepresentative = 1
+                    AND yrp.yrProductionStatusIndex = 2
+                    AND yrp.statusIndex = 1
+                    GROUP BY
+                      yrp.yrAuthorId
+            )e ON e.yrAuthorId = yra.recId
+            LEFT JOIN
+            (
+            SELECT
+                *
+            FROM
+                shoppingCart cat
+            WHERE
+                cat.cartTypeIndex = 1
+                AND cat.registeredUserInfoId = #{data.registeredUserInfoId}
+            ) cat ON cat.productId = yra.recId
+        WHERE
+            yra.authorStatus = 2
+            <if test="data.scenes != null and data.scenes !=''" >
+                AND yra.recId IN (
+                    SELECT
+                        yras.userId
+                    FROM
+                        yrAuthorScenesRelation yras,
+                        Scenes s
+                    WHERE
+                        s.Id = yras.scenesId
+                        AND s.statusValue = 1
+                        AND s.Id = #{data.scenes}
+                )
+            </if>
+            <if test="data.category != null and data.category !=''" >
+                AND yra.recId IN (
+                    SELECT
+                      yrac.yrAuthorId
+                    FROM
+                      yrAuthorArticleCategory yrac
+                    WHERE
+                      yrac.categoryId = #{data.category}
+                )
+            </if>
+            <if test="data.contentForm != null and data.contentForm !=''" >
+                AND yra.recId IN (
+                    SELECT
+                      yrac.userId
+                    FROM
+                        yrAuthorContentFormRelation yrac,
+                        ContentForm cf
+                    WHERE
+                        cf.Id = yrac.contentformId
+                        AND cf.statusValue = 1
+                        AND cf.Id =#{data.contentForm}
+                )
+            </if>
+            <if test="data.likeName !=null and data.likeName !=''" >
+                AND ( yra.authorNickname LIKE CONCAT('%',#{data.likeName},'%') OR yra.Introduction LIKE CONCAT('%',#{data.likeName},'%'))
+            </if>
+            <if test="data.creationPriceStart != null and data.creationPriceStart !=''" >
+                AND yra.createdPrice &gt;= #{data.creationPriceStart}
+            </if>
+            <if test="data.creationPriceEnd != null and data.creationPriceEnd !=''" >
+                AND yra.createdPrice &lt; #{data.creationPriceEnd}
+            </if>
+            <if test="data.creationPriceMax != null and data.creationPriceMax !=''" >
+                AND yra.createdPrice &gt;= #{data.creationPriceMax}
+            </if>
+            <if test="data.creationTimeStart != null and data.creationTimeStart !=''" >
+                AND yra.authorCreationTime &gt;= #{data.creationTimeStart}
+            </if>
+            <if test="data.creationTimeEnd != null and data.creationTimeEnd !=''" >
+                AND yra.authorCreationTime &lt; #{data.creationTimeEnd}
+            </if>
+            <if test="data.creationTimeMax != null and data.creationTimeMax !=''" >
+                AND yra.authorCreationTime &gt;= #{data.creationTimeMax}
+            </if>
+            <if test="data.lableId != null and data.lableId !=''" >
+                AND yra.recId IN (
+                    SELECT
+                        yral.userId
+                    FROM
+                        yrAuthorLableRelation yral,
+                        Lable l
+                    WHERE
+                        l.Id = yral.lableId
+                        AND l.Id = #{data.lableId}
+                )
+            </if>
+    </select>
+
+    <!--C端—创作者列表—获取对应上架作品列表-->
+    <select id="getAuthorProductionList" resultType="com.yuanrong.admin.bean.author.YRProduction">
+        SELECT
+            p.recId,
+            p.Introduction,
+            p.coverLocalUrl,
+            p.isRepresentative,
+            p.localcontent,
+            p.productUrl,
+            p.publishStatusIndex,
+            p.yrAuthorId,
+            p.yrProductionStatusIndex,
+            p.title,
+            cf.Id AS 'contentForm.Id',
+            cf.contentFormName AS 'contentForm.contentFormName'
+        FROM
+            yrProduction p,
+            ContentForm cf
+        WHERE
+            cf.Id = p.contentFormId
+            AND p.yrProductionStatusIndex = 2
+            AND p.statusIndex = 1
+            AND p.yrAuthorId IN
+            <foreach collection="recIds" item="arr" index="index" open="(" separator="," close=")">
+                #{arr}
+            </foreach>
+            ORDER BY
+                p.isRepresentative DESC,
+                p.publishTime DESC
+    </select>
+
+    <!--定时任务计算排序规则-->
+    <update id="calculateSortScore">
+        update yrAuthor ya , (
+        SELECT cValue as 'gp' from configuration where cName = 'GRAVITYTH_POWER'
+        ) a set ya.sortScore = (accessNum -1)/POWER(DATEDIFF(now(),upTime) +2,a.gp)
+    </update>
+
+    <!--C端—修改创作者访问次数-->
+    <update id="updateAuthorAccessTimes">
+        UPDATE
+          yrAuthor
+        SET
+          accessTimes = #{i},
+          accessNum = accessNum + 1
+        where recId = #{recId}
+    </update>
+
+    <select id="getyrAuthorByshoppingCartId" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        SELECT ya.*,sc.shoppingCartId
+        FROM shoppingCart sc ,yrAuthor ya
+        WHERE   sc.statusIndex=1 AND sc.cartTypeIndex=1 AND sc.registeredUserInfoId=#{registeredUserInfoId} AND
+                sc.shoppingCartId IN (${shopCartIds})
+                AND sc.productId=ya.recId AND ya.authorStatus=2
+    </select>
+
+    <select id="getYRAuthorById_RegUserId" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        SELECT  *  FROM yrAuthor
+        WHERE recId = #{data.recId} AND registeredUserInfoID = #{data.registeredUserInfoID} AND authorStatus =2
+    </select>
+    <!--通过创作者ID查询创作者信息——判断-->
+    <select id="getAuthorInfoById" resultType="com.yuanrong.admin.bean.author.YRAuthor">
+        SELECT
+            yra.*,
+            ru.sellerStatusValue,
+            GROUP_CONCAT( DISTINCT s.scenesName SEPARATOR '、' ) AS scenes,
+            GROUP_CONCAT( DISTINCT dic.name SEPARATOR '、' ) AS category,
+            GROUP_CONCAT( DISTINCT cf.contentFormName SEPARATOR '、' ) AS contentForm
+        FROM
+            yrAuthor yra
+            LEFT JOIN yrAuthorScenesRelation yras ON yra.recId = yras.userId
+            LEFT JOIN yrAuthorArticleCategory ruc ON yra.recId = ruc.yrAuthorId
+            LEFT JOIN yrAuthorContentFormRelation yrac ON yra.recId = yrac.userId
+            LEFT JOIN Scenes s ON yras.scenesId = s.Id
+            LEFT JOIN DictInfo dic ON ruc.categoryId = dic.id
+            LEFT JOIN ContentForm cf ON yrac.contentformId = cf.Id,
+            RegisteredUserInfo ru
+        WHERE
+            ru.RecID = yra.registeredUserInfoID
+            <if test = "recId != null" >
+                AND yra.recId = #{recId}
+            </if>
+            GROUP BY
+              yra.recId
+    </select>
+
+    <update id="batchUpdateAccessTime">
+        <foreach item="value" index="key" collection="data.entrySet()" separator=";">
+            update yrAuthor set accessTimes = #{value} where recId = #{key}
+        </foreach>
+
+    </update>
+
+    <update id="batchUpdateAccessNums">
+        <foreach item="value" index="key" collection="data.entrySet()" separator=";">
+            update yrAuthor set accessNum = #{value} where recId = #{key}
+        </foreach>
+    </update>
+</mapper>

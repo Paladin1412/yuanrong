@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.order.SnapshotYrProductionDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.order.SnapshotYrProduction" useGeneratedKeys="true" keyProperty="data.snapshotYrProductionId">
+        INSERT INTO `snapshotYrProduction`(`orderDetailId`, `title`, `localcontent`, `yrAuthorName`, `coverLocalUrl`, `contentForm`, `publishStatusValue`, `isRepresentative`,
+        `yrProductionId`, `createdTime`, `modifiedCount`, `modifiedTime`, `statusIndex` ,`productQuotedPrice`,wordNum,imgNum)
+        SELECT #{data.orderDetailId} as 'orderDetailId' , yp.title , yp.localcontent , ya.authorNickname 'yrAuthorName', yp.coverLocalUrl 'coverLocalUrl',
+        cf.contentFormName 'contentForm' ,yp.publishStatusIndex 'publishStatusValue'
+        , yp.isRepresentative 'isRepresentative', yp.recId 'yrProductionId' , now() as  'createdTime' ,1 as 'modifiedCount',now() as 'modifiedTime',1 as 'statusIndex'
+        ,yp.productQuotedPrice as 'productQuotedPrice' , yp.wordNum ,yp.imgNum
+        from yrProduction yp , yrAuthor ya , ContentForm cf where
+        yp.contentFormId = cf.Id and yp.yrAuthorId = ya.recId and yp.recId=#{data.yrProductionId}
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.order.SnapshotYrProduction" parameterType="com.yuanrong.admin.bean.order.SnapshotYrProduction">
+        SELECT * from snapshotYrProduction
+    </select>
+ <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.order.SnapshotYrProduction">
+        select * from snapshotYrProduction where snapshotYrProductionId = #{id}
+    </select>
+
+    <!--买家中心已购买作品-->
+    <select id="getSellerProductInfo" parameterType="java.lang.String" resultType="com.yuanrong.admin.bean.order.SnapshotYrProduction" >
+        select sy.* from orderInfoBuyer oib
+        left join orderDetail od on od.orderInfoBuyerId = oib.orderInfoBuyerId
+        left join snapshotYrProduction sy  on sy.orderDetailId = od.orderDetailId
+        where 1=1 AND oib.orderSn = #{buyerOrderSn}
+    </select>
+</mapper>

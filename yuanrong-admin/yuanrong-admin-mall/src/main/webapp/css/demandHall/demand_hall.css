@@ -1,0 +1,285 @@
+.demand-wrap{
+    width: 1170px;
+    margin: 0 auto;
+}
+.query-form{
+    height: 50px;
+    line-height: 50px;
+    padding: 0 20px;
+    border-radius: 2px;
+    background: #fff;
+    color: #64676A;
+    margin-bottom: 19px;
+}
+.query-form .demand-query-type{
+    margin-bottom: 20px;
+}
+.query-form > div > span:first-child{
+    margin-right: 10px;
+}
+.query-form > div > span:nth-child(2){
+    display: inline-block;
+    /*width: 36px;*/
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    margin-right: 20px;
+}
+.demand-wrap .active{
+    background: #F6FAFF;
+    /*border: 1px solid #DFEAF8;*/
+    border-radius: 2px;
+    color: #4895E7;
+}
+.query-form > div > span:nth-child(n+2){
+    cursor: pointer;
+
+}
+.query-form > div > span > span{
+    padding: 0 9px;
+    display: inline-block;
+    height: 24px;
+    line-height: 24px;
+}
+.query-form > div > span:nth-child(n+3){
+    display: inline-block;
+    width: 84px;
+    text-align: left;
+}
+.demand-middle{
+    overflow: hidden;
+}
+.demand-container{
+    float: left;
+}
+.demand-container .demand-list > li{
+    width: 870px;
+    height: 210px;
+    border-radius: 2px;
+    background: #fff;
+    margin-bottom: 20px;
+    padding: 0 27px 22px 23px;
+    overflow: hidden;
+    position: relative;
+}
+.demand-list-item-title{
+    margin-top: 25px;
+}
+.demand-list-title-top > span:nth-child(1){
+    display: inline-block;
+    width: 56px;
+    height: 22px;
+    line-height: 19px;
+    text-align: center;
+    font-size: 12px;
+    color: #89BC62;
+    border: 1px solid rgba(137,188,98,0.50);
+    border-radius: 2px;
+    margin-right: 6px;
+    position: relative;
+    top: -2px;
+}
+.demand-list-title-top{
+    height: 33px;
+    line-height: 33px;
+    margin-bottom: 5px;
+}
+.demand-list-title-top > span:nth-child(2){
+    font-size: 20px;
+    color: #48494a;
+}
+.demand-list-title-top > span:nth-child(3){
+    float: right;
+    font-size: 24px;
+    color: #F5B923;
+}
+.demand-list-title-top .demand-list-unit{
+    font-size: 12px;
+    color: #82868A;
+}
+.demand-list-title-bottom{
+    height: 36px;
+    line-height: 36px;
+}
+.title-bottom-num{
+    margin-left: 10px;
+    color: #4895E7;
+}
+.demand-list-title-bottom > span:nth-child(1){
+    color: #82868A;
+    margin-right: 81px;
+}
+.demand-list-title-bottom > span:nth-child(2){
+    color: #82868A;
+}
+.title-bottom-time > span:first-child{
+    margin-left: 10px;
+}
+.time-active{
+    color: #4895E7;
+}
+.demand-list-title-bottom > span:nth-child(3){
+    float: right;
+    width: 84px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    cursor: pointer;
+    color: #fff;
+    background: #4895E7;
+    border-radius: 2px;
+}
+.cut-off{
+    height: 14px;
+    border-bottom: 1px dotted #e9ebec;
+}
+.demand-list-item-content{
+    height: 44px;
+    line-height: 22px;
+    overflow: hidden;
+    margin: 12px 0 15px 0;
+    font-size: 14px;
+    color: #64676A;
+}
+.look-more{
+    color: #4895E7;
+    cursor: pointer;
+}
+.demand-list-item-tag > span{
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #82868a;
+    /*background: rgba(72,149,231,0.10);*/
+    background: #F4F6F9;
+    border-radius: 2px;
+    margin-right: 20px;
+}
+.demand-help{
+    width: 280px;
+    height: 640px;
+    background: #fff;
+    float: right;
+    padding: 23px 20px 43px 20px;
+}
+.demand-help div span:first-child{
+    font-size: 18px;
+    color: #64676A;
+    float: left;
+    position: relative;
+    top: -2px;
+}
+.demand-help > div{
+    overflow: hidden;
+    height: 30px;
+    line-height: 30px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e9ebec;
+}
+.demand-help > div > span:last-child{
+    font-size: 12px;
+    color: #82868A;
+    float: right;
+}
+.demand-help > ul > li{
+    width: 240px;
+    margin-top: 20px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.demand-help > ul > li > div:first-child{
+    width: 240px;
+    height: 118px;
+    border-radius: 2px;
+    padding: 23px 0 0 29px;
+}
+.demand-help > ul > li:nth-child(1) > div:first-child{
+    background: url(../../../images/demandHall/origin-bg1.png);
+}
+
+.demand-help > ul > li > div:first-child > div:first-child{
+    font-size: 24px;
+    color: #89BC62;
+    margin-bottom: 5px;
+}
+.demand-help > ul > li > div:first-child > div:nth-child(n+2){
+    font-size: 16px;
+    color: rgba(137,188,98,0.60);
+    line-height: 16px;
+}
+.demand-help .made-type div:first-child > div:first-child{
+    margin-bottom: 5px;
+    font-size: 24px;
+    color: #4895E7;
+}
+.demand-help .made-type div:first-child > div:nth-child(n+2){
+    font-size: 16px;
+    color: rgba(72,149,231,0.70);
+    line-height: 16px;
+}
+.demand-help > ul > li > div:last-child{
+    height: 42px;
+    text-align: center;
+    font-size: 14px;
+    color: #64676A;
+    line-height: 42px;
+    border: 1px solid #F1F1F2;
+}
+.demand-help .marketing-type div:first-child > div:first-child{
+    margin-bottom: 5px;
+    font-size: 24px;
+    color: #9B76F8;
+}
+.demand-help .marketing-type div:first-child > div:nth-child(n+2){
+    font-size: 16px;
+    color: rgba(155,118,248,0.60);
+}
+.demand-help .IP-type div:first-child > div:first-child{
+    margin-bottom: 5px;
+    font-size: 24px;
+    color: #F59023;
+}
+.demand-help .IP-type div:first-child > div:nth-child(n+2){
+    font-size: 16px;
+    color: #F5A623;
+}
+.demand-help > ul > .made-type > div:first-child{
+    background: url(../../../images/demandHall/origin-bg2.png);
+}
+.demand-help > ul > .marketing-type > div:first-child{
+     background: url(../../../images/demandHall/origin-bg3.png);
+ }
+.demand-help > ul > .IP-type > div:first-child{
+    background: url(../../../images/demandHall/origin-bg4.png);
+}
+
+.item-status{
+    position: absolute;
+    top: 0;
+    width: 60px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 12px;
+    background: #89BC62;color:#fff;
+    border-radius: 0 0 2px 2px;
+}
+
+.demand-title-name{
+    cursor: pointer;
+    display: inline-block;
+    height: 26px;
+    width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.link-help > div:nth-child(2):hover{
+    color: #4895e7;
+}
+
+.no-data-wrap{
+    padding: 210px 0;
+}

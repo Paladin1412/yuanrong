@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.order.OrderInfoSellerDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.order.OrderInfoSeller" useGeneratedKeys="true"
+            keyProperty="data.orderInfoSellerId">
+        INSERT INTO `orderInfoSeller`(`orderInfoId`, `demandId`, `orderSn`, `registeredUserInfoId`, `num`, `price`,
+         `production`, `saleUser`, `mediaUser`, `orderTypeValue`, `orderStatusValue`, `returnUrl`, `returnImg`,
+         `returnTime`, `responseTime`, `executeTime`, `refuseReason`, `executeOver`, `createdTime`, `modifiedTime`,
+         `acceptRemark`, `statusIndex`, `usableDate`, `rejectReason`, `rejectRemark`,`payable`,`offerPrice`, `sellerServiceRate`,
+          `buyerServiceRate`, `confirmTime`,`referId`,`referPrice`, `invoiceRate`, `sellerPrice`, `buyerOrderPrice`, `saleUserId`, `mediaUserId`)
+        VALUES (#{data.orderInfoId}, #{data.demandId},#{data.orderSn},#{data.registeredUserInfoId},#{data.num},#{data.price},
+        #{data.production},#{data.saleUser},#{data.mediaUser},#{data.orderTypeValue},#{data.orderStatusValue},#{data.returnUrl},#{data.returnImg},
+        #{data.returnTime},#{data.responseTime},#{data.executeTime},#{data.refuseReason},#{data.executeOver.},now(),now(),
+        #{data.acceptRemark},1,#{data.usableDate},#{data.rejectReason},#{data.rejectRemark},#{data.payable},#{data.offerPrice},
+        #{data.sellerServiceRate},#{data.buyerServiceRate},#{data.confirmTime},#{data.referId},
+        #{data.referPrice},#{data.invoiceRate},#{data.sellerPrice},#{data.buyerOrderPrice},#{data.saleUserId},#{data.mediaUserId}
+        )
+
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller"
+            parameterType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT ois.* , sya.authorImg as 'yrAuthor.authorImg' , sya.authorNickname  as 'yrAuthor.authorNickname'
+        ,
+        sat.headImageUrlLocal as 'platformIPAccount.headImageUrlLocal' , sat.accountID as 'platformIPAccount.accountID',
+        sat.`name` as 'platformIPAccount.name',
+        svp.icoUrl as 'platformIPAccount.shortVideoPlatformInfo.icoUrl', svp.PlatformName as 'platformIPAccount.shortVideoPlatformInfo.PlatformName'
+        ,  syp.productQuotedPrice as 'yRProduction.productQuotedPrice',
+        syp.recId as 'yRProduction.recId' ,
+        syp.title as 'yRProduction.title',syp.imgNum as 'yRProduction.imgNum',syp.wordNum as 'yRProduction.wordNum',
+        dm.demandName as 'demand.demandName'
+        from demand dm ,orderInfoSeller ois
+        LEFT JOIN yrAuthor sya on sya.recId = ois.referId
+        LEFT JOIN yrProduction syp on syp.recId = ois.referId
+        LEFT JOIN PlatformIPAccount sat on sat.id = ois.referId
+        LEFT JOIN ShortVideoPlatformInfo svp on svp.RecID = sat.platformID
+        where  ois.demandId = dm.demandId
+        <if test="data.registeredUserInfoId != null and data.registeredUserInfoId > 0 ">
+            and ois.registeredUserInfoId = #{data.registeredUserInfoId}
+        </if>
+        <if test="data.orderTypeValue != null and data.orderTypeValue > 0 ">
+            and ois.orderTypeValue = #{data.orderTypeValue}
+        </if>
+        <if test="data.orderStatusValue != null and data.orderStatusValue > 0">
+            and ois.orderStatusValue = #{data.orderStatusValue}
+        </if>
+        <if test="data.orderSn != null and data.orderSn != '' ">
+            and ois.orderSn like concat('%',#{data.orderSn} , '%')
+        </if>
+    </select>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        select * from orderInfoSeller where orderInfoSellerId = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from orderInfoSeller where orderInfoSellerId = #{id}
+    </delete>
+
+    <!--卖家中心已购买作品-->
+    <select id="getSellerProductInfo" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+        SELECT A.production, B.authorNickname, D.accessTimes , D.publishTime, D.publishPlatform
+            FROM orderInfoSeller A, snapshotYrAuthor B, snapshotYrProduction C , yrProduction D
+        WHERE A.orderInfoSellerId = B.orderInfoSellerId
+        AND A.orderInfoSellerId = C.orderInfoSellerId
+        AND C.yrProductionId=D.recId
+        AND A.statusIndex=1
+        AND A.orderInfoSellerId = #{orderInfoSellerId}
+    </select>
+
+    <!--  根据买家的订单号获取作品 -->
+    <select id="getByBuyerId" parameterType="java.lang.String"
+            resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        select A.orderInfoSellerId,production ,price,publishStatusValue AS 'snapshotYrProduction.publishStatusValue',yp.isRead AS 'yrProduction.isRead',B.yrProductionId as 'snapshotYrProduction.yrProductionId'
+        from orderInfoSeller A,snapshotYrProduction B
+        left join yrProduction yp on yp.recId = B.yrProductionId
+        where A.orderInfoSellerId = B.orderInfoSellerId
+          AND A.statusIndex=1
+        AND orderInfoId = #{id}
+    </select>
+
+    <!--后台—买家订单详情（作品购买）-->
+    <select id="orderInfoBuyerDetailList" resultType="com.yuanrong.admin.result.OrderInfoBuyerDetailResult">
+        SELECT
+            os.*,
+            syp.yrAuthorName,
+            syp.title,
+            syp.publishStatusValue,
+            ru.RecID as userId,
+            ru.NickName
+        FROM
+            orderInfoSeller os,
+            snapshotYrProduction syp,
+            RegisteredUserInfo ru
+        WHERE
+            os.orderInfoSellerId = syp.orderInfoSellerId
+            AND ru.RecID = os.registeredUserInfoId
+            AND os.statusIndex =1
+            <if test="orderInfoBuyerId != null">
+                AND os.orderInfoId = #{orderInfoBuyerId}
+            </if>
+    </select>
+
+    <!--订单管理待响应列表查询-->
+
+    <select id="getPendingResponseList" parameterType="com.yuanrong.admin.seach.OrderManagementSearch"
+            resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT ois.orderSn, demand.demandSn AS 'demand.demandSn',demand.demandName AS 'demand.demandName',ois.rejectReason,ois.rejectRemark,
+        ois.executeTime,ois.returnUrl,ois.returnImg ,ois.orderTypeValue,pia.headImageUrlLocal AS 'platformIPAccount.headImageUrlLocal',
+        pia.name AS 'platformIPAccount.name', ya.authorNickname AS 'yrAuthor.authorNickname',ya.authorImg AS 'yrAuthor.authorImg',
+        pia.invalidTime AS 'platformIPAccount.invalidTime',ya.recId AS 'yrAuthor.recId',yp.wordNum AS 'yrProduction.wordNum',
+        svpi.icoUrl AS 'platformIPAccount.shortVideoPlatformInfo.platformLogo', ois.orderStatusValue ,ois.usableDate,ois.acceptRemark,
+        media.RealName as 'media.realName' ,sale.RealName as 'sale.realName' ,ois.createdTime,ois.referPrice,ru.NickName AS 'saler.NickName',yp.imgNum AS 'yrProduction.imgNum',
+        ru.RecId AS 'saler.RecId',pia.indexUrl AS 'platformIPAccount.indexUrl',ois.production,ois.orderInfoSellerId,
+        yp.title AS 'yrProduction.title',yp.recId AS 'yrProduction.recId',ois.price,ois.payable,ois.offerPrice,ois.sellerServiceRate,
+        demand.contentForms AS 'demand.contentForms',demand.requireWordNum AS 'demand.requireWordNum',demand.expectNum AS 'demand.expectNum',
+        demand.expectedTime AS 'demand.expectedTime',demand.remark AS 'demand.remark',demand.attachment AS 'demand.attachment',
+        demand.referURL AS 'demand.referURL',di.name AS 'dictInfo.name',demand.registeredUserInfoId AS 'demand.registeredUserInfoId',
+        demand.mobile AS 'demand.mobile',demand.saleMark AS 'demand.saleMark',ois.sellerPrice,pia.accountID AS 'platformIPAccount.accountID',
+        demand.isShow AS 'demand.isShow',demand.spreadTime AS 'demand.spreadTime',demand.expectOffer AS 'demand.expectOffer',
+        yp.originalScore AS 'yrProduction.originalScore'
+        FROM
+        RegisteredUserInfo ru,
+        orderInfoSeller ois
+        left join demand demand on ois.demandId = demand.demandId
+        left join PlatformIPAccount pia  on  ois.referId = pia.id
+        left join yrAuthor ya on ois.referId = ya.recId
+        left join yrProduction yp  on  ois.referId = yp.recId
+        left join ShortVideoPlatformInfo svpi on svpi.PlatformID = pia.PlatformID
+        left join DictInfo di on di.id = demand.tradeId
+        left join AdminUser sale on sale.RecId = ois.saleUserId
+        left join AdminUser media on media.RecId = ois.mediaUserId
+        WHERE 1=1
+        AND ois.registeredUserInfoId = ru.RecID
+        AND ois.statusIndex = 1
+        <if test="data.names != null  and data.names.length>0">
+            AND (
+                pia.name IN
+                <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+                 OR
+                ya.authorNickname IN
+                <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+                  OR
+                yp.title IN
+                <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+                )
+        </if>
+        <if test="data.accountIDs != null and data.accountIDs.length >0">
+            AND pia.accountID IN
+            <foreach collection="data.accountIDs" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.orderSns != null and data.orderSns.length>0">
+            AND ois.orderSn IN
+            <foreach collection="data.orderSns" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.orderStatusValue != null and data.orderStatusValue !=''">
+            AND ois.orderStatusValue = #{data.orderStatusValue}
+        </if>
+        <if test="data.orderTypeValue != null and data.orderTypeValue !=''">
+            AND ois.orderTypeValue = #{data.orderTypeValue}
+        </if>
+        <if test="data.adminUserMediaIDs != null and data.adminUserMediaIDs.length >0">
+            AND ois.mediaUser IN
+            <foreach collection="data.adminUserMediaIDs" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.registeredUserInfoIds != null and data.registeredUserInfoIds.length >0">
+            AND demand.registeredUserInfoId IN
+            <foreach collection="data.registeredUserInfoIds" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.nickNames != null and data.nickNames.length>0">
+            AND ru.NickName IN
+            <foreach collection="data.nickNames" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.startCreatedTime != null and data.startCreatedTime !=''">
+            AND ois.createdTime &gt;= #{data.startCreatedTime}
+        </if>
+        <if test="data.endCreatedTime != null and data.endCreatedTime !=''">
+            AND ois.createdTime &lt;= #{data.endCreatedTime}
+        </if>
+        <if test="data.startExecuteTime != null and data.startExecuteTime !=''">
+            AND ois.executeTime &gt;= #{data.startExecuteTime}
+        </if>
+        <if test="data.endExecuteTime != null and data.endExecuteTime !=''">
+            AND ois.executeTime &lt;= #{data.endExecuteTime}
+        </if>
+        <if test="data.startResponseTime != null and data.startResponseTime !=''">
+            AND ois.responseTime &gt;= #{data.startResponseTime}
+        </if>
+        <if test="data.endResponseTime != null and data.endResponseTime !=''">
+            AND ois.responseTime &lt;= #{data.endResponseTime}
+        </if>
+    </select>
+
+    <!--  根据需求号获取流水记录 -->
+    <select id="getAllOrderSellerByDemand" parameterType="com.yuanrong.admin.bean.demand.Demand"
+            resultMap="orderInfoSeller">
+        SELECT
+        os.*,
+        ya.authorImg ,
+        ya.authorNickname ,
+        yp.wordNum ,
+        yp.imgNum ,
+        yp.title,
+        yp.recId,
+        yp.yrProductionStatusIndex,
+        ob.orderInfoBuyerId,
+        ob.receivableMoney,
+        ob.payStatusValue,
+        ob.totalMoney,
+        pa.headImageUrlLocal,
+        pa.name,
+        pa.accountID,
+        spi.icoUrl,
+        pa.fans
+        FROM
+        orderInfoSeller os
+        LEFT JOIN yrAuthor ya ON os.referId = ya.recId
+        LEFT JOIN orderInfoBuyer ob ON os.orderInfoSellerId = ob.refreId
+        LEFT JOIN yrProduction yp ON os.referId = yp.recId
+        LEFT JOIN PlatformIPAccount pa ON os.referId = pa.id
+        left JOIN ShortVideoPlatformInfo spi on pa.platformID = spi.RecID
+        left join demand d on d.demandId = os.demandId
+        WHERE
+        1 = 1
+        <if test="demandSn != null ">
+            and
+            d.demandSn = #{demandSn}
+        </if>
+        <if test="webUser != null">
+            and d.registeredUserInfoId =
+            #{webUser.recID}
+        </if>
+        <if test="applyStatuss != null and applyStatuss.length!=0">
+            AND
+            os.orderStatusValue in
+            <foreach collection="applyStatuss" item="item" open="(" close=")" separator=",">
+                <if test="item != null">
+                    #{item}
+                </if>
+            </foreach>
+        </if>
+        <if test="yrProductStatus != null and yrProductStatus.length!=0">
+            AND
+            yp.yrProductionStatusIndex not in
+            <foreach collection="yrProductStatus" item="item" open="(" close=")" separator=",">
+                <if test="item != null">
+                    #{item}
+                </if>
+            </foreach>
+        </if>
+        GROUP BY os.orderInfoSellerId
+
+    </select>
+    <resultMap type="com.yuanrong.admin.bean.order.OrderInfoSeller" id="orderInfoSeller">
+        <id property="orderInfoSellerId" column="orderInfoSellerId"/>
+        <id property="rejectReason" column="rejectReason"/>
+        <id property="executeOver" column="executeOver"/>
+        <id property="refuseReason" column="refuseReason"/>
+        <id property="returnImg" column="returnImg"/>
+        <id property="returnUrl" column="returnUrl"/>
+        <id property="orderStatusValue" column="orderStatusValue"/>
+        <id property="orderTypeValue" column="orderTypeValue"/>
+        <id property="orderSn" column="orderSn"/>
+        <id property="buyerOrderPrice" column="buyerOrderPrice"/>
+        <id property="invoiceRate" column="invoiceRate"/>
+        <id property="createdTime" column="createdTime"/>
+        <id property="usableDate" column="usableDate"/>
+        <id property="production" column="production"/>
+        <association property="yRAuthor" javaType="com.yuanrong.admin.bean.author.YRAuthor">
+            <result property="authorImg" column="authorImg"/>
+            <result property="authorNickname" column="authorNickname"/>
+        </association>
+        <association property="platformIPAccount" javaType="com.yuanrong.admin.bean.account.PlatformIPAccount">
+            <id property="headImageUrlLocal" column="headImageUrlLocal"/>
+            <id property="name" column="name"/>
+            <id property="accountID" column="accountID"/>
+            <id property="fans" column="fans"/>
+            <result property="shortVideoPlatformInfo.icoUrl" column="icoUrl"/>
+        </association>
+        <association property="yRProduction" javaType="com.yuanrong.admin.bean.author.YRProduction">
+            <result property="wordNum" column="wordNum"/>
+            <result property="imgNum" column="imgNum"/>
+            <result property="title" column="title"/>
+            <result property="recId" column="recId"/>
+            <result property="yrProductionStatusIndex" column="yrProductionStatusIndex"/>
+        </association>
+        <association property="orderInfoBuyer" javaType="com.yuanrong.admin.bean.order.OrderInfoBuyer">
+            <result property="receivableMoney" column="receivableMoney"/>
+            <result property="orderInfoBuyerId" column="orderInfoBuyerId"/>
+            <result property="payStatusValue" column="payStatusValue"/>
+            <result property="totalMoney" column="totalMoney"/>
+        </association>
+        <collection property="orderInfoOfferList" ofType="com.yuanrong.admin.bean.order.OrderInfoOffer" select="selectPer" column="orderInfoSellerId">
+            <result property="priceName" column="priceName"/>
+            <result property="price" column="price"/>
+            <result property="executePrice" column="executePrice"/>
+        </collection>
+    </resultMap>
+    <!--  根据需求号获取流水记录 -->
+    <!--  根据需求号获取流水记录 -->
+    <select id="selectPer" parameterType="int"
+            resultType="com.yuanrong.admin.bean.order.OrderInfoOffer">
+        SELECT
+          priceName,
+          price,
+          executePrice
+        FROM
+        orderInfoOffer
+        where
+        orderInfoSellerId = #{orderInfoSellerId}
+    </select>
+    <!--根据需求id查询需求详情-->
+    <select id="getDemandInfoByDemandSn" parameterType="java.lang.String"
+            resultType="com.yuanrong.admin.bean.demand.Demand">
+        SELECT  pia.name AS 'snapshotAccount.name',ya.authorNickName AS 'snapshotYrAuthor.authorNickName',A.demandSn,A.demandName,A.platformName,A.spreadTime,A.fans,
+        B.orderTypeValue AS 'orderInfoSeller.orderTypeValue',A.demandTypeIndex,A.contentForms, A.scenes,A.yrCategory, A.expectedTime, A.remark, A.attachment, A.saleMark,
+        A.requireWordNum,A.expectNum,A.remark,A.attachment,A.referURL,A.registeredUserInfoId,A.mobile,di.name AS 'tradeDictinfo.name',ru.NickName as 'registeredUserInfo.NickName'
+        FROM
+        demand A
+        left join orderInfoSeller B on A.demandId=B.demandId
+        left join PlatformIPAccount pia  on  B.referId = pia.id
+        left join yrAuthor ya on B.referId = ya.recId
+        left join DictInfo di on di.id = A.tradeId
+        left join RegisteredUserInfo ru on B.registeredUserInfoId = ru.RecID
+        WHERE 1=1
+        AND B.statusIndex=1
+        <if test="orderInfoSellerId != null">
+            AND B.orderInfoSellerId = #{orderInfoSellerId}
+        </if>
+    </select>
+
+    <!--应约-->
+    <insert id="insertOrderInfoOffer" parameterType="java.util.List" useGeneratedKeys="true">
+        INSERT INTO orderInfoOffer (orderInfoSellerId,priceName,price,createdTime,modifiedTime,executePrice,sellerPrice)
+        VALUES
+        <foreach collection="offerList" item="item" index="index" separator=",">
+            (
+            #{item.orderInfoSeller},
+            #{item.priceName},
+            #{item.price},
+            now() ,
+            now(),
+            #{item.executePrice},
+            #{item.sellerPrice}
+            )
+        </foreach>
+    </insert>
+
+    <!--订单管理-待响应应约或者拒约、拒绝使用\执行终止状态修改-->
+    <update id="updateOrderStatus" parameterType="com.yuanrong.admin.seach.OrderOfferParam">
+        UPDATE orderInfoSeller
+        set modifiedTime=now()
+        <if test="orderOfferParam != null and orderOfferParam.orderStatusValue!=null">
+            ,orderStatusValue=#{orderOfferParam.orderStatusValue}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.acceptRemark!=null">
+            ,acceptRemark=#{orderOfferParam.acceptRemark}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.usableDate!=null">
+            ,usableDate=#{orderOfferParam.usableDate}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.executeTime!=null">
+            ,executeTime=#{orderOfferParam.executeTime}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.rejectReason!=null">
+            ,rejectReason=#{orderOfferParam.rejectReason}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.rejectRemark!=null">
+            ,rejectRemark=#{orderOfferParam.rejectRemark}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.refuseReason!=null">
+            ,refuseReason=#{orderOfferParam.refuseReason}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.returnUrl!=null">
+            ,returnUrl=#{orderOfferParam.returnUrl}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.returnImg!=null">
+            ,returnImg=#{orderOfferParam.returnImg}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.returnTime!=null">
+            ,returnTime=#{orderOfferParam.returnTime}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.responseTime!=null">
+            ,responseTime=#{orderOfferParam.responseTime}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.production!=null">
+            ,production=#{orderOfferParam.production}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.buyerPrice!=null">
+            ,buyerPrice=#{orderOfferParam.buyerPrice}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.price!=null">
+            ,price=#{orderOfferParam.price}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.executeOver!=null">
+            ,executeOver = #{orderOfferParam.executeOver}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.payable!=null">
+            ,payable = #{orderOfferParam.payable}
+        </if>
+        <if test="orderOfferParam != null and orderOfferParam.buyerServiceRate!=null">
+            ,buyerServiceRate = #{orderOfferParam.buyerServiceRate}
+        </if>
+        WHERE orderInfoSellerId=#{orderOfferParam.orderInfoSellerId}
+    </update>
+
+    <!--订单管理&#45;&#45;待确认使用&#45;&#45;确认使用查询-->
+    <select id="getOrderInfoSeller" parameterType="java.lang.Integer"
+            resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT
+            A.*,
+            B.NAME AS 'platformIPAccount.name',
+            C.authorNickname AS 'yrAuthor.authorNickname'
+        FROM
+            orderInfoSeller A
+            LEFT JOIN	PlatformIPAccount B ON A.referId = B.id
+            LEFT JOIN  yrAuthor C ON C.recId = A.referId
+        WHERE 1=1
+            AND A.orderInfoSellerId=#{orderInfoSellerId}
+            AND A.statusIndex=1
+    </select>
+
+    <!--订单管理&#45;&#45;待确认使用&#45;&#45;确认使用查询-->
+    <select id="getOrderInfoOffer" parameterType="java.lang.Integer"
+            resultType="com.yuanrong.admin.bean.order.OrderInfoOffer">
+        SELECT A.priceName ,A.price,A.orderInfoOfferId,A.orderInfoOfferId,A.executePrice,A.sellerPrice   FROM  orderInfoOffer A WHERE  A.orderInfoSellerId=#{orderInfoSellerId}
+    </select>
+
+
+    <!-- 查询买家已选账号报价(查询执行价格)  -->
+    <select id="getCostInfoList" parameterType="java.lang.Integer"
+            resultType="com.yuanrong.admin.bean.order.OrderCostInfo">
+        SELECT A.orderCostInfoId,A.orderInfoId, A.costId , A.money,B.NAME AS 'dictInfo.name',A.costTypeIndex
+        FROM orderCostInfo A, DictInfo B
+        WHERE A.costId = B.id
+        AND A.orderInfoId = #{orderInfoBuyerId}
+    </select>
+
+    <!--订单管理&#45;&#45;待执行-修改执行数据查询-->
+    <select id="getExecuteInfo" parameterType="com.yuanrong.admin.bean.order.OrderInfoSeller"
+            resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+            SELECT ois.orderInfoSellerId,ois.returnUrl,ois.returnImg,ois.orderTypeValue,ois.orderSn,
+                    sa.name as 'snapshotAccount.name' , sya.authorNickname as 'snapshotYrAuthor.authorNickname'
+            FROM orderInfoSeller ois
+            left join snapshotAccount sa on sa.orderInfoSellerId = ois.orderInfoSellerId
+            left join snapshotYrAuthor sya on sya.orderInfoSellerId = ois.orderInfoSellerId
+            WHERE 1=1
+              AND ois.statusIndex=1
+              AND ois.orderInfoSellerId=#{orderInfoSeller.orderInfoSellerId}
+    </select>
+
+    <select id="getByOrderSnAndRegisterUserInfoId" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT ois.* , sya.authorImg as 'snapshotYrAuthor.authorImg' , sya.authorNickname  as 'snapshotYrAuthor.authorNickname' , sya.priceInfo  as 'snapshotYrAuthor.priceInfo' ,
+        sat.headImageUrlLocal as 'snapshotAccount.headImageUrlLocal' , sat.accountID as 'snapshotAccount.accountID', sat.`name` as 'snapshotAccount.name',
+        sat.platformLogo as 'snapshotAccount.platformLogo', sat.platformName as 'snapshotAccount.platformName'
+        ,sat.priceInfo as 'snapshotAccount.priceInfo' , sat.fans as 'snapshotAccount.fans' ,
+        syp.yrProductionId as 'snapshotYrProduction.yrProductionId',
+        dm.demandName as 'demand.demandName' , dm.contentForms as 'demand.contentForms' , dm.scenes as 'demand.scenes' ,
+        dm.yrCategory as 'demand.yrCategory' , dm.budgetMoney as 'demand.budgetMoney' , dm.spreadTime as 'demand.spreadTime'
+        ,dm.expectedTime as 'demand.expectedTime' , dm.remark as 'demand.remark' , dm.attachment as 'demand.attachment'
+        from orderInfoSeller ois
+        LEFT JOIN  demand dm on ois.demandId = dm.demandId
+        LEFT JOIN snapshotAccount sat on ois.orderInfoSellerId = sat.orderInfoSellerId
+        LEFT JOIN snapshotYrAuthor sya on ois.orderInfoSellerId = sya.orderInfoSellerId
+        LEFT JOIN snapshotYrProduction syp on ois.orderInfoSellerId = syp.orderInfoSellerId
+        where ois.orderSn = #{orderSn}
+        <if test="registerUserInfoId != null and registerUserInfoId > 0">
+            and ois.registeredUserInfoId = #{registerUserInfoId}
+        </if>
+    </select>
+
+    <select id="getByParam" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller" parameterType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT ois.* , sya.authorImg as 'snapshotYrAuthor.authorImg' , sya.authorNickname  as 'snapshotYrAuthor.authorNickname' , sya.priceInfo  as 'snapshotYrAuthor.priceInfo' ,
+        sat.headImageUrlLocal as 'snapshotAccount.headImageUrlLocal' , sat.accountID as 'snapshotAccount.accountID', sat.`name` as 'snapshotAccount.name',
+        sat.platformLogo as 'snapshotAccount.platformLogo', sat.platformName as 'snapshotAccount.platformName'
+        ,sat.priceInfo as 'snapshotAccount.priceInfo' , sat.fans as 'snapshotAccount.fans' ,
+        syp.yrProductionId as 'snapshotYrProduction.yrProductionId',
+        dm.demandName as 'demand.demandName' , dm.contentForms as 'demand.contentForms' , dm.scenes as 'demand.scenes' ,
+        dm.yrCategory as 'demand.yrCategory' , dm.budgetMoney as 'demand.budgetMoney' , dm.spreadTime as 'demand.spreadTime'
+        ,dm.expectedTime as 'demand.expectedTime' , dm.remark as 'demand.remark' , dm.attachment as 'demand.attachment'
+        from orderInfoSeller ois
+        LEFT JOIN  demand dm on ois.demandId = dm.demandId
+        LEFT JOIN snapshotAccount sat on ois.orderInfoSellerId = sat.orderInfoSellerId
+        LEFT JOIN snapshotYrAuthor sya on ois.orderInfoSellerId = sya.orderInfoSellerId
+        LEFT JOIN snapshotYrProduction syp on ois.orderInfoSellerId = syp.orderInfoSellerId
+        where ois.orderSn = #{data.orderSn}
+        <if test="data.registerUserInfoId != null and data.registerUserInfoId > 0">
+            and ois.registeredUserInfoId = #{data.registerUserInfoId}
+        </if>
+
+        <if test="data.demand.registeredUserInfoId != null">
+            and dm.registeredUserInfoId = #{data.demand.registeredUserInfoId}
+        </if>
+
+    </select>
+    <!--   -->
+    <select id="getOrderStatusCount" parameterType="com.yuanrong.admin.seach.OrderManagementSearch"  resultType="java.util.Map">
+        select orderStatusValue,count(1) AS countNum
+        FROM
+        RegisteredUserInfo ru,
+        orderInfoSeller ois
+        left join demand demand on ois.demandId = demand.demandId
+        left join PlatformIPAccount pia  on  ois.referId = pia.id
+        left join yrAuthor ya on ois.referId = ya.recId
+        left join yrProduction yp  on  ois.referId = yp.recId
+        left join ShortVideoPlatformInfo svpi on svpi.PlatformID = pia.PlatformID
+        WHERE 1=1
+        AND ois.registeredUserInfoId = ru.RecID
+        AND ois.statusIndex = 1
+        <if test="data.names != null  and data.names.length>0">
+            AND pia.name IN
+            <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.accountIDs != null and data.accountIDs.length >0">
+            AND pia.accountID IN
+            <foreach collection="data.accountIDs" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.orderSns != null and data.orderSns.length>0">
+            AND ois.orderSn IN
+            <foreach collection="data.orderSns" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.orderStatusValue != null and data.orderStatusValue !=''">
+            AND ois.orderStatusValue = #{data.orderStatusValue}
+        </if>
+        <if test="data.orderTypeValue != null and data.orderTypeValue !=''">
+            AND ois.orderTypeValue = #{data.orderTypeValue}
+        </if>
+        <if test="data.adminUserMediaIDs != null and data.adminUserMediaIDs.length >0">
+            AND ru.AdminUserMediaID IN
+            <foreach collection="data.adminUserMediaIDs" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.registeredUserInfoIds != null and data.registeredUserInfoIds.length >0">
+            AND demand.registeredUserInfoId IN
+            <foreach collection="data.registeredUserInfoIds" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.nickNames != null and data.nickNames.length>0">
+            AND ru.NickName IN
+            <foreach collection="data.nickNames" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.startCreatedTime != null and data.startCreatedTime !=''">
+            AND ois.createdTime &gt;= #{data.startCreatedTime}
+        </if>
+        <if test="data.endCreatedTime != null and data.endCreatedTime !=''">
+            AND ois.createdTime &lt;= #{data.endCreatedTime}
+        </if>
+        <if test="data.startExecuteTime != null and data.startExecuteTime !=''">
+            AND ois.executeTime &gt;= #{data.startExecuteTime}
+        </if>
+        <if test="data.endExecuteTime != null and data.endExecuteTime !=''">
+            AND ois.executeTime &lt;= #{data.endExecuteTime}
+        </if>
+        <if test="data.startResponseTime != null and data.startResponseTime !=''">
+            AND ois.responseTime &gt;= #{data.startResponseTime}
+        </if>
+        <if test="data.endResponseTime != null and data.endResponseTime !=''">
+            AND ois.responseTime &lt;= #{data.endResponseTime}
+        </if>
+        group by ois.orderStatusValue
+    </select>
+
+    <!--批量修改买家订单的卖家订单-->
+    <update id="updateSellerOrderStatus" parameterType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        update orderInfoSeller
+        <set >
+            <if test="data.buyerPrice != null" >
+                buyerPrice = #{data.buyerPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="data.price != null" >
+                price = #{data.price,jdbcType=DECIMAL},
+            </if>
+            <if test="data.production != null" >
+                production = #{data.production,jdbcType=VARCHAR},
+            </if>
+            <if test="data.orderTypeValue != null" >
+                orderTypeValue = #{data.orderTypeValue,jdbcType=INTEGER},
+            </if>
+            <if test="data.orderStatusValue != null" >
+                orderStatusValue = #{data.orderStatusValue,jdbcType=INTEGER},
+            </if>
+            modifiedTime = now()
+        </set>
+        where orderInfoId = #{data.orderInfoId,jdbcType=INTEGER}
+    </update>
+
+    <!--删除卖家订单—假删-->
+    <update id="deleteSellerOrder" parameterType="java.lang.Integer">
+        UPDATE
+            orderInfoSeller
+        SET
+            statusIndex = 0
+        WHERE
+            orderInfoSellerId = #{orderInfoSellerId}
+    </update>
+
+    <select id="getByOrderInfoIdAndOrderType" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT * from orderInfoSeller where orderInfoId = #{orderInfoId} and orderTypeValue = #{orderSellerType.index}
+    </select>
+
+    <!--统计报名数-->
+    <select id="cnt_num" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        select count(*) num FROM orderInfoSeller o ,demand d WHERE o.demandId = d.demandId
+        and d.demandSn = #{demandSn} and d.demandTypeIndex=#{demandTypeIndex}
+    </select>
+
+    <!--根据orderSn查询信息-->
+    <select id="getByOrderSn" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller" parameterType="java.lang.String">
+        SELECT
+            os.*,
+            d.demandId AS 'demand.demandId',
+            d.registeredUserInfoId AS 'demand.registeredUserInfoId'
+        FROM
+            orderInfoSeller os
+            LEFT JOIN demand d ON d.demandId = os.demandId
+        WHERE
+            orderSn = #{orderSn}
+    </select>
+
+    <!--根据卖家订单orderSn查询信息-->
+    <select id="getBySellerOrderSn" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller" parameterType="java.lang.String">
+        SELECT ois.* FROM sellerOrder so , orderDetail od ,orderInfoBuyer ob,orderInfoSeller ois
+          where so.orderDetailId = od.orderDetailId
+             AND ob.orderInfoBuyerId = od.orderInfoBuyerId
+             AND ois.orderInfoSellerId = ob.refreId
+             AND so.orderSn=#{orderSn}
+    </select>
+
+    <!--获取报名列表通过需求demandSn-->
+    <select id="getReferIdByDemandSn" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT d.demandId,os.orderInfoSellerId,os.referId,os.usableDate,yp.yrProductionStatusIndex as 'yRProduction.yrProductionStatusIndex'
+        FROM demand d,orderInfoSeller os
+        left join yrProduction yp on yp.recId = os.referId and os.orderTypeValue = 4
+        WHERE d.demandSn=#{demandSn} AND d.demandId= os.demandId
+        <if test="registeredUserInfoID != null">
+            AND  os.registeredUserInfoID=#{registeredUserInfoID}
+        </if>
+
+    </select>
+
+    <!--获取报名列表通过需求Id-->
+    <update id="updateOrderSeller" parameterType="com.yuanrong.admin.bean.order.OrderInfoSeller" >
+        update orderInfoSeller os,demand d
+        <set >
+            <if test="data.demandId != null" >
+                os.demandId = #{data.demandId,jdbcType=INTEGER},
+            </if>
+            <if test="data.orderSn != null and data.orderSn !=''" >
+                os.orderSn = #{data.orderSn,jdbcType=VARCHAR},
+            </if>
+            <if test="data.registeredUserInfoId != null" >
+                os.registeredUserInfoId = #{data.registeredUserInfoId,jdbcType=INTEGER},
+            </if>
+            <if test="data.production != null and data.production !=''" >
+                os.production = #{data.production,jdbcType=VARCHAR},
+            </if>
+            <if test="data.saleUser != null" >
+                os.saleUser = #{data.saleUser,jdbcType=VARCHAR},
+            </if>
+            <if test="data.mediaUser != null" >
+                os.mediaUser = #{data.mediaUser,jdbcType=VARCHAR},
+            </if>
+            <if test="data.orderTypeValue != null" >
+                os.orderTypeValue = #{data.orderTypeValue,jdbcType=INTEGER},
+            </if>
+            <if test="data.orderStatusValue != null" >
+                os.orderStatusValue = #{data.orderStatusValue,jdbcType=INTEGER},
+            </if>
+            <if test="data.returnTime != null" >
+                os.returnTime = #{data.returnTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="data.responseTime != null" >
+                os.responseTime = #{data.responseTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="data.executeTime != null" >
+                os.executeTime = #{data.executeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="data.refuseReason != null and data.refuseReason !=''" >
+                os.refuseReason = #{data.refuseReason,jdbcType=VARCHAR},
+            </if>
+            <if test="data.executeOver != null and data.executeOver !=''" >
+                os.executeOver = #{data.executeOver,jdbcType=VARCHAR},
+            </if>
+            os.modifiedTime = now(),
+            <if test="data.acceptRemark != null and data.acceptRemark !=''" >
+                os.acceptRemark = #{data.acceptRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="data.statusIndex != null" >
+                os.statusIndex = #{data.statusIndex,jdbcType=INTEGER},
+            </if>
+            <if test="data.usableDate != null and data.usableDate !=''" >
+                os.usableDate = #{data.usableDate,jdbcType=VARCHAR},
+            </if>
+            <if test="data.rejectReason != null and data.rejectReason !=''" >
+                os.rejectReason = #{data.rejectReason,jdbcType=VARCHAR},
+            </if>
+            <if test="data.rejectRemark != null and data.rejectRemark !=''" >
+                os.rejectRemark = #{data.rejectRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="data.sellerServiceRate != null" >
+                os.sellerServiceRate = #{data.sellerServiceRate,jdbcType=DECIMAL},
+            </if>
+            <if test="data.buyerServiceRate != null" >
+                os.buyerServiceRate = #{data.buyerServiceRate,jdbcType=DECIMAL},
+            </if>
+            <if test="data.confirmTime != null" >
+                os.confirmTime = #{data.confirmTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="data.referId != null" >
+                os.referId = #{data.referId,jdbcType=INTEGER},
+            </if>
+            <if test="data.referPrice != null" >
+                os.referPrice = #{data.referPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="data.invoiceRate != null" >
+                os.invoiceRate = #{data.invoiceRate,jdbcType=DECIMAL},
+            </if>
+            <if test="data.sellerPrice != null" >
+                os.sellerPrice = #{data.sellerPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="data.buyerOrderPrice != null" >
+                os.buyerOrderPrice = #{data.buyerOrderPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="data.saleUserId != null" >
+                os.saleUserId = #{data.saleUserId,jdbcType=INTEGER},
+            </if>
+            <if test="data.mediaUserId != null" >
+                os.mediaUserId = #{data.mediaUserId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where
+        1=1
+        <if test="data.webUser != null" >
+            and
+            os.demandId = d.demandId
+            and
+            d.registeredUserInfoId = #{data.webUser.recID,jdbcType=INTEGER}
+        </if>
+        <if test="data.orderInfoSellerId != null" >
+            and
+            orderInfoSellerId = #{data.orderInfoSellerId,jdbcType=INTEGER}
+        </if>
+        <if test="data.orderSn != null" >
+            and
+            orderSn = #{data.orderSn,jdbcType=INTEGER}
+        </if>
+
+    </update>
+
+    <!--获取报名列表通过需求demandSn-->
+    <select id="getOrderSellerByDemandId" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT
+            os.*
+        FROM
+            orderInfoSeller os
+        WHERE
+            os.statusIndex = 1
+            AND os.demandId = #{demandId}
+    </select>
+
+
+
+    <select id="getDetailBySn" resultType="com.yuanrong.admin.result.SellerOrderResult" parameterType="com.yuanrong.admin.seach.SellerOrderSearch" >
+        SELECT so.* , ois.createdTime as 'orderInfoSeller.createdTime' ,
+        ois.usableDate  as 'orderInfoSeller.usableDate',ois.executeTime as 'orderInfoSeller.executeTime',ois.acceptRemark as 'orderInfoSeller.acceptRemark',
+        ois.returnUrl as 'orderInfoSeller.returnUrl',ois.returnImg as 'orderInfoSeller.returnImg',ois.orderSn as 'orderInfoSeller.orderSn',
+        off.offerPrice,
+        ois.createdTime as 'orderInfoSeller.createdTime',ois.orderStatusValue as 'orderInfoSeller.orderStatusValue',
+        ois.sellerServiceRate as 'orderInfoSeller.sellerServiceRate', ois.orderTypeValue as 'orderInfoSeller.orderTypeValue' ,
+        sa.name as 'orderDetail.snapshotAccount.name',sa.accountID as 'orderDetail.snapshotAccount.accountID',
+        sa.platformName as 'orderDetail.snapshotAccount.platformName',sa.platformLogo as 'orderDetail.snapshotAccount.platformLogo',
+        sa.headImageUrlLocal as 'orderDetail.snapshotAccount.headImageUrlLocal',
+        sya.authorImg as 'orderDetail.snapshotYrAuthor.authorImg',
+        sya.authorNickname as 'orderDetail.snapshotYrAuthor.authorNickname',
+        syp.wordNum as 'orderDetail.snapshotYrProduction.wordNum',syp.imgNum as 'orderDetail.snapshotYrProduction.imgNum',
+        od.production as 'orderDetail.production',
+        dm.demandName as 'orderInfoSeller.demand.demandName',dm.budgetMoney  as 'orderInfoSeller.demand.budgetMoney',dm.expectedTime as 'orderInfoSeller.demand.expectedTime',
+        dm.contentForms as 'orderInfoSeller.demand.contentForms',dm.requireWordNum  as 'orderInfoSeller.demand.requireWordNum',
+        dm.requireSeconds  as 'orderInfoSeller.demand.requireSeconds',dm.remark as 'orderInfoSeller.demand.remark',dm.attachment as 'orderInfoSeller.demand.attachment',
+        dm.referURL as 'orderInfoSeller.demand.referURL',dm.fans as 'orderInfoSeller.demand.fans',dm.demandTypeIndex as 'orderInfoSeller.demand.demandTypeIndex'
+        , di.name as 'orderInfoSeller.demand.tradeDictinfo.name',
+        dm.demandStatusIndex as 'orderInfoSeller.demand.demandStatusIndex' ,dm.platformName as 'orderInfoSeller.demand.platformName',
+        dm.isShow as 'orderInfoSeller.demand.isShow',
+        dm.scenes as 'orderInfoSeller.demand.scenes', dm.yrCategory  as 'orderInfoSeller.demand.yrCategory',dm.spreadTime as 'orderInfoSeller.demand.spreadTime'
+        from orderInfoSeller ois
+        left join demand dm on dm.demandId = ois.demandId
+        LEFT JOIN orderInfoBuyer ob on ob.refreId = ois.orderInfoSellerId
+        LEFT JOIN orderDetail od on od.orderInfoBuyerId = ob.orderInfoBuyerId
+        left join sellerOrder so on so.orderDetailId = od.orderDetailId
+        left join snapshotAccount sa on sa.orderDetailId = od.orderDetailId
+        left join snapshotYrAuthor sya on sya.orderDetailId = od.orderDetailId
+        left join snapshotYrProduction syp on syp.orderDetailId = od.orderDetailId
+        left join DictInfo di on di.id = dm.tradeId
+
+        left join (
+        SELECT orderInfoSellerId,GROUP_CONCAT(CONCAT(priceName,'_-_' , price) SEPARATOR '_*_') offerPrice
+        from orderInfoOffer
+        GROUP BY orderInfoSellerId
+        ) off on off.orderInfoSellerId = ois.orderInfoSellerId
+        where ois.registeredUserInfoId = #{data.registeredUserInfoId} and ois.orderSn = #{data.serialOrderSn}
+    </select>
+
+
+    <select id="getDetailUnConfirmBySn" resultType="com.yuanrong.admin.result.OrderInfoSellerResult">
+        SELECT ois.* , sa.name as 'platformIPAccount.name',sa.accountID as 'platformIPAccount.accountID',
+            svp.platformName as 'platformIPAccount.platformName',svp.icoUrl as 'platformIPAccount.shortVideoPlatformInfo.icoUrl',
+            sa.headImageUrlLocal as 'platformIPAccount.shortVideoPlatformInfo.headImageUrlLocal', sya.authorImg as 'yRAuthor.authorImg',
+            sya.authorNickname as 'yRAuthor.authorNickname',  dm.demandName as 'demand.demandName',dm.budgetMoney as 'demand.budgetMoney',
+            dm.expectedTime as 'demand.expectedTime', dm.contentForms as 'demand.contentForms',dm.requireWordNum as 'demand.requireWordNum',
+            dm.requireSeconds as 'demand.requireSeconds',dm.remark as 'demand.remark',dm.attachment as 'demand.attachment',
+            dm.referURL as 'demand.referURL',dm.fans as 'demand.fans',dm.demandTypeIndex as 'demand.demandTypeIndex' , di.name as 'demand.tradeDictinfo.name',
+            dm.demandStatusIndex as 'demand.demandStatusIndex' , dm.isShow as 'demand.isShow', dm.scenes as 'demand.scenes',
+            dm.platformName as 'demand.platformName',
+            dm.yrCategory as 'demand.yrCategory' , off.offerPrice as 'enrollOfferPrice',
+            dm.spreadTime as 'demand.spreadTime',
+            syp.title as 'yRProduction.title',syp.wordNum as 'yRProduction.wordNum', syp.imgNum as 'yRProduction.imgNum'
+        from orderInfoSeller ois
+        left join demand dm on dm.demandId = ois.demandId
+        left join PlatformIPAccount sa on sa.id = ois.referId
+        left join yrAuthor sya on sya.recId = ois.referId
+        left join yrProduction syp on syp.recId = ois.referId
+        LEFT JOIN ShortVideoPlatformInfo svp on svp.recid = sa.platformID
+        left join DictInfo di on di.id = dm.tradeId
+        left join ( SELECT orderInfoSellerId,GROUP_CONCAT(CONCAT(priceName,'_-_' , price) SEPARATOR '_*_') offerPrice from orderInfoOffer GROUP BY orderInfoSellerId ) off on off.orderInfoSellerId = ois.orderInfoSellerId
+        where ois.registeredUserInfoId = #{registerUserInfoId} and ois.orderSn = #{orderSn}
+    </select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.base.IPLableDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.base.IPLable">
+        
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.base.IPLable" parameterType="com.yuanrong.admin.bean.base.IPLable">
+        SELECT * from IPLable
+    </select>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.base.IPLable">
+        select * from IPLable where recID = #{id}
+    </select>
+
+    <select id="getIPLableByParentId" resultType="com.yuanrong.admin.bean.base.IPLable" parameterType="java.lang.String">
+        select * from IPLable where
+        <choose>
+            <when test="parentId != null and parentId != ''">
+                parentID IN (${parentId})
+            </when>
+            <otherwise>
+                parentID is null
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

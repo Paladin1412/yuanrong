@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.rank.ListIPCreativityDaoI">
+
+    <!--查询IP创造力榜单-->
+    <select id="selectAllListIPCreativity" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+       	SELECT rnt.* FROM
+            (
+                    SELECT
+                        lipc.RecID ,
+                        lipc.HeadImg,
+                        lipc.Name,
+                        lipc.weixinId,
+                        lipc.Stability,
+                        lipc.ContentQuality,
+                        lipc.OriginalProportion,
+                        lipc.Transmissible,
+                        lipc.TotalIndex,
+                        lipc.CreateTime,
+                        lipc.RangeTime,
+                        lipc.StatusValue,
+                        lcd.dictInfoId,
+                dictInfo.`name`  AS TypeName
+                FROM
+                        ListIPCreativity lipc,
+                        listIPCreativityDictInfoRelationship lcd
+                    JOIN DictInfo dictInfo ON dictInfo.id = lcd.dictInfoId
+                WHERE
+                    lipc.StatusValue = #{statusValue}
+                    AND lipc.RecID = lcd.listIPCreativityId
+            ) rnt
+	   where
+	        1=1
+	        <if test="typeName != null">
+                AND   rnt.TypeName = #{typeName}
+            </if>
+            <if test="rangeTime != null">
+                AND   rnt.RangeTime = #{rangeTime}
+            </if>
+        order by rnt.TotalIndex desc
+        LIMIT  #{showNum}
+    </select>
+
+
+    <select id="selectRangeTimeListIPCreativity" resultType="java.lang.String" parameterType="java.lang.Integer">
+      SELECT DISTINCT RangeTime FROM ListIPCreativity  where  StatusValue=#{statusValue} ORDER BY RangeTime DESC  LIMIT 4
+    </select>
+
+    <update id="updateListIPCreativity" parameterType="com.yuanrong.admin.bean.rank.ListIPCreativity">
+        UPDATE ListIPCreativity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stability != null">
+                Stability = #{stability},
+            </if>
+            <if test="contentQuality != null">
+                ContentQuality = #{contentQuality},
+            </if>
+            <if test="originalProportion != null">
+                OriginalProportion = #{originalProportion},
+            </if>
+            <if test="transmissible != null">
+               Transmissible = #{transmissible},
+            </if>
+            <if test="totalIndex != null">
+                TotalIndex = #{totalIndex},
+            </if>
+            <if test="statusValue != null">
+                StatusValue = #{statusValue},
+            </if>
+        </trim>
+        where
+        RecID = #{recID}
+
+    </update>
+
+
+</mapper>

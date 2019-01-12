@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.author.YRProductionDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.author.YRProduction" keyProperty="data.recId" useGeneratedKeys="true">
+        INSERT INTO `yrProduction`(`yrAuthorId`, `title`, `Introduction`, `productUrl`, `productQuotedPrice`, `coverLocalUrl`, `coverUrl`, `contentFormId`, `scenesId`, `createdTime`, `modifyTime`,
+        `statusIndex`, `publishTime`, `content`, `localcontent`, `yrProductionStatusIndex`, `publishStatusIndex`,
+        `isRepresentative`, `productionAuditFailReasonId`,publishPlatform,registeredUserInfoId,channelIndex,wordNum,crawlerStatus ,
+        onlyIndex ,isImport,imgNum,sellPrice,accessNum)
+        VALUES (#{data.yrAuthor.recId}, #{data.title}, #{data.introduction}, #{data.productUrl},#{data.productQuotedPrice}, #{data.coverLocalUrl}, #{data.coverUrl}, #{data.contentForm.Id}, #{data.scenes.Id}, now(), now(),
+        1, <if test="data.publishTime != null and data.publishTime !=''">#{data.publishTime}</if>
+        <if test="data.publishTime == null or data.publishTime ==''">null</if>
+        , #{data.content}, #{data.localcontent}, #{data.yrProductionStatusIndex},
+        #{data.publishStatusIndex}, #{data.isRepresentative}, #{data.productionAuditFailReasonId},#{data.publishPlatform},
+        #{data.registeredUserInfoId},#{data.channelIndex},#{data.wordNum},0 , 0,#{data.isImport},#{data.imgNum},#{data.sellPrice},#{data.accessNum})
+    </insert>
+    <!-- 卖家中心更新上下架状态-->
+    <update id="updateYRProductionStatusIndexByID" >
+        UPDATE yrProduction
+        SET
+        yrProductionStatusIndex = #{status}
+        ,modifyTime = now()
+        where recId IN
+        <foreach collection="id" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="status !=null" >
+            <choose>
+                <when test="status == 0" >
+                    AND yrProductionStatusIndex IN (1,2)
+                </when>
+                <otherwise >
+                    AND  yrProductionStatusIndex IN (0,3)
+                </otherwise>
+            </choose>
+        </if>
+        <if test="authorIDs !=null and authorIDs.size>0 " >
+            and yrProduction.yrAuthorId in
+            <foreach collection="authorIDs" item="item" index="index"
+                     separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </update>
+    <!-- 卖家中心更新是否代表作状态-->
+    <update id="updateYRProductionRepresentativeStatusIndexByID" >
+        UPDATE yrProduction
+        SET
+        isRepresentative = #{status}
+        ,modifyTime = now()
+        where recId IN
+        <foreach collection="id" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="status !=null" >
+            <choose>
+                <when test="status == 1" >
+                    AND publishStatusIndex = 1
+                </when>
+            </choose>
+        </if>
+        <if test="authorIDs !=null and authorIDs.size>0 " >
+            and yrProduction.yrAuthorId in
+            <foreach collection="authorIDs" item="item" index="index"
+                     separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </update>
+    <!--前台修改价格 -->
+    <update id="updatePriceByID" >
+        UPDATE yrProduction
+        SET
+        productQuotedPrice = #{price}
+        ,modifyTime = now(),
+        sellPrice = #{sellPrice}
+        where registeredUserInfoId = #{userId} and recId IN
+        <foreach collection="id" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+
+
+    </update>
+    <select id="list" resultType="com.yuanrong.admin.bean.author.YRProduction" parameterType="com.yuanrong.admin.seach.YRProductionListParam">
+        SELECT yp.*,ya.authorNickname as 'yrAuthor.authorNickname', cf.contentFormName as 'contentForm.contentFormName' , cf.Id as 'contentForm.Id' , rg.NickName as 'yrAuthor.registeredUserInfo.nickName'
+        , rg.RecID as 'yrAuthor.registeredUserInfo.recID',ya.recId AS 'yrAuthor.recId',au.RealName AS 'adminUser.RealName'
+        from yrProduction yp
+        LEFT JOIN yrAuthor ya on  yp.yrAuthorId = ya.recId
+        LEFT JOIN RegisteredUserInfo rg on rg.RecID = ya.registeredUserInfoID
+        LEFT JOIN AdminUser au ON au.RecID = rg.AdminUserMediaID
+        LEFT JOIN ContentForm cf on cf.Id = yp.contentFormId
+        where
+            yp.statusIndex = 1
+        <if test="data.productionName != null and data.productionName != ''">
+            and yp.title like concat('%',#{data.productionName} , '%')
+        </if>
+
+        <if test="data.publishStatus != null and data.publishStatus != ''">
+            and yp.publishStatusIndex = #{data.publishStatus}
+        </if>
+
+        <if test="data.yrProductionStatus != null and data.yrProductionStatus != ''">
+            and yp.yrProductionStatusIndex = #{data.yrProductionStatus}
+        </if>
+
+        <if test="data.yrAuthorId != null and data.yrAuthorId > 0">
+            and yp.yrAuthorId = #{data.yrAuthorId}
+        </if>
+
+        <if test="data.authorNickname != null and data.authorNickname != ''">
+            and ya.authorNickname like  concat('%',#{data.authorNickname} , '%')
+        </if>
+
+        <if test="data.contentFormID != null and data.contentFormID > 0">
+            and yp.contentFormId = #{data.contentFormID}
+        </if>
+
+        <if test="data.priceStart != null">
+            and yp.productQuotedPrice >= #{data.priceStart}
+        </if>
+
+        <if test="data.pirceEnd != null">
+            and yp.productQuotedPrice &lt;= #{data.pirceEnd}
+        </if>
+        <if test="data.ypRecIds != null">
+            and yp.recId  IN
+            <foreach collection="data.ypRecIds" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.isRepresentative != null">
+            and yp.isRepresentative = #{data.isRepresentative}
+        </if>
+        <if test="data.nickNames != null">
+            and rg.NickName  IN
+            <foreach collection="data.nickNames" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.rgRecIds != null">
+            and rg.recId  IN
+            <foreach collection="data.rgRecIds" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.startCreatedTime!=null">
+            and date(yp.createdTime) >=#{data.startCreatedTime}
+        </if>
+        <if test="data.endCreatedTime!=null">
+            and date(yp.createdTime) &lt;= #{data.endCreatedTime}
+        </if>
+
+        <if test="data.keyWord !=null" >
+            and yp.yrProductionStatusIndex in (${data.keyWord})
+        </if>
+        <if test="data.demandId != null" >
+            AND yp.recId NOT  IN
+            (
+                SELECT
+                    os.referId
+                FROM
+                    orderInfoSeller os,
+                    demand d
+                WHERE
+                    os.demandId = d.demandId
+                    AND os.orderTypeValue = 4
+                    AND d.demandId = #{data.demandId}
+            )
+        </if>
+        <if test="data.onlyValue !=null" >
+            and yp.onlyValue = #{data.onlyValue}
+        </if>
+    </select>
+
+
+    <select id="listMall" parameterType="com.yuanrong.admin.seach.YRProductionListParam" resultType="com.yuanrong.admin.result.YRProductionResult">
+        SELECT yp.*,ya.authorNickname as 'yrAuthor.authorNickname', ya.authorImg as 'yrAuthor.authorImg', ifnull(ya.accessNum,0) as 'yrAuthor.accessNum',
+        yg.yrAuthorCategory , cof.contentform ,prn.prnum,if(sc.shoppingCartId is null, 0 ,1) as isAddCart,
+        cf.contentFormName as 'contentForm.contentFormName' , cf.Id as 'contentForm.Id',ya.authorStatus AS 'yrAuthor.authorStatus'
+        , rg.NickName as 'yrAuthor.registeredUserInfo.nickName' , a.marketingScene , ifnull(b.sellcount , 0) as 'sellcount'
+        , rg.RecID as 'yrAuthor.registeredUserInfo.recID' , ifnull(ya.isAnonymous , 0) as 'yrAuthor.isAnonymous',
+        di.name as 'yrCategory.name'
+        from yrProduction yp
+        LEFT JOIN shoppingCart sc on sc.productId = yp.recId and sc.cartTypeIndex = 2 and sc.registeredUserInfoId = #{data.registerUserInfoId}
+        LEFT JOIN yrAuthor ya on  yp.yrAuthorId = ya.recId
+        LEFT JOIN RegisteredUserInfo rg on rg.RecID = ya.registeredUserInfoID
+        LEFT JOIN DictInfo di on di.id = yp.yrCategoryId
+        LEFT JOIN ContentForm cf on cf.Id = yp.contentFormId
+        LEFT JOIN (
+            SELECT yac.yrAuthorId ,GROUP_CONCAT(di.`name`SEPARATOR '、') as 'yrAuthorCategory' from yrAuthorArticleCategory yac , DictInfo di
+            where yac.categoryId = di.id
+            GROUP BY yac.yrAuthorId
+        ) yg on yg.yrAuthorId = yp.yrAuthorId
+        LEFT JOIN(
+            SELECT ycf.userId,GROUP_CONCAT(cf.contentFormName SEPARATOR '、') as 'contentform'  from yrAuthorContentFormRelation ycf , ContentForm cf
+            where ycf.contentformId = cf.Id
+            GROUP BY ycf.userId
+        ) cof on cof.userId = yp.yrAuthorId
+            LEFT JOIN (
+            SELECT yrAuthorId , count(*) prnum  from yrProduction where statusIndex = 1 and yrProductionStatusIndex = 2 GROUP BY yrAuthorId
+        ) prn on prn.yrAuthorId = yp.yrAuthorId
+        LEFT JOIN (
+            SELECT yc.yrProductionId , GROUP_CONCAT(cc.Title SEPARATOR '、') as 'marketingScene'
+            from yrProductionCrawlCalendarInfoRelation yc , CrawlCalendarInfo cc
+            where yc.crawlCalendarInfoId = cc.RecID
+            GROUP BY yc.yrProductionId
+        ) a on a.yrProductionId = yp.recId
+        LEFT JOIN (
+            SELECT syp.yrProductionId , IFNULL(count(syp.yrProductionId),0) as 'sellcount'
+            from orderInfoBuyer oib , orderInfoSeller ois , snapshotYrProduction syp
+            where oib.orderInfoBuyerId = ois.orderInfoId and syp.orderInfoSellerId = ois.orderInfoSellerId and syp.yrProductionId != ''
+            GROUP BY syp.yrProductionId
+        ) b on b.yrProductionId = yp.recId
+        where
+        yp.statusIndex = 1 and yp.yrProductionStatusIndex = 2
+
+
+        <if test="data.productionName != null and data.productionName != ''">
+            and yp.title like concat('%',#{data.productionName} , '%')
+        </if>
+
+        <if test="data.publishStatus != null and data.publishStatus != ''">
+            and yp.publishStatusIndex = #{data.publishStatus}
+        </if>
+
+        <if test="data.yrProductionStatus != null and data.yrProductionStatus != ''">
+            and yp.yrProductionStatusIndex = #{data.yrProductionStatus}
+        </if>
+
+        <if test="data.yrAuthorId != null and data.yrAuthorId > 0">
+            and yp.yrAuthorId = #{data.yrAuthorId}
+        </if>
+
+        <if test="data.authorNickname != null and data.authorNickname != ''">
+            and ya.authorNickname like  concat('%',#{data.authorNickname} , '%')
+        </if>
+
+        <if test="data.contentFormID != null and data.contentFormID > 0">
+            and yp.contentFormId = #{data.contentFormID}
+        </if>
+
+        <if test="data.priceStart != null">
+            and yp.productQuotedPrice >= #{data.priceStart}
+        </if>
+
+        <if test="data.pirceEnd != null">
+            and yp.productQuotedPrice &lt;= #{data.pirceEnd}
+        </if>
+
+        <if test="data.yrCategoryId != null ">
+            and yp.yrCategoryId = #{data.yrCategoryId}
+        </if>
+
+        <if test="data.marketingSceneId != null">
+            and yp.recId in (
+              SELECT yc.yrProductionId from yrProductionCrawlCalendarInfoRelation yc WHERE yc.crawlCalendarInfoId = #{data.marketingSceneId}
+            )
+        </if>
+
+        <if test="data.keyWord != null and data.keyWord != '' ">
+            and (yp.title like concat('%',#{data.keyWord},'%') or yp.localcontent like concat('%',#{data.keyWord},'%') )
+        </if>
+
+    </select>
+
+
+    <!--按条件查询出作品列表 前端-->
+    <select id="listByCondition" resultType="com.yuanrong.admin.bean.author.YRProduction"
+            parameterType="com.yuanrong.admin.seach.YRProductionListParam">
+
+        SELECT
+        yp.*,
+        yp.productionAuditFailReasonId AS 'productionAuditFailReasonId.id',
+        cf.contentFormName AS 'contentForm.contentFormName',
+        ya.createdPrice AS 'yrAuthor.createdPrice',
+        ya.authorNickname AS 'yrAuthor.authorNickname',
+        ya.recId AS 'yrAuthor.recId',
+        ya.isAnonymous AS 'yrAuthor.isAnonymous'
+        FROM
+        yrProduction yp
+        LEFT JOIN yrAuthor ya ON yp.yrAuthorId = ya.recId
+        left join ContentForm cf on yp.contentFormId = cf.id
+        left join (
+        select RegisteredUserInfo.NickName,yrAuthor.recId aid from yrAuthor,RegisteredUserInfo where yrAuthor.registeredUserInfoID = RegisteredUserInfo.RecID
+        ) au on yp.yrAuthorId = au.aid
+        where
+            yp.statusIndex = 1
+        <if test="registeredUserInfo != null and registeredUserInfo.recID !=null ">
+            AND
+            ya.registeredUserInfoID = #{registeredUserInfo.recID}
+        </if>
+
+        <if test="authorNickname != null ">
+            AND
+            ya.authorNickname LIKE CONCAT('%',#{authorNickname},'%')
+        </if>
+        <if test="productionName != null ">
+            AND
+            yp.title LIKE CONCAT('%',#{productionName},'%')
+        </if>
+        <if test="contentFormID != null ">
+            AND
+            yp.contentFormId = #{contentFormID}
+        </if>
+        <if test="yrProductionStatus != null and yrProductionStatus !=''">
+            AND
+            yp.yrProductionStatusIndex = #{yrProductionStatus}
+        </if>
+        <if test="publishStatusID != null ">
+            AND
+            yp.publishStatusIndex = #{publishStatusID}
+        </if>
+        <if test="yrAuthorId != null ">
+            AND
+            ya.recID = #{yrAuthorId}
+        </if>
+        <if test="isRepresentative != null and isRepresentative!=''">
+            AND
+            yp.isRepresentative = #{isRepresentative}
+        </if>
+        order by yp.recID desc
+    </select>
+    <select id="getByProductionId" parameterType="com.yuanrong.admin.seach.YRProductionListParam" resultType="com.yuanrong.admin.bean.author.YRProduction">
+       SELECT yp.* , ya.authorNickname as 'yrAuthor.authorNickname' , ru.NickName as 'yrAuthor.registeredUserInfo.nickName',
+        ya.recId as 'yrAuthor.recId',ya.authorImg as 'yrAuthor.authorImg',ya.authorStatus as 'yrAuthor.authorStatus',
+        ru.Mobile as 'yrAuthor.registeredUserInfo.mobile' ,if(sc.shoppingCartId is null, 0 ,1) as  isAddCart,
+        cf.contentFormName as 'contentForm.contentFormName' , cf.Id as 'contentForm.Id' ,
+        ru.RecID as 'yrAuthor.registeredUserInfo.recID',au.RealName as 'adminUser.RealName',
+        di.name AS 'yrCategory.name'
+        from  yrProduction yp
+        LEFT JOIN yrAuthor ya on yp.yrAuthorId = ya.recId
+        LEFT JOIN RegisteredUserInfo ru on ya.registeredUserInfoID = ru.RecID
+        LEFT JOIN ContentForm cf on cf.Id = yp.contentFormId
+        LEFT JOIN AdminUser au on ru.AdminUserMediaID = au.recId
+        LEFT JOIN DictInfo di on yp.yrCategoryId = di.id
+        LEFT JOIN shoppingCart sc on sc.productId = yp.recId and sc.cartTypeIndex = 2 and sc.registeredUserInfoId = #{data.registerUserInfoId}
+        where   yp.recId = #{data.ypRecId}
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.author.YRProduction">
+        SELECT
+            yp.* , ya.authorNickname as 'yrAuthor.authorNickname' , ru.NickName as 'yrAuthor.registeredUserInfo.nickName',
+            ya.recId as 'yrAuthor.recId',ya.authorImg as 'yrAuthor.authorImg',ya.authorStatus as 'yrAuthor.authorStatus',
+            ru.Mobile as 'yrAuthor.registeredUserInfo.mobile' ,if(sc.shoppingCartId is null, 0 ,1) as  isAddCart,
+            cf.contentFormName as 'contentForm.contentFormName' , cf.Id as 'contentForm.Id' ,
+            ru.RecID as 'yrAuthor.registeredUserInfo.recID',au.RealName as 'adminUser.RealName',
+            di.name AS 'yrCategory.name'
+        from
+            yrProduction yp
+            LEFT JOIN yrAuthor ya on yp.yrAuthorId = ya.recId
+            LEFT JOIN RegisteredUserInfo ru on ya.registeredUserInfoID = ru.RecID
+            LEFT JOIN ContentForm cf on cf.Id = yp.contentFormId
+            LEFT JOIN AdminUser au on ru.AdminUserMediaID = au.recId
+            LEFT JOIN DictInfo di on yp.yrCategoryId = di.id
+            LEFT JOIN shoppingCart sc on sc.productId = yp.recId and sc.cartTypeIndex = 2 and sc.registeredUserInfoId = ya.registeredUserInfoID
+        where
+            yp.recId = #{id}
+    </select>
+
+    <select id="getByTitle" parameterType="java.lang.String" resultType="com.yuanrong.admin.bean.author.YRProduction">
+        select * from yrProduction where title = #{title}
+    </select>
+
+    <!--买卖家、后台创作者详情—代表列表-->
+    <select id="getAuthorProList" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT
+            yrp.recId,
+            yrp.title,
+            yrp.coverLocalUrl,
+            yrp.publishTime,
+            yrp.productUrl,
+            yrp.content,
+            yrp.localcontent,
+            yrp.contentEvaluationScore,
+            yrp.tags AS lableName,
+            yrp.contentFormId
+        FROM
+            yrProduction yrp
+        WHERE
+            yrp.isRepresentative = 1
+            AND yrp.statusIndex = 1
+            <if test="recId != null">
+                AND yrp.yrAuthorId = #{recId}
+            </if>
+            GROUP BY yrp.recId
+            ORDER BY yrp.publishTime DESC
+    </select>
+
+    <update id="updateProductQuotedPriceByTitle" parameterType="java.util.HashMap">
+        UPDATE yrProduction SET productQuotedPrice=#{price} where title=#{title}
+    </update>
+
+    <update id="update" parameterType="com.yuanrong.admin.bean.author.YRProduction">
+        UPDATE `yrProduction` SET `title` = #{data.title}, `Introduction` = #{data.introduction}, `productUrl` = #{data.productUrl},
+        `productQuotedPrice` = #{data.productQuotedPrice}, `coverLocalUrl` = #{data.coverLocalUrl}, `coverUrl` = #{data.coverUrl},
+        `contentFormId` = #{data.contentForm.Id}, `scenesId` = #{data.scenes.Id}, `modifyTime` = now(),
+        `publishTime` = #{data.publishTime}, `content` = #{data.content}, `localcontent` = #{data.localcontent}, `yrProductionStatusIndex` = #{data.yrProductionStatusIndex},
+        `publishStatusIndex` = #{data.publishStatusIndex}, `isRepresentative` = #{data.isRepresentative}, `productionAuditFailReasonId` = #{data.productionAuditFailReasonId}
+        ,publishPlatform = #{data.publishPlatform},wordNum = #{data.wordNum},crawlerStatus = #{data.crawlerStatus} , onlyIndex = #{data.onlyIndex} , imgNum = #{data.imgNum}
+        ,tags = #{data.tags} , yrCategoryId = #{data.yrCategoryId},sellPrice = #{data.sellPrice}
+        WHERE `recId` = #{data.recId}
+    </update>
+
+    <!--下架("下架", 0, "下架"),待审核("待审核", 1, "待审核"),上架("上架",2,"上架"),审核不成功("审核失败",3,"审核失败")
+    ,已售罄("已售罄",4,"已售罄");-->
+    <update id="updateYRProductionStatus">
+        update yrProduction set yrProductionStatusIndex = #{yrProductionStatus.index}
+        <if test="verifyFailReason != null and verifyFailReason != '' ">
+            , productionAuditFailReasonId = #{verifyFailReason}
+        </if>
+        <if test="yrProductionStatus.index == 2">
+            , upTime = now()
+        </if>
+        WHERE recId in
+        <foreach collection="ids" item="item" index="index" separator="," open="(" close=")">
+          #{item}
+        </foreach>
+        <if test="yrProductionStatus.index == 0">
+            and yrProductionStatusIndex in (1,2)
+        </if>
+        <if test="yrProductionStatus.index == 1">
+            and yrProductionStatusIndex = 0
+        </if>
+        <if test="yrProductionStatus.index == 2">
+            and yrProductionStatusIndex = 1
+        </if>
+        <if test="yrProductionStatus.index == 3">
+            and yrProductionStatusIndex = 1
+        </if>
+        <if test="yrProductionStatus.index == 4">
+            and yrProductionStatusIndex = 2
+        </if>
+    </update>
+
+    <update id="verify">
+        update  yrProduction yp
+        set yp.yrProductionStatusIndex = #{yrProductionStatus.index}, yp.auditUser = #{auditUser}
+        <if test="verifyFailReason != null and verifyFailReason != ''">
+            , yp.productionAuditFailReasonId = #{verifyFailReason}
+        </if>
+        <if test="yrProductionStatus.index == 2">
+            , upTime = now()
+        </if>
+        where  yp.recId in
+        <foreach collection="ids" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="yrProductionStatus.index == 0">
+            and yp.yrProductionStatusIndex in (1,2)
+        </if>
+        <if test="yrProductionStatus.index == 1">
+            and yp.yrProductionStatusIndex = 0
+        </if>
+        <if test="yrProductionStatus.index == 2">
+            and yp.yrProductionStatusIndex = 1
+        </if>
+        <if test="yrProductionStatus.index == 3">
+            and yp.yrProductionStatusIndex = 1
+        </if>
+        <if test="yrProductionStatus.index == 4">
+            and yp.yrProductionStatusIndex = 2
+        </if>
+
+        <!--
+        批量审核 - 作者必须上架 - 注册用户必须审核
+        update  yrProduction yp , yrAuthor ya ,RegisteredUserInfo rt
+        set yp.yrProductionStatusIndex = if(rt.sellerStatusValue =1 and ya.authorStatus = 2 , #{yrProductionStatus.index},if(#{yrProductionStatus.index} =2 , 1 ,#{yrProductionStatus.index} ) )
+        <if test="verifyFailReason != null and verifyFailReason != ''">
+            , yp.productionAuditFailReasonId = #{verifyFailReason}
+        </if>
+        where yp.yrAuthorId = ya.recId and rt.RecID = ya.registeredUserInfoID
+        and yp.recId in
+        <foreach collection="ids" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="yrProductionStatus.index == 0">
+            and yp.yrProductionStatusIndex in (1,2)
+        </if>
+        <if test="yrProductionStatus.index == 1">
+            and yp.yrProductionStatusIndex = 0
+        </if>
+        <if test="yrProductionStatus.index == 2">
+            and yp.yrProductionStatusIndex = 1
+        </if>
+        <if test="yrProductionStatus.index == 3">
+            and yp.yrProductionStatusIndex = 1
+        </if>
+        <if test="yrProductionStatus.index == 4">
+            and yp.yrProductionStatusIndex = 2
+        </if>
+        -->
+    </update>
+
+    <update id="changePrice">
+        update yrProduction set productQuotedPrice = #{price} , sellPrice=#{sellPrice}
+        WHERE recId in
+        <foreach collection="ids" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <!--删除代表作 (假删)-->
+    <update id="deleteAuthorPro" >
+        update yrProduction set statusIndex = 0
+        WHERE recId = #{recId}
+    </update>
+
+    <!--查询创作者的代表作品-->
+    <select id="findAuthorMagnum" resultType="com.yuanrong.admin.bean.author.YRProduction" parameterType="java.lang.Integer" >
+        SELECT
+            *
+        FROM
+            yrProduction yrp
+        WHERE
+            yrp.isRepresentative = 1
+            AND yrp.statusIndex = 1
+            AND yrp.yrAuthorId = #{recId}
+    </select>
+
+    <!--C端—获取创作者的已上架作品列表（公开作品、非公开）-->
+    <select id="findAuthorProList" resultType="com.yuanrong.admin.result.YRAuthorInfoProResult">
+        SELECT
+            yrp.* ,
+            cf.contentFormName,
+            GROUP_CONCAT(
+                DISTINCT cci.Title ORDER BY cci.RecID SEPARATOR '、'
+            ) AS calendarName
+        FROM
+            yrProduction yrp
+            LEFT JOIN ContentForm cf ON yrp.contentFormId = cf.Id
+            LEFT JOIN yrProductionCrawlCalendarInfoRelation yrpc ON  yrp.recId = yrpc.yrProductionId
+            LEFT JOIN CrawlCalendarInfo cci ON  cci.RecID = yrpc.crawlCalendarInfoId
+        WHERE 1=1
+            AND yrp.yrProductionStatusIndex = 2
+            AND yrp.statusIndex = 1
+            AND cf.statusValue = 1
+            <if test="authorId != null" >
+                AND yrp.yrAuthorId = #{authorId}
+            </if>
+            <if test="contentFormId != null" >
+                AND yrp.contentFormId = #{contentFormId}
+            </if>
+            <if test="publishStatusIndex !=null" >
+                AND yrp.publishStatusIndex = #{publishStatusIndex}
+            </if>
+            GROUP BY yrp.recId
+    </select>
+
+    <select id="getMarketingScene" resultType="java.util.Map">
+         SELECT RecID as 'id' , Title as 'name' , if(a.crawlCalendarInfoId is null , 0 , 1) as 'isShow' from CrawlCalendarInfo cc
+        LEFT JOIN
+        (
+         SELECT DISTINCT ycr.crawlCalendarInfoId from yrProductionCrawlCalendarInfoRelation ycr , yrProduction yp
+         where ycr.yrProductionId = yp.recId and yp.yrProductionStatusIndex = 1
+        ) a on a.crawlCalendarInfoId = cc.RecID
+        where cc.`status` = 1
+    </select>
+
+    <update id="unPublishSellOut" >
+        update   yrProduction set yrProductionStatusIndex = 4  where publishStatusIndex = 0
+        and  recId in
+        <foreach collection="yrProductionIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="unPublishProductShelf" parameterType="java.lang.Integer">
+        update  snapshotYrProduction syp  ,yrProduction yp ,orderDetail od
+        set yp.yrProductionStatusIndex = 2
+        where yp.recId = syp.yrProductionId and syp.orderDetailId = od.orderDetailId
+        and yp.publishStatusIndex = 0 and od.orderInfoBuyerId =  #{orderInfoBuyerId}
+    </select>
+
+    <!--买卖中心/后台—创作者的作品数、上架数、上架代表作数-->
+    <select id="getAuthorProNum" resultType="java.util.Map" >
+        SELECT * FROM
+        (
+        SELECT
+            count(yrp.recId) as proNum
+        FROM
+            yrProduction yrp
+        WHERE
+            yrp.yrAuthorId = #{yrAuthorId}
+            AND yrp.statusIndex = 1
+        ) a
+        INNER JOIN
+        (
+        SELECT
+            count(yrp.recId) AS upNum
+        FROM
+            yrProduction yrp
+        WHERE
+            yrp.yrAuthorId = #{yrAuthorId}
+            AND yrp.statusIndex = 1
+            AND yrp.yrProductionStatusIndex = 2
+        ) b
+        INNER JOIN
+        (
+        SELECT
+            count(yrp.recId) AS RepresentativeNum
+        FROM
+            yrProduction yrp
+        WHERE
+            yrp.yrAuthorId = #{yrAuthorId}
+            AND yrp.statusIndex = 1
+            AND yrp.yrProductionStatusIndex = 2
+            AND yrp.isRepresentative = 1
+            ) c
+
+    </select>
+    <!-- 后台设置是否为代表作-->
+    <update id="updateYRProductionStatusIndexByProID" >
+        UPDATE yrProduction
+        SET
+        isRepresentative = #{setIsRepresentative}
+        ,modifyTime = now()
+        where recId =#{recId}
+    </update>
+
+    <select id="getHotSearch" resultType="java.util.Map">
+        SELECT  Title as `name` from CrawlCalendarInfo where hotsearch = 1 and StartTime > now() LIMIT 0 ,5
+    </select>
+
+    <!--C端—查询创作者的公开作品数、未公开作品数-->
+    <select id="getAuthorProOpenNum" resultType="java.util.Map">
+        SELECT
+            *
+        FROM
+            (
+                SELECT
+                    count( yrp.recId ) AS openNum
+                FROM
+                    yrProduction yrp
+                WHERE
+                    yrp.yrAuthorId = #{recId}
+                    AND yrp.statusIndex = 1
+                    AND yrp.yrProductionStatusIndex = 2
+                    AND yrp.publishStatusIndex = 1
+
+            ) a
+            INNER JOIN
+            (
+                SELECT
+                    count( yrp.recId ) AS notOpenNum
+                FROM
+                    yrProduction yrp
+                WHERE
+                    yrp.yrAuthorId = #{recId}
+                    AND yrp.statusIndex = 1
+                    AND yrp.yrProductionStatusIndex = 2
+                    AND yrp.publishStatusIndex = 0
+            ) b
+    </select>
+
+    <update id="calculateSortScore">
+        update yrProduction yp , (
+        SELECT cValue as 'gp' from configuration where cName = 'GRAVITYTH_POWER'
+        ) a set yp.sortScore = (cast(accessNum as signed) -1)/POWER(DATEDIFF(now(),upTime) +2,a.gp)
+    </update>
+
+
+    <!--查看作品详情，对应的作品的访问次数+1-->
+    <update id="updateProductInfo" parameterType="com.yuanrong.admin.seach.YRProductionListParam">
+        update yrProduction yp  set yp.accessTimes = accessTimes+1 where recId= #{data.ypRecId}
+    </update>
+
+    <!--查看作品详情，根据作者id查询作者的作品数量-->
+    <select id="getAuthorProductCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+          select count(1) from yrProduction where yrAuthorId=#{yrAuthorId} AND yrProductionStatusIndex=2
+    </select>
+
+    <!--查看作品详情，根据作者id查询作者的最近的5篇已发布文章；当前文章除外-->
+    <select id="getAuthorProductsList" parameterType="com.yuanrong.admin.bean.author.YRProduction" resultType="com.yuanrong.admin.bean.author.YRProduction">
+        SELECT recId,title FROM yrProduction
+        WHERE 1=1
+            AND yrProductionStatusIndex=2
+            AND yrAuthorId = #{data.yrAuthorId}
+            AND recId NOT IN ( #{data.recId} )
+        ORDER BY
+            publishTime DESC
+            LIMIT 5
+    </select>
+
+    <!--C端—创作者详情上架作品内容形式数-->
+    <select id="getAuthorProContentNum" resultType="java.util.Map">
+        SELECT
+            GROUP_CONCAT( DISTINCT cf.contentFormName ORDER BY cf.Id SEPARATOR '、' ) AS contentFormName,
+            GROUP_CONCAT( DISTINCT cf.Id ORDER BY cf.Id SEPARATOR '、' ) AS contentFormId
+        FROM
+            yrProduction yrp,
+            ContentForm cf
+        WHERE
+            cf.Id = yrp.contentFormId
+            AND yrp.statusIndex = 1
+            AND yrp.publishStatusIndex = #{publishStatusIndex}
+            AND yrp.yrProductionStatusIndex = 2
+            AND yrp.yrAuthorId = #{authorId}
+            GROUP BY
+                yrp.yrAuthorId
+    </select>
+
+    <!--  根据作品ID查询买家信息 -->
+    <select id="getBuyerByProductionId" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.author.YRProduction">
+      SELECT a.registeredUserInfoId  ,c.isRead FROM orderInfoBuyer a, orderDetail b, yrProduction c
+            WHERE a.orderInfoBuyerId = b.orderInfoBuyerId
+            AND b.referId = c.recId
+            AND a.payStatusValue=2
+            AND c.recId =#{yrProductionId}
+    </select>
+
+    <!--获取相似作品列表数量-->
+    <select id="getLikeProductionNum" resultType="java.util.Map">
+        SELECT COUNT( a.recId ) + 1 AS rowsn,  b.num
+        FROM
+        (
+            SELECT
+                yp.recId,
+                yp.sortScore,
+                @rownum := @rownum + 1 AS rownum
+            FROM
+                yrProduction yp,
+                ( SELECT @rownum := 0 ) b
+                WHERE 1=1
+                    AND yp.yrProductionStatusIndex=2
+                    <if test="publishStatusIndex !=null" >
+                      AND yp.publishStatusIndex = #{publishStatusIndex}
+                    </if>
+                    <if test="categoryId !=null" >
+                       AND yp.yrCategoryId = #{categoryId}
+                    </if>
+                    ORDER BY
+                    yp.sortScore,
+                    rownum
+            ) a,
+        ( SELECT count( yp.recId ) AS num FROM yrProduction yp
+          WHERE 1=1
+            AND  yp.yrProductionStatusIndex=2
+            <if test="publishStatusIndex !=null" >
+                  AND yp.publishStatusIndex = #{publishStatusIndex}
+            </if>
+            <if test="categoryId !=null" >
+              AND yp.yrCategoryId = #{categoryId} ) b
+            </if>
+        WHERE 1=1
+          <if test="sortScore !=null" >
+            AND a.sortScore &lt; #{sortScore}
+          </if>
+    </select>
+
+
+    <!--获取相似创作者列表-->
+    <select id="getLikeProduction" resultType="com.yuanrong.admin.result.YRProductionLikeResult">
+        SELECT yp.recId,yp.title AS 'productionTitle', yp.publishPlatform, yp.sellPrice as 'productQuotedPrice', yp.yrAuthorId, authorNickname , yp.createdTime as 'publishTime', yp.localContent,authorImg,
+	            cci.Title , yp.tags, yp.contentEvaluationScore AS 'contentScore', yp.coverLocalUrl, yp.contentFormId, cf.contentFormName,di.name,ya.authorStatus AS 'yrAuthorStatus',
+                cof.contentform AS 'contentform',prn.prnum,yg.yrAuthorCategory,ifnull(ya.accessNum,0) as 'accessNum',ifnull(ya.isAnonymous , 0) as 'isAnonymous',yp.imgNum,yp.wordNum,
+                yp.publishStatusIndex,yp.originalScore
+        FROM
+            yrProduction yp
+            left join yrProductionCrawlCalendarInfoRelation ypci on yp.recid=ypci.yrProductionId
+            left join CrawlCalendarInfo cci on ypci.crawlCalendarInfoId=cci.RecID
+            LEFT JOIN ContentForm cf on cf.Id=yp.contentFormId
+            LEFT JOIN (
+                SELECT yac.yrAuthorId ,GROUP_CONCAT(di.`name`SEPARATOR '、') as 'yrAuthorCategory' from yrAuthorArticleCategory yac , DictInfo di
+                where yac.categoryId = di.id
+                GROUP BY yac.yrAuthorId
+            ) yg on yg.yrAuthorId = yp.yrAuthorId
+            LEFT JOIN(
+                SELECT ycf.userId,GROUP_CONCAT(cf.contentFormName SEPARATOR '、') as 'contentform'  from yrAuthorContentFormRelation ycf , ContentForm cf
+                where ycf.contentformId = cf.Id
+                GROUP BY ycf.userId
+            ) cof on cof.userId = yp.yrAuthorId
+            LEFT JOIN (
+                SELECT yrAuthorId , count(*) prnum  from yrProduction where statusIndex = 1 GROUP BY yrAuthorId
+            ) prn on prn.yrAuthorId = yp.yrAuthorId
+            LEFT JOIN yrAuthor ya ON yp.yrAuthorId = ya.recId,
+            DictInfo di
+        WHERE 1=1
+            AND yp.yrProductionStatusIndex=2
+            AND di.id=yp.yrCategoryId
+            <if test="categoryId !=null" >
+                AND yp.yrCategoryId=#{categoryId}
+            </if>
+            <if test="recId !=null" >
+                AND yp.recId != #{recId}
+            </if>
+            <if test="publishStatusIndex !=null" >
+                AND publishStatusIndex = #{publishStatusIndex}
+            </if>
+            LIMIT #{a},#{b}
+    </select>
+
+    <!--修改作品阅读状态-->
+    <update id="updateProductionReadStatus" parameterType="java.lang.Integer">
+          UPDATE yrProduction set isRead=1 where recId=#{recId}
+    </update>
+
+    <!--修改作品访问次数-->
+    <update id="updateAccessTimes" parameterType="com.yuanrong.admin.bean.author.YRProduction">
+        UPDATE yrProduction set accessTimes=accessTimes+1,accessNum=accessNum+1 where recId=#{yRProduction.recId}
+    </update>
+
+    <!--选用已有作品：本用户未发布文章（上架、待审核状态均可）-->
+    <select id="searchYRProductionByTitle" resultType="com.yuanrong.admin.bean.author.YRProduction">
+        SELECT
+            *
+        FROM
+            yrProduction yrp
+            left join yrAuthor yra on  yra.recId = yrp.yrAuthorId
+        WHERE
+            1=1
+            <if test="data.title != null">
+                AND yrp.title LIKE concat('%',#{data.title} , '%')
+            </if>
+            AND yrp.publishStatusIndex=0
+            AND ( yrp.yrProductionStatusIndex=1 OR yrp.yrProductionStatusIndex=2 )
+            AND yra.registeredUserInfoId = #{data.registeredUserInfoId}
+    </select>
+
+    <select id="getYRProductionById" resultType="com.yuanrong.admin.bean.author.YRProduction">
+        SELECT * FROM  yrProduction WHERE recId = #{id}
+    </select>
+
+    <select id="getYRProduction" resultType="com.yuanrong.admin.bean.author.YRProduction">
+        SELECT yp.* FROM  yrProduction yp,orderDetail od , orderInfoBuyer oib
+        WHERE oib.orderInfoBuyerId = od.orderInfoBuyerId
+        and od.referId = yp.recId
+        and oib.orderSn=#{orderSn}
+    </select>
+
+    <!--临时导出部分生产作品-->
+    <select id="getList" resultType="com.yuanrong.admin.bean.author.YRProduction">
+        select recId,title,localcontent from yrProduction_test where yrCategoryId=189 and title is not null and localcontent is not null and contentFormId=1
+    </select>
+
+    <update id="batchUpdateAccessTime" parameterType="java.util.Map">
+        <foreach item="value" index="key" collection="data.entrySet()" separator=";">
+            update yrProduction set accessTimes = #{value} where recId = #{key}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateAccessNums" >
+        <foreach item="item" collection="data" separator=";" >
+            update yrProduction set accessNum = #{item.accessNum} where recId = #{item.recId}
+        </foreach>
+    </update>
+</mapper>

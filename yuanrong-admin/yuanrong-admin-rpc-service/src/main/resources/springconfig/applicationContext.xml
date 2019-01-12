@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 开发环境，具体加载bean或者properties文件 -->
+    <beans profile="development">
+        <!-- 引入项目配置文件 -->
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:db.dev.properties</value>
+                    <value>classpath:zookeeper.dev.properties</value>
+                    <value>classpath:rabbitmq.dev.properties</value>
+                    <value>classpath:wechat.dev.properties</value>
+                    <value>classpath:redis.dev.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+
+    <beans profile="dev">
+        <!-- 引入项目配置文件 -->
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:db.dev1.properties</value>
+                    <value>classpath:zookeeper.dev1.properties</value>
+                    <value>classpath:rabbitmq.dev.properties</value>
+                    <value>classpath:wechat.dev.properties</value>
+                    <value>classpath:redis.dev.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+
+    <!-- 测试环境，具体加载bean或者properties文件 -->
+    <beans profile="production">
+        <!-- 引入项目配置文件 -->
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:db.online.properties</value>
+                    <value>classpath:zookeeper.online.properties</value>
+                    <value>classpath:rabbitmq.online.properties</value>
+                    <value>classpath:wechat.online.properties</value>
+                    <value>classpath:redis.online.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+
+
+    <beans profile="test">
+        <!-- 引入项目配置文件 -->
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:db.test.properties</value>
+                    <value>classpath:zookeeper.test.properties</value>
+                    <value>classpath:rabbitmq.dev.properties</value>
+                    <value>classpath:wechat.dev.properties</value>
+                    <value>classpath:redis.dev.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+
+    <beans profile="">
+        <!-- 引入项目配置文件 -->
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:db.online.properties</value>
+                    <value>classpath:zookeeper.online.properties</value>
+                    <value>classpath:rabbitmq.online.properties</value>
+                    <value>classpath:wechat.online.properties</value>
+                    <value>classpath:redis.online.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+
+</beans>

@@ -1,0 +1,259 @@
+/*banner*/
+.about{
+    position: relative;
+    top:0;
+}
+.about-banner{   
+    height: 380px;
+    background: url("../bgImg/aboutUs/about_banner.jpg") center center no-repeat;
+    background-size: cover;
+}
+.about-banner-con{
+    height: 380px;
+}
+.about-banner img{
+    width: 100%;
+    height: auto;
+}
+.about-banner-left{
+    position: absolute;
+    left: 150px;
+    top: 130px;
+}
+.about-banner-left>h2{
+    width: 380px;
+    font-size: 36px;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 4px;
+    padding-bottom: 8px;
+}
+.about-banner-left>h2>span{
+    display: block;
+    width: 144px;
+    height: 1px;
+    margin-top: 8px;
+    background: #fff;
+    border-radius: 2px;
+    opacity: .4;
+}
+.first-line-move{
+    animation: slogan_move 0.5s linear 0.2s backwards;
+    -webkit-animation: slogan_move 0.5s linear 0.2s backwards;
+}
+.second-line-move{
+    animation: slogan_move 0.5s linear 0.3s backwards;
+    -webkit-animation: slogan_move 0.5s linear 0.3s backwards;  
+}
+.third-line-move{
+    animation: slogan_move 0.5s linear 0.4s backwards;
+    -webkit-animation: slogan_move 0.5s linear 0.4s backwards;
+}
+.second-txt-line{
+    width: 144px;
+    height: 1px;
+    background: #fff;
+    border-radius: 2px;
+    opacity: .4;
+    filter: Alpha(opacity=40);
+}
+
+@keyframes slogan_move{
+    from{
+        transform: translateY(100px);
+        -ms-transform: translateY(100px);
+        -moz-transform: translateY(100px);
+        -o-transform: translateY(100px);
+        -webkit-transform: translateY(100px);
+        opacity: 0;
+        filter: Alpha(opacity=0);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+        -ms-transform: translateY(0);
+        -moz-transform: translateY(0);
+        -o-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        opacity: 1;
+        filter: Alpha(opacity=100);
+    }
+}
+@-webkit-keyframes slogan_move{
+    from{ opacity: 0; transform: translateY(100px); -ms-transform: translateY(100px); -moz-transform: translateY(100px); -o-transform: translateY(100px); -webkit-transform: translateY(100px); opacity: 0; filter: Alpha(opacity=0);}
+    to{ opacity: 1; transform: translateY(0); -ms-transform: translateY(0); -moz-transform: translateY(0); -o-transform: translateY(0); -webkit-transform: translateY(0); opacity: 1; filter: Alpha(opacity=100);}
+}
+
+
+.about-banner-left>p{
+    color: #fff;
+    opacity: .6;
+    filter: alpha(opacity=60);
+    font-size: 32px;
+}
+.about-banner-left .banner-tit-sec{
+    font-size: 32px;
+    color: #fff;
+    letter-spacing: 1px;
+    padding-top: 8px;
+    opacity: .6;
+    filter: Alpha(opacity=60);
+}
+/*关于圆融*/
+.about-us{
+    height: 520px;
+    background: url("../bgImg/aboutUs/about-us.png") center center no-repeat;
+    background-size: cover;
+}
+.about-us img{
+    width: 100%;
+    height: 620px;
+}
+.about-con{
+    width: 1200px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: -600px;
+}
+.about-us-con{
+    height: 620px;
+}
+.about-us-title{
+    width: 150px;
+    height: 56px;
+    margin: 70px auto 70px;
+}
+h3{
+    text-align: center;
+    font-size: 34px;
+    font-weight: normal;
+    color:#333;
+}
+.about-us-title span{
+    width: 96px;
+    height: 3px;
+    background: #5090f0;
+    display: block;
+    margin: 15px auto 0;
+}
+.about-us-con p{
+    width: 970px;
+    font-size: 16px;
+    font-weight: normal;
+    color: #64676a;
+    margin: 0 100px 45px 100px;
+    text-indent: 2em;
+    line-height: 32px;
+}
+/*我们的愿景*/
+.about-future{
+    height: 299px;
+    background: url("../bgImg/aboutUs/about_future.jpg");
+    background-size: cover;
+    background-position: center center;
+}
+.about-future img{
+    width: 100%;
+    height: 299px;
+}
+.about-future-con{
+    height: 299px;
+}
+.about-hide{
+    opacity: 0; 
+    filter: alpha(opacity=0);  
+}
+.about-show{
+    opacity: 1; 
+    filter: alpha(opacity=100);
+}
+.about-future-title{
+    width: 200px;
+    height: 56px;
+    margin: 65px auto 35px;
+}
+.about-future-title h3{
+    font-weight: normal;
+    color:#fff;
+}
+.about-future-title span{
+    width: 96px;
+    height: 3px;
+    background: #fff;
+    display: block;
+    margin: 15px auto 0;
+}
+.about-future-con p{
+    width: 970px;
+    font-size: 16px;
+    font-weight: normal;
+    color: #fff;
+    margin: 0 100px 45px 100px;
+    line-height: 32px;
+    text-align: center;
+}
+/*联系方式*/
+.about-contact{
+    height: 620px;
+    background: #f4f7fc;
+}
+.about-contact-con{
+    height: 620px;
+}
+.about-contact-title{
+    width: 200px;
+    height: 56px;
+    margin: 65px auto 75px;
+}
+.about-contact-title span{
+    width: 96px;
+    height: 3px;
+    background: #5090f0;
+    display: block;
+    margin: 15px auto 0;
+}
+.about-contact-way{
+    margin: 0 130px 0 100px;
+}
+.about-contact-map{
+    width: 516px;
+    height: 319px;
+    -webkit-box-shadow: 0 0 10px #d5d7da;
+    -moz-box-shadow: 0 0 10px #d5d7da;
+    box-shadow: 0 0 10px #d5d7da;
+}
+.about-contact-infro>li{
+    width: 373px;
+    height: 126px;
+    margin: 10px 0 40px;
+}
+.about-contact-icon{
+    width: 126px;
+    height: 126px;
+    border-radius: 50%;
+    background: #fff;
+    -webkit-box-shadow: 0 0 10px #d5d7da;
+    -moz-box-shadow: 0 0 10px #d5d7da;
+    box-shadow: 0 0 10px #d5d7da;
+    text-align: center;
+    line-height: 140px;
+}
+.about-contact-txt{
+    margin-left: 40px;
+}
+h4{
+    font-size: 18px;
+    color: #303132;
+    line-height: 50px;
+}
+.about-contact-txt>p{
+    font-size: 16px;
+    color: #64676a;
+    margin-top: 10px;
+    font-weight: 500;
+}
+.about-contact-infro i{
+    color: #5090f0;
+    font-size: 54px;
+}

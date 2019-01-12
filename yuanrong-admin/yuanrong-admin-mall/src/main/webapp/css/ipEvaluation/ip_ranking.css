@@ -1,0 +1,389 @@
+/* IP排行榜 */
+.content{
+	width: 1170px;
+	margin: 0 auto;
+}
+/* 面包屑 */
+.bread-crumb{
+    padding-bottom: 20px;
+}
+.bread-crumb a{
+    color: #64676a;
+}
+.bread-crumb  span{
+    color: #303132;
+}
+.creation-list-wrap{
+    padding: 21px 30px 15px;
+    background: #fff;
+    text-align: center;
+    border-radius: 2px;
+}
+.creation-list-wrap .list-tit-wrap{
+    font-size: 14px;
+    color: #82868a;
+    border-bottom: 1px solid #eceff4;
+	background: #f5f7fa;
+}
+.creation-list-wrap .list-tit-wrap li,
+.creation-list-wrap .list-con-wrap ul li{
+    float: left;
+    width: 14%;
+    line-height: 58px;
+    height: 58px;
+}
+.creation-list-wrap .list-tit-wrap li.li-width42,
+.creation-list-wrap .list-con-wrap ul li.li-width42{
+    width: 8%;
+    height: 58px;
+}
+.creation-list-wrap .list-con-wrap ul li.li-width203{
+	text-align: left;
+	padding-left: 10px;
+}
+.creation-list-wrap .list-tit-wrap li.li-width203,
+.creation-list-wrap .list-con-wrap ul li.li-width203{
+    width: 22%;
+}
+.creation-list-wrap .list-tit-wrap li.li-width42 {
+	height: 50px;
+}
+.creation-list-wrap .list-tit-wrap li {
+	height: 50px;
+	line-height: 50px;
+}
+.creation-list-wrap .list-con-wrap{
+	padding-bottom: 18px;
+}
+.creation-list-wrap .list-con-wrap ul{
+
+}
+.creation-list-wrap .list-con-wrap ul.ul-gray{
+    background: #f3f5fa;
+}
+.creation-list-wrap .list-con-wrap ul li{
+    color: #303132;
+    font-size: 14px;
+}
+.creation-list-wrap .list-con-wrap ul li .ip-avatar-wrap{
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    overflow: hidden;
+    margin-top: 10px;
+    border-radius: 50%;
+    background: #eee;
+}
+
+.creation-list-wrap .list-con-wrap ul li .ip-avatar-wrap img{
+    width: 100%;
+    vertical-align: top;
+}
+.creation-list-wrap .list-con-wrap ul li .ip-name-wrap{
+    display: inline-block;
+    text-align: left;
+    padding: 10px 0 0 8px;
+    max-width: 156px;
+}
+.creation-list-wrap .list-con-wrap ul li .ip-name-wrap .ip-name-cn,
+.creation-list-wrap .list-con-wrap ul li .ip-name-wrap .ip-name-en{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.creation-list-wrap .list-con-wrap ul li .ip-name-wrap .ip-name-cn{
+    line-height: 20px;
+    width: 100%;
+}
+.creation-list-wrap .list-con-wrap ul li .ip-name-wrap .ip-name-en{
+    color: #64676a;
+    font-size: 12px;
+    line-height: 18px;
+}
+/*内容价值排行榜css样式*/
+.ip_ranking_list_wrap {
+	width: 1170px;
+	margin: 0 auto;
+	padding-bottom: 20px;
+}
+.ip_ranking_list_wrap>a {
+	color: #64676a;
+}
+.rank-con-wrap{
+	width: 1170px;
+	margin: 0 auto;
+}
+.rank-lt-wrap{
+	float: left;
+	width: 138px;
+}
+.rank-rt-wrap{
+	float: right;
+	width: 1000px;
+}
+.ip_ranking_article {
+	width: 100%;
+	height: auto;
+	/* margin-top: 20px; */
+	background: #fff;
+}
+.ip_ranking_article_tab_wrap{
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	/*background:#f3f5fa;*/
+	background: #fff;
+	border-bottom: 1px solid #eff1f3;
+}
+.ip_ranking_tab_rt_wrap{
+	float: right;
+}
+.ip_ranking_article_tab {
+	float: left;
+}
+.ip_ranking_article_tab li {
+	width: 160px;
+	height: 50px;
+	float: left;
+	text-align: center;
+	font-size: 16px;
+}
+.ip_ranking_article_tab li.on {
+	/*background: #fff;*/
+}
+.ip_ranking_article_tab li.on a {
+	color: #6daaec;
+	border-bottom: 2px solid #6daaec;
+	padding-bottom: 13px;
+}
+.ip_ranking_data_instruction {
+	float: right;
+}
+.ip-line{
+	float: right;
+	color: #caccd0;
+	padding: 0 8px;
+}
+.ip_ranking_data_instruction>a>img {
+	float: left;
+	width: 15px;
+	height: 15px;
+	margin: 18px 5px 0 0;
+}
+.ip-timecheck-wrap{
+	padding-right: 28px;
+}
+.ip-timecheck-wrap>span{
+	padding-right: 4px;
+	color: #64676a;
+}
+.ip_ranking_data_instruction>a>span{
+	float: left;
+	color: #64676a;
+}
+.ip-timecheck-wrap{
+	float: right;
+
+}
+.ip_ranking_article_list_content {
+	margin-top: 16px;
+}
+.ip_ranking_article_list {
+	padding:5px 30px 30px;
+}
+.list_title ul {
+	line-height: 50px;
+	height: 50px;
+	border-bottom: 1px solid #eceff4;
+	background: #f5f7fa;
+	color: #82868a;
+}
+.ip_ranking_article_list ul li {
+	width: 10%;
+	float: left;
+	height: 50px;
+	text-align: center;
+}
+.ip_ranking_article_list .title {
+	width: 60%;
+	text-align: left;
+	padding-left: 10px;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+	height: 50px;
+	overflow: hidden;
+    -webkit-box-orient: vertical;
+}
+.list_content {
+	padding-bottom: 30px;
+}
+.list_content ul {
+	line-height: 58px;
+	height: 58px;
+}
+.list_content ul:nth-child(even) {
+	background: #f3f5fa;
+}
+.list_content ul li > span {
+	margin-right: 10px;
+}
+.list_content .title a:hover {
+	color: #4191e7;
+}
+.list_content .title>span {
+	width: 26px;
+	text-align: center;
+	display: inline-block;
+}
+.more_btn {
+	display: none;
+	width: 160px;
+	height: 40px;
+	background: #f3f5fa;
+	border-radius: 2px;
+	text-align: center;
+	line-height: 40px;
+	margin: 0 auto;
+	cursor: pointer;
+}
+
+/*ip评估数据说明css样式*/
+.ip-data-wrap {
+	background: #fff;
+	padding:50px 80px;
+	/* margin-top: 20px; */
+}
+/*.ip-data-wrap h2 {
+	text-align: center;
+	margin-bottom: 30px;
+	position: relative;
+}*/
+/*h2 span.left{
+	display: inline-block;
+    border: 0.3px solid #e0e0e0;
+    width: 44%;
+    position: absolute;
+    left: 0;
+    margin-top: 18px;
+}
+h2 span.right{
+	display: inline-block;
+    border: 0.3px solid #e0e0e0;
+    width: 44%;
+    position: absolute;
+    right: 0;
+    margin-top: 18px;
+}*/
+.ip-data-wrap p {
+	line-height: 43px;
+	font-size: 17px;
+	font-weight: bold;
+}
+.ip-data-wrap p img {
+	margin-right: 5px;
+}
+article {
+	text-indent: 28px;
+	line-height: 28px;
+	margin-bottom: 20px;
+}
+.algorithm_description article {
+	text-indent: 0;
+}
+.go:hover {
+	color: #4191e7;
+}
+/*图表的编写*/
+/*.chart_left {
+	float: left;
+	width: 49.1%;
+	margin-right: 15px;
+}
+.chart_right {
+	width: 49.1%;
+	float: right;
+}
+table {
+	border: 1px solid #e6e8ed;
+	margin-top: 10px;
+}
+th {
+	line-height: 42px;
+	background: #e6e8ed;
+}
+th.first {
+	width: 24.2%;
+}
+th.second {
+	width: 19.1%;
+}
+th.third {
+	width: 21.4%;
+}
+th.last {
+	width: 35.3%;
+}
+td {
+	padding:10px;
+	text-align:center;
+}
+.multiple {
+	padding:16px;
+	text-align: left;
+}*/
+/* IP排行分类 */
+.ip-category-wrap {
+    text-align: center;
+    color: #64676a;
+}
+.ip-category-wrap{
+    background: #fff;
+}
+.ip-category-wrap .category-tit{
+    line-height: 50px;
+    background: #f3f5fa;
+    font-size: 16px;
+}
+.ip-category-wrap>ul{
+
+}
+.ip-category-wrap>ul li{
+      
+}
+.ip-category-wrap>ul li a{
+    display: inline-block;
+    line-height: 20px;
+    margin: 10px 0;
+    color: #64676a;
+    width: 100%;
+    transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -webkit-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    border-left: 2px solid transparent;
+}
+.ip-category-wrap>ul li.ca-active a,
+.ip-category-wrap>ul li:hover a{
+    color: #4895e7;
+    border-left: 2px solid #4895e7;
+}
+#js-time-range{
+	height: 34px;
+	line-height: 34px;
+	width: 172px;
+	border: 1px solid #c6cacf;
+	border-radius: 2px;
+	cursor: pointer;
+	background: #fff;
+	text-align: center;
+    /*color: #a9adb0;*/
+	margin-left: 10px;
+	font-size: 12px;
+}
+.ip-timecheck-wrap select option{
+	line-height: 34px;
+}

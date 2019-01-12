@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.order.OrderInfoOfferDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.order.OrderInfoOffer" useGeneratedKeys="true" keyProperty="data.orderInfoOfferId">
+        INSERT INTO `orderInfoOffer`  ( `orderInfoSellerId`,     `priceName`,         `price`,     `createdTime`, `modifiedCount`,      `modifiedTime`,    `statusIndex`, `executePrice`,sellerPrice)
+        VALUES                        ( #{data.orderInfoSeller}, #{data.priceName}, #{data.price}, now(),       #{data.modifiedCount}, now(),1, #{data.executePrice},#{data.sellerPrice});
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.order.OrderInfoOffer" parameterType="com.yuanrong.admin.bean.order.OrderInfoOffer">
+        SELECT * from orderInfoOffer
+    </select>
+ <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.order.OrderInfoOffer">
+        select
+            off.*,
+            off.orderInfoSellerId AS orderInfoSeller
+        from
+            orderInfoOffer off
+        where off.orderInfoOfferId = #{id}
+    </select>
+
+    <!--根据ID修改价格-->
+    <update id="updatePricesById" parameterType="com.yuanrong.admin.bean.order.OrderInfoOffer">
+        update orderInfoOffer set price=#{data.price} ,modifiedTime=now() ,executePrice= #{data.executePrice} where orderInfoOfferId=#{data.orderInfoOfferId}
+    </update>
+
+    <!--根据报名Id获取报价项-->
+    <select id="getByOrderInfoSellerId" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.order.OrderInfoOffer">
+        select
+            *
+        from
+            orderInfoOffer
+        where orderInfoSellerId= #{orderInfoSellerId}
+    </select>
+
+    <!--根据ID修改价格-->
+    <update id="updateOrderInfoOffer" parameterType="com.yuanrong.admin.bean.order.OrderInfoOffer">
+        update orderInfoOffer
+        set modifiedCount = modifiedCount+1,
+            modifiedTime=now() ,
+            executePrice= #{data.executePrice},
+            price=#{data.price} ,
+            sellerPrice=#{data.sellerPrice}
+        where orderInfoOfferId=#{data.orderInfoOfferId}
+    </update>
+
+</mapper>

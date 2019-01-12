@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--基本需求信息-->
+<bean id="demandServicesI" class="com.yuanrong.admin.rpc.service.impl.demand.DemandServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.demand.DemandServicesI" ref="demandServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--基本需求信息-->
+<dubbo:reference id="demandServicesI" interface="com.yuanrong.admin.rpc.api.demand.DemandServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+<!--基本需求信息-->
+@Autowired
+public DemandDaoI demandDaoI;
+
+
+4.在BaseController中，注入services
+
+<!--基本需求信息-->
+@Autowired
+public DemandServicesI demandServicesI;

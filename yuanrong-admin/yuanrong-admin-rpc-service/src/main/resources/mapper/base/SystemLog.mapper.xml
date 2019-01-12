@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.base.SystemLogDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.base.SystemLog">
+        INSERT INTO `systemLog`(`classPath`, `id`, `msg`, `createdTime`, `operator`)
+        VALUES ( #{data.classPath}, #{data.id}, #{data.msg}, now(), #{data.operator})
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.base.SystemLog" parameterType="com.yuanrong.admin.bean.base.SystemLog">
+        SELECT * from systemLog
+    </select>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.base.SystemLog">
+        select * from systemLog where systemLogId = #{id}
+    </select>
+
+    <select id="getByClassPathAndId" resultType="com.yuanrong.admin.bean.base.SystemLog">
+        SELECT *  FROM systemLog  where classPath = #{classPath} and id = #{id} order by systemLogId desc
+    </select>
+    <insert id="log">
+        INSERT INTO `systemLog`(`classPath`, `id`, `msg`, `createdTime`, `operator`)
+        VALUES ( #{classPath}, #{id}, #{msg}, now(), #{operator})
+    </insert>
+
+</mapper>

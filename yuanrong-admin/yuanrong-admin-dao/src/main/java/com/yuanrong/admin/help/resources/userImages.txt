@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--用户图片-->
+<bean id="userImagesServicesI" class="com.yuanrong.admin.rpc.service.impl.resources.UserImagesServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.resources.UserImagesServicesI" ref="userImagesServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--用户图片-->
+<dubbo:reference id="userImagesServicesI" interface="com.yuanrong.admin.rpc.api.resources.UserImagesServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+<!--用户图片-->
+@Autowired
+public UserImagesDaoI userImagesDaoI;
+
+
+4.在BaseController中，注入services
+
+<!--用户图片-->
+@Autowired
+public UserImagesServicesI userImagesServicesI;

@@ -1,0 +1,48 @@
+/* 广告交易分类 */
+.tab-ip-trade-wrap{
+    width: 100%;
+    background: #e3e6ec;
+    /* margin: 0 0 20px; */
+    color: #64676a;
+}
+.tab-ip-trade-wrap li{
+    float: left;
+    text-align: center;
+    line-height: 18px;
+    font-size: 16px;
+    width: 174px;
+    cursor: pointer;
+}
+.tab-ip-trade-wrap li a{
+    display: inline-block;
+    padding: 16px 0;
+    color: #303132;
+    border-top: 2px solid transparent;
+}
+/* .tab-ip-trade-wrap li:hover, */
+.tab-ip-trade-wrap li.active{
+    background: #fff;
+}
+/* .tab-ip-trade-wrap li a:hover, */
+.tab-ip-trade-wrap li.active a{
+    display: block;
+    /* color: #4f99e8; */
+    color: #6daaec;
+    box-sizing: border-box;
+    border-top: 2px solid #6daaec;
+}
+.tab-ip-trade-wrap li.tab-ip-trade-li4{
+    float: right;
+    cursor: pointer;
+    width: 90px;
+    text-align: center;
+    background: #4895e7;
+}
+.tab-ip-trade-wrap li.tab-ip-trade-li4 a{
+    font-size: 14px;
+    color: #fff;
+}
+.tab-ip-trade-wrap li.tab-ip-trade-li4:hover{
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+}

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.data.DataProcessDaoI">
+
+    <select id="getOrderInfoseller" resultType="java.util.HashMap">
+        select * from orderInfoSeller where orderTypeValue = 1
+    </select>
+
+    <insert id="saveOrderDetail" useGeneratedKeys="true" keyProperty="data.orderDetailId" parameterType="java.util.HashMap">
+        INSERT INTO `orderDetail`(`orderInfoBuyerId`, `price`, `production`, `num`, `productType`, `referId`, `createdTime`, `modifiedTime`,
+        `modifiedCount`, `statusIndex`, `memo`, `basePrice`)
+        VALUES ( #{data.orderInfoId}, #{data.price}, #{data.production}, #{data.num}, #{data.orderTypeValue}, #{data.referId}, #{data.createdTime},
+        #{data.modifiedTime}, 1, 1, NULL, #{data.price})
+    </insert>
+
+    <select id="getSnapshotYrProductionByOrderInfoSellerId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select * from snapshotYrProduction where orderInfoSellerId = #{data.orderInfoSellerId};
+    </select>
+
+    <update id="updateSnpYrProductionOrderDetailId" >
+        update snapshotYrProduction set orderDetailId = #{orderDetailId} where snapshotYrProductionId = #{snpYrproductionId}
+    </update>
+    <update id="updateSnapshotAccount">
+        update snapshotAccount set orderDetailId = #{orderDetailId} where snapshotAccountId = #{snapshotAccountId}
+    </update>
+    <update id="updateSnapshotYrAuthor">
+        update snapshotYrAuthor set orderDetailId = #{orderDetailId} where snapshotYrAuthorId = #{snapshotYrAuthorId}
+    </update>
+    <update id="updateUserBalanceDetails">
+        update userBalanceDetails set referId = #{data.referId} where userBalanceDetailsId = #{data.userBalanceDetailsId}
+    </update>
+    <update id="updateOrderCostInfo">
+        update
+            orderCostInfo
+        set
+            orderInfoId = #{orderInfoBuyerId}
+            <if test="costTypeIndex == 2" >
+                ,costTypeIndex = 1
+            </if>
+            <if test="costTypeIndex == 3" >
+                ,costTypeIndex = 2
+            </if>
+        where
+            orderCostInfoId = #{orderCostInfoId}
+    </update>
+
+
+    <select id="getByOrderSellerId" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT
+            os.*,
+            d.demandId AS 'demand.demandId',
+            d.registeredUserInfoId AS 'demand.registeredUserInfoId'
+        FROM
+            orderInfoSeller os
+            LEFT JOIN demand d ON d.demandId = os.demandId
+        where  os.orderInfoSellerId = #{orderInfoSellerId}
+    </select>
+    <!--通过报名Id获取创作者快照-->
+    <select id="getByOrderInfoSellerId" resultType="com.yuanrong.admin.bean.order.SnapshotYrAuthor">
+
+        SELECT * FROM snapshotYrAuthor where orderInfoSellerId = #{orderInfoSellerId}
+    </select>
+
+    <!--通过用户ID、需求ID、商品ID获取报名信息-->
+    <select id="getOrderInfoSeller" resultType="com.yuanrong.admin.bean.order.OrderInfoSeller">
+        SELECT * FROM orderInfoSeller where demandId = #{demandId} and registeredUserInfoId = #{registeredUserInfoId} and referId =#{referId} and orderTypeValue = #{orderTypeValue}
+    </select>
+    <!--获取卖家用户余额-->
+    <select id="getUserBalanceDetails" resultType="com.yuanrong.admin.bean.fiance.UserBalanceDetails">
+        select * from userBalanceDetails where  referId = #{orderInfoSellerId} and referTypeIndex =3
+    </select>
+    <!--新增卖家订单-->
+    <insert id="saveSellerOrder" parameterType="com.yuanrong.admin.bean.order.SellerOrder" useGeneratedKeys="true" keyProperty="data.sellerOrderId">
+        INSERT INTO `sellerOrder`(`orderDetailId`, `orderSn`, `price`, `payable`, `sellerOrderType`, `orderStatus`, `num`, `production`,
+        `sellerServiceRate`, `registeredUserInfoId`, `createdTime`, `statusIndex`, `modifiedTime`,
+        `channelIndex`, `modifiedCount`, `memo`,mediaUserId)
+        VALUES (#{data.orderDetailId}, #{data.orderSn}, #{data.price}, #{data.payable}, #{data.sellerOrderType},
+        #{data.orderStatus}, #{data.num}, #{data.production}, #{data.sellerServiceRate}, #{data.registeredUserInfoId},
+        #{data.createdTime}, 1, #{data.modifiedTime}, #{data.channelIndex}, 1, #{data.memo},#{data.mediaUserId})
+    </insert>
+    <!--新增订单明细-->
+    <insert id="saveDetail" parameterType="com.yuanrong.admin.bean.order.OrderDetail" useGeneratedKeys="true" keyProperty="data.orderDetailId">
+        INSERT INTO `orderDetail`(`orderInfoBuyerId`, `price`, `production`, `num`, `productType`, `referId`, `createdTime`,
+        `modifiedTime`, `modifiedCount`, `statusIndex`, `memo`,basePrice) VALUES
+        ( #{data.orderInfoBuyerId}, #{data.price}, #{data.production}, #{data.num}, #{data.productType}
+        , #{data.referId}, #{data.createdTime}, #{data.modifiedTime}, 1, 1, #{data.memo},#{data.basePrice})
+
+    </insert>
+    <!--新增买家订单-->
+    <insert id="saveOrderBuyer" parameterType="com.yuanrong.admin.bean.order.OrderInfoBuyer" useGeneratedKeys="true" keyProperty="data.orderInfoBuyerId">
+        INSERT INTO `orderInfoBuyer`(`orderSn`, `totalMoney`, `receivableMoney`, `amountCollected`, `orderStatusValue`,
+         `createdTime`, `payTime`, `payStatusValue`, `registeredUserInfoId`, `cancelReason`,
+         `payInvalidTime`, `modifiedTime`, `statusIndex`, `sourceId`, `createUser`,`orderInfoType`,`buyerServiceRate`,`refreId`,payTypeIndex ,saleUserId,invoiceRate)
+        VALUES (#{data.orderSn},#{data.totalMoney},#{data.receivableMoney},#{data.amountCollected},#{data.orderStatusValue},
+        #{data.createdTime},#{data.payTime},#{data.payStatusValue},#{data.registeredUserInfoId},#{data.cancelReason},
+        #{data.payInvalidTime},#{data.modifiedTime},1,#{data.sourceId},#{data.createUser},#{data.orderInfoType},#{data.buyerServiceRate},
+        #{data.refreId},#{data.payTypeIndex},#{data.saleUserId},#{data.invoiceRate}
+        )
+    </insert>
+
+</mapper>

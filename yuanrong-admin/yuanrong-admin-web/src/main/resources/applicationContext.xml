@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 引入项目配置文件 -->
+
+    <beans profile="development">
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:zookeeper.dev.properties</value>
+                    <value>classpath:redis.dev.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+
+    <beans profile="dev">
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:zookeeper.dev1.properties</value>
+                    <value>classpath:redis.dev.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+
+    <beans profile="test">
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:zookeeper.test.properties</value>
+                    <value>classpath:redis.test.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+    <beans profile="production">
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:zookeeper.online.properties</value>
+                    <value>classpath:redis.online.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+
+    <beans profile="">
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:zookeeper.online.properties</value>
+                    <value>classpath:redis.online.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+
+</beans>

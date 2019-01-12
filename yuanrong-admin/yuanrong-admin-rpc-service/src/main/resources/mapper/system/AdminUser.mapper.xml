@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.system.AdminUserDaoI">
+    <!--登录-->
+    <select id="login" resultType="com.yuanrong.admin.bean.system.AdminUser">
+        SELECT
+             RecID,UserName,RealName,IPhoneNum,PassWord,CreateTime,UpdateTime,StatusValue,AdminRoleID,cpWeiXinId
+        FROM AdminUser
+        WHERE UserName = #{userName} AND PassWord=#{passWord} AND StatusValue = 1
+    </select>
+    <!--依据ID获取AdminUser-->
+    <select id="getAdminUserById" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        AdminRole.RoleName AS adminRoleID_RoleName, RecID AS recID,UserName AS userName,RealName AS realName,
+        IPhoneNum AS iPhoneNum,CreateTime AS createTime,UpdateTime AS updateTime,StatusValue AS statusValue,AdminRoleID AS adminRoleID
+        FROM AdminUser
+        LEFT JOIN AdminRole
+        ON  AdminUser.AdminRoleID = AdminRole.RoleID
+        WHERE RecID = #{recID}  AND StatusValue = 1
+    </select>
+
+
+    <select id="getRoleByID" resultType="java.util.HashMap"  parameterType="java.util.HashMap">
+
+        SELECT T.*,ar.RoleName FROM
+        (
+        	SELECT RecID,apr.adminRoleRecID,apr.isleader from AdminUser AS au
+        	JOIN AdminUserRolePermissionRelation AS apr
+        	ON au.RecID = apr.adminUserRecID
+        	where  RecID=#{recID}
+        ) T
+        JOIN AdminRole AS ar
+        on T.adminRoleRecID =ar.RoleID
+    </select>
+
+
+
+    <!--首页统计 -->
+    <!--
+       SELECT COUNT(*) AS cnt_AccountID FROM PlatformIPAccount WHERE accountStatus = 1 AND createrAdminID in (${underUserIds})
+
+       SELECT COUNT(*) AS cnt_Regist FROM RegisteredUserInfo WHERE   AdminUserCreaterID in (${underUserIds})
+    -->
+
+    <select id="indexCnt" parameterType="java.lang.String" resultType="java.util.HashMap">
+        SELECT * FROM
+             (
+               SELECT COUNT(*) AS cnt_AccountID FROM PlatformIPAccount WHERE accountStatus = 1
+              ) a
+        JOIN (
+			   SELECT COUNT(*) AS cnt_AdvReq FROM  AdvertiserReleaseRequirement WHERE  StatusValue = 1 or StatusValue= 2
+              ) b
+        ON 1 = 1
+        JOIN (
+               SELECT COUNT(*) AS cnt_Regist FROM RegisteredUserInfo
+             ) c
+        ON 1 = 1
+        JOIN (
+               select count(*) AS cnt_CheckAuthor from yrAuthor yra,RegisteredUserInfo ru where yra.registeredUserInfoID = ru.RecID AND yra.authorStatus = 1
+             ) d
+        ON 1 = 1
+		JOIN (
+               SELECT COUNT(*) AS cnt_CheckRegistUser FROM RegisteredUserInfo WHERE   sellerStatusValue=2
+             ) e
+        ON 1 = 1
+        JOIN (
+               SELECT COUNT(*) AS cnt_CheckProduction FROM yrProduction WHERE  yrProductionStatusIndex = 1 and statusIndex = 1
+             ) f
+        ON 1 = 1
+				JOIN (
+               SELECT COUNT(*) AS cnt_PlanCheckDemand FROM demand WHERE  demandStatusIndex = 1 and statusIndex = 1
+             ) g
+        ON 1 = 1
+				JOIN (
+               SELECT COUNT(*) AS cnt_PlanDisposeDemandFast FROM demandFast WHERE  demandFastStatusIndex = 1 and statusIndex = 1
+             ) h
+        ON 1 = 1
+				JOIN (
+               SELECT COUNT(*) AS cnt_PlanResponseOrders FROM orderInfoSeller WHERE  orderStatusValue = 2 and statusIndex = 1
+             ) i
+        ON 1 = 1
+				JOIN (
+               SELECT COUNT(*) AS cnt_PlanConfirmedUseOrders FROM orderInfoSeller WHERE  orderStatusValue = 3 and statusIndex = 1
+             ) j
+        ON 1 = 1
+    </select>
+
+    <!--按角色id查找用户-slh -->
+    <select id="findListByRoleID" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.system.AdminUser">
+        SELECT
+        RecID,UserName,RealName,IPhoneNum,PassWord,CreateTime,UpdateTime,StatusValue,AdminRoleID
+        FROM AdminUser where AdminRoleID = #{roleID} and StatusValue = 1
+    </select>
+
+    <select id="getMyUnderling" resultType="java.lang.String" parameterType="java.lang.Integer">
+        SELECT GROUP_CONCAT(DISTINCT underUserRecID) underling from AdminUserDataPermissionRelation where managerUserRecID = #{adminUserID}
+        GROUP BY managerUserRecID
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.system.AdminUser">
+        select *  from AdminUser
+        where RecID = #{id} and StatusValue =1
+    </select>
+
+    <insert id="save" parameterType="com.yuanrong.admin.bean.system.AdminUser" useGeneratedKeys="true" keyProperty="data.RecID">
+    INSERT INTO AdminUser
+     <trim prefix="(" suffix=")" suffixOverrides="," >
+         <if test="data.UserName != null" >
+             UserName,
+         </if>
+         <if test="data.RealName != null" >
+             RealName,
+         </if>
+         <if test="data.PassWord != null" >
+             PassWord,
+         </if>
+         <if test="data.IPhoneNum != null" >
+             IPhoneNum,
+         </if>
+         <if test="data.CreateTime != null" >
+             CreateTime,
+         </if>
+         <if test="data.UpdateTime != null" >
+             UpdateTime,
+         </if>
+         <if test="data.StatusValue != null" >
+             StatusValue,
+         </if>
+         <if test="data.AdminRoleID != null" >
+             AdminRoleID,
+         </if>
+         <if test="data.QrCodeWx != null" >
+             QrCodeWx,
+         </if>
+         <if test="data.Email != null" >
+             Email,
+         </if>
+         <if test="data.cpWeiXinId != null" >
+             cpWeiXinId,
+         </if>
+     </trim>
+     <trim prefix="values (" suffix=")" suffixOverrides="," >
+         <if test="data.UserName != null" >
+             #{data.UserName},
+         </if>
+         <if test="data.RealName != null" >
+             #{data.realName},
+         </if>
+         <if test="data.PassWord != null" >
+             #{data.PassWord},
+         </if>
+         <if test="data.IPhoneNum != null" >
+             #{data.IPhoneNum},
+         </if>
+         <if test="data.CreateTime != null" >
+             #{data.CreateTime},
+         </if>
+         <if test="data.UpdateTime != null" >
+             #{data.UpdateTime},
+         </if>
+         <if test="data.StatusValue != null" >
+             #{data.StatusValue},
+         </if>
+         <if test="data.AdminRoleID != null" >
+             #{data.AdminRoleID},
+         </if>
+         <if test="data.QrCodeWx != null" >
+             #{data.QrCodeWx},
+         </if>
+         <if test="data.Email != null" >
+         #{data.Email},
+         </if>
+         <if test="data.cpWeiXinId != null" >
+             #{data.cpWeiXinId},
+         </if>
+    </trim>
+    </insert>
+
+    <select id="getByRealNameOrIPhoneNum" parameterType="java.util.HashMap" resultType="com.yuanrong.admin.bean.system.AdminUser">
+        select *  from AdminUser
+        where
+            1 = 1
+            <if test="userName != null">
+            AND  UserName = #{userName}
+           </if>
+           <if test="iPhoneNum != null">
+              AND  IPhoneNum = #{iPhoneNum}
+           </if>
+           <if test="recID != null">
+               AND  RecID != #{recID}
+           </if>
+    </select>
+
+    <update id="updateAdminUserByID" parameterType="com.yuanrong.admin.bean.system.AdminUser">
+        UPDATE AdminUser
+        <trim prefix="SET" suffixOverrides=",">
+          <if test="UserName != null">
+              UserName = #{UserName} ,
+          </if>
+          <if test="RealName != null">
+            RealName = #{RealName} ,
+          </if>
+          <if test="IPhoneNum != null">
+            IPhoneNum = #{IPhoneNum} ,
+          </if>
+          <if test="PassWord != null">
+            PassWord = #{PassWord} ,
+          </if>
+         <if test="QrCodeWx != null">
+            QrCodeWx = #{QrCodeWx} ,
+         </if>
+         <if test="Email != null">
+            Email = #{Email} ,
+         </if>
+         <if test="AdminRoleID != null">
+            AdminRoleID = #{AdminRoleID},
+         </if>
+         <if test="StatusValue != null">
+             StatusValue = #{StatusValue},
+         </if>
+         <if test="cpWeiXinId != null" >
+             cpWeiXinId = #{cpWeiXinId},
+         </if>
+        </trim>
+        where RecID =#{RecID}
+    </update>
+
+    <select id="list" resultType="com.yuanrong.admin.bean.system.AdminUser" parameterType="com.yuanrong.admin.bean.system.AdminUser">
+        SELECT * FROM AdminUser
+    </select>
+
+    <select id="listAdminUserByCondtion" resultType="com.yuanrong.admin.bean.system.AdminUser" parameterType="com.yuanrong.admin.bean.system.AdminUser">
+        SELECT * FROM AdminUser
+        WHERE
+        1=1
+        <if test="data.StatusValue != null">
+            AND StatusValue = #{data.StatusValue}
+        </if>
+        <if test="data.AdminRoleID != null">
+            AND AdminRoleID = #{data.AdminRoleID}
+        </if>
+        <if test="data.IPhoneNumS != null">
+            AND
+            <foreach collection="data.IPhoneNumS" item="item" open="(" close=")" separator="or">
+                IPhoneNum = #{item}
+            </foreach>
+        </if>
+        <if test="data.RealNames != null">
+            AND
+            <foreach collection="data.RealNames" item="item" open="(" close=")" separator="or">
+                RealName = #{item}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

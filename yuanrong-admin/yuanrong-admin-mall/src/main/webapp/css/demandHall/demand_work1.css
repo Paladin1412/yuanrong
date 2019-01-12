@@ -1,0 +1,211 @@
+.demand-detail-wrap{
+    width: 1170px;
+    margin: 0 auto;
+}
+.container-left{
+    width: 870px;
+    /*min-height: 660px;*/
+    background: #fff;
+    border-radius: 2px;
+    padding-bottom: 50px;
+    /* overflow: hidden; */
+    float: left;
+}
+
+.container-demand-info  ul{
+    overflow: hidden;
+    text-align: center;
+    border-radius: 3px;
+    margin: 20px 37px 26px 33px;
+    background: #F5F7FA;
+}
+.container-demand-info  ul > li{
+    float: left;
+    width: 199px;
+    height: 90px;
+}
+.container-demand-info ul > li.line {
+    width: 0;
+    height: 50px;
+    border-right: 1px solid #E9EBEC;
+    position: relative;
+    top: 20px;
+}
+.container-demand-info  ul > li > div{
+    height: 33px;
+    line-height: 33px;
+    margin-top: 16px;
+    margin-bottom: 4px;
+}
+.container-demand-info  ul > li:first-child > div{
+    font-size: 24px;
+    color: #4895E7;
+}
+.container-demand-info  ul > li:nth-child(n+2) > div{
+    font-size: 20px;
+    color: #4895E7;
+}
+.container-demand-info  ul > li > span{
+    color: #82868A;
+}
+.container-demand-info  ul > li > span > i{
+    margin-right: 5px;
+}
+.num-unit{
+    font-size: 12px;
+}
+
+.container-demand-detail-title{
+    height: 38px;
+    margin: 0 37px 0 33px;
+    border-bottom: 1px solid #E9EBEC;
+}
+.container-demand-detail-title > span{
+    font-size: 20px;
+    color: #64676A;
+}
+.container-demand-detail-list{
+    margin: 0 37px 0 33px;
+}
+.container-demand-detail-list li{
+    margin-top: 20px;
+}
+.container-demand-detail-list li > span:first-child{
+    color: #82868A;
+    margin-right: 8px;
+}
+.container-demand-detail-list li > span:last-child{
+    color: #48494a;
+}
+.container-bottom{
+    width: 870px;
+    /*height: 160px;*/
+    height: auto;
+    background: #fff;
+    margin-top: 23px;
+    border-radius: 2px;
+    padding: 15px 34px 18px 32px;
+    float: left;
+}
+.container-bottom > div{
+    font-size: 20px;
+    color: #64676A;
+}
+.container-bottom  ul{
+    width: 580px;
+    float: left;
+}
+.container-bottom  ul > li{
+    font-size: 12px;
+    color: #64676A;
+    line-height: 12px;
+    margin-top: 10px;
+}
+.submit-pay{
+    float: right;
+    text-align: center;
+}
+.submit-pay div{
+    font-size: 24px;
+    color: #F5A623;
+    text-align: center;
+}
+.submit-pay > a > span{
+    display: inline-block;
+    margin-top: 5px;
+    width: 90px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    font-size: 14px;
+    color: #FFFFFF;
+    background: #4895E7;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.create-require{
+    overflow: hidden;
+}
+.create-require > span:first-child{
+    display: block;
+    width: 70px;
+    float: left;
+    line-height: 30px;
+}
+.create-require > span:last-child{
+    float: left;
+    width: 700px;
+    line-height: 30px;
+}
+
+.container-demand-preview {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgba(0,0,0,.3);
+    z-index: 11111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container-demand-preview img {
+    border: 3px solid #fff;
+}
+
+.imgDl:hover .download{
+    display: block;
+}
+.imgDl {
+    width: 90px;
+    /*height: 90px;*/
+    text-align: center;
+    float: left;
+    margin-right: 10px;
+    position: relative;
+}
+.imgType {
+    width: 90px;
+    height: 68px;
+}
+.imgHtml {
+    white-space: pre-wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    font-size: 12px;
+}
+.download {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 90px;
+    height: 68px;
+    background: rgba(29,29,30,0.5);
+    display: none;
+}
+.download div {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction: column;
+    height: 68px;
+}
+.download a,.download p{
+    display: block;
+    width: 60px;
+    height: 24px;
+    font-size: 12px;
+    color: #fff;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    margin: 5px auto 0;
+    border: 1px solid #fff;
+}
+.hide{
+    display: none!important;
+}

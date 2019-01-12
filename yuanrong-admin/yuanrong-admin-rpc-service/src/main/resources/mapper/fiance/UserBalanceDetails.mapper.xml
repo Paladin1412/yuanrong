@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.fiance.UserBalanceDetailsDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.fiance.UserBalanceDetails">
+        INSERT INTO `userBalanceDetails`(`tradeTypeIndex`, `money`, `remark`, `businessTime`, `referTypeIndex`, `referId`,
+        `registeredUserInfoId`,createdTime)
+        VALUES (#{data.tradeTypeIndex}, #{data.money}, #{data.remark}, #{data.businessTime}, #{data.referTypeIndex},
+         #{data.referId}, #{data.registeredUserInfoId},now());
+
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.fiance.UserBalanceDetails" parameterType="com.yuanrong.admin.bean.fiance.UserBalanceDetails">
+        SELECT * from userBalanceDetails
+    </select>
+ <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.fiance.UserBalanceDetails">
+        select * from userBalanceDetails where userBalanceDetailsId = #{id}
+    </select>
+
+    <select id="getBalance" resultType="java.math.BigDecimal" parameterType="java.lang.Integer">
+        SELECT ifnull(SUM(money),0) as money from userBalanceDetails where registeredUserInfoId = #{registeredUserInfoId}
+    </select>
+</mapper>

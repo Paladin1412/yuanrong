@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.base.DictInfoDaoI">
+    <select id="getDictInfoByType" resultType="com.yuanrong.admin.bean.base.DictInfo" parameterType="java.lang.Integer">
+        SELECT * from DictInfo WHERE  `Type` = #{type}  ORDER BY orderNum
+    </select>
+
+    <select id="getDictInfoByTypeAndName"  resultType="com.yuanrong.admin.bean.base.DictInfo" >
+        SELECT * from DictInfo WHERE  `Type` = #{type} AND `name`=#{name}
+    </select>
+
+    <select id="getDictInfoByTypeS"  parameterType="java.util.List" resultType="com.yuanrong.admin.bean.base.DictInfo" >
+        SELECT * from DictInfo WHERE  `Type`  in
+        <foreach collection="types" item="typeId" open="(" close=")" separator=",">
+            #{typeId}
+        </foreach>
+    </select>
+
+    <select id="getDictInfoByTypeAndID"  resultType="com.yuanrong.admin.bean.base.DictInfo">
+        SELECT * from DictInfo WHERE  `Type` = #{type} AND id = #{id}
+    </select>
+
+    <select id="getById" resultType="com.yuanrong.admin.bean.base.DictInfo" parameterType="java.lang.Integer">
+        SELECT * from DictInfo where id = #{id}
+    </select>
+
+    <select id="getByName" resultType="com.yuanrong.admin.bean.base.DictInfo" >
+        SELECT * from DictInfo where `name` = #{name}
+    </select>
+
+    <!--前台商城——根据作者数量获取内容分类字典-->
+    <select id="getAuthorContentType" resultType="java.util.Map">
+        SELECT
+            dic.Id AS CategoryID,
+            dic.`name` AS CategoryName,
+            IF( IFNULL( dc.num, 0 ) > 0, 1, 0 ) flag
+        FROM
+            DictInfo dic
+            LEFT JOIN
+            (
+                SELECT
+                    yrac.categoryId,
+                    count( yrac.categoryId ) AS num
+                FROM
+                    yrAuthorArticleCategory yrac,
+                    DictInfo dic
+                WHERE
+                    dic.id = yrac.categoryId
+                    AND dic.type = #{type}
+                    GROUP BY
+                        yrac.categoryId
+            ) dc ON dc.categoryId = dic.id
+        WHERE
+            dic.type = #{type}
+            ORDER BY dc.num DESC
+    </select>
+</mapper>

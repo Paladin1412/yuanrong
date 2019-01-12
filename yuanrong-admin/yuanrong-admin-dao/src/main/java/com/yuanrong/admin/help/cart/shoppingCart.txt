@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--购物车-->
+<bean id="shoppingCartServicesI" class="com.yuanrong.admin.rpc.service.impl.cart.ShoppingCartServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.cart.ShoppingCartServicesI" ref="shoppingCartServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--购物车-->
+<dubbo:reference id="shoppingCartServicesI" interface="com.yuanrong.admin.rpc.api.cart.ShoppingCartServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+//购物车
+@Autowired
+public ShoppingCartDaoI shoppingCartDaoI;
+
+
+4.在BaseController中，注入services
+
+//购物车
+@Autowired
+public ShoppingCartServicesI shoppingCartServicesI;

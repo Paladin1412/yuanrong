@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--交易记录-->
+<bean id="tradingRecordServicesI" class="com.yuanrong.admin.rpc.service.impl.trading.TradingRecordServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.trading.TradingRecordServicesI" ref="tradingRecordServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--交易记录-->
+<dubbo:reference id="tradingRecordServicesI" interface="com.yuanrong.admin.rpc.api.trading.TradingRecordServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+//交易记录
+@Autowired
+public TradingRecordDaoI tradingRecordDaoI;
+
+
+4.在BaseController中，注入services
+
+//交易记录
+@Autowired
+public TradingRecordServicesI tradingRecordServicesI;

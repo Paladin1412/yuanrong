@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--圆融作品-->
+<bean id="yRProductionServicesI" class="com.yuanrong.admin.rpc.service.impl.author.YRProductionServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.author.YRProductionServicesI" ref="yRProductionServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--圆融作品-->
+<dubbo:reference id="yRProductionServicesI" interface="com.yuanrong.admin.rpc.api.author.YRProductionServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+<!--圆融作品-->
+@Autowired
+public YRProductionDaoI yRProductionDaoI;
+
+
+4.在BaseController中，注入services
+
+<!--圆融作品-->
+@Autowired
+public YRProductionServicesI yRProductionServicesI;

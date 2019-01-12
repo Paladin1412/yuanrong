@@ -1,0 +1,174 @@
+    .pay-step-item1{
+        background: #7cbc5a;
+        color: #fff;
+    }
+    
+    #pay-roll1:after {
+        content:"";
+        width:0;
+        height:0;
+        position:absolute;
+        top:0;
+        right:-10px;
+        border-top:solid 15px transparent;
+        border-left:solid 10px #f4f6f9;
+        border-bottom:solid 15px transparent;
+    }
+    #pay-roll2:before {
+        content:"";
+        width:0;
+        height:0;
+        position:absolute;
+        left:0;
+        top:0;
+        border-top:solid 15px transparent;
+        border-left:solid 10px #fff;
+        border-bottom:solid 15px transparent;
+    }
+    #pay-roll3:after {
+        content:"";
+        width:0;
+        height:0;
+        position:absolute;
+        right:-10px;
+        top:0;
+        border-top:solid 15px transparent;
+        border-left:solid 10px #eaf4e5;
+        border-bottom:solid 15px transparent;
+    }
+    #pay-roll1,
+    #pay-roll2 {
+        position: relative;
+        background: #f4f6f9;
+        color: #64676a;
+    }
+    #content .pay-header .pay-step .pay-roll2-before{
+        border-left-color: #f4f6f9;
+    }
+    .order-wrap{
+        width: 1170px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+    }
+    .order-wrap table{
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+        border: none;
+    }
+    .order-wrap table thead{
+        background: #F4F6F9;
+        line-height: 40px;
+        color: #303132;
+    }
+    .order-wrap .cell{
+        padding: 0 4px;  
+    }
+    .order-wrap table tbody{
+        color: #64676A;
+    }
+    .order-wrap table tbody tr{
+    }
+    .order-wrap table tbody tr td{
+        border-bottom: 1px solid #EFF1F3;
+        padding: 20px 0;
+    }
+    .order-detail-lt-wrap{
+        float: left;
+        padding-right: 10px;
+    }
+    .order-detail-rt-wrap{
+        float: left;
+        border-left: 1px solid #EAEDF0;
+        padding-left: 10px;
+        color: #82868A;
+    }
+    .order-detail-lt-wrap p,
+    .order-detail-rt-wrap p{
+        line-height: 20px;
+    }
+    .order-img-wrap{
+        float: left;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #eee;
+    }
+    .img-wrap img{
+        width: 100%;
+    }
+    .order-person-info-wrap{
+        float: left;
+        padding-left: 8px;
+    }
+    .order-price-wrap{
+        color: #64676A;
+        font-size: 12px;
+        padding-top: 20px;
+        text-align: right;
+    }
+    .price-totle-wrap{
+        padding-top: 8px;
+        border-top: 1px solid #EFF1F3;
+    }
+    .price-item-wrap div,
+    .price-totle-wrap div{
+        float: left;
+    }
+    .price-item-div1{
+        width: 88%;
+        text-align: right;
+    }
+    .price-item-div2{
+        text-align: left;
+    }
+    .price-totle-wrap span{
+        font-size: 16px;
+        color: #F5A623;
+        font-weight: 600;
+    }
+    .price-item-wrap{
+        line-height: 22px;
+    }
+    .price-item-wrap2{
+        padding-bottom: 6px;
+    }
+    .order-btn-wrap{
+        text-align: right;
+        padding: 20px 3.8% 20px 0;
+    }
+    .order-btn-wrap div{
+        display: inline-block;
+        cursor: pointer;
+    }
+    .order-confirm-btn{
+        margin-left: 20px;
+        background: #4895E7;
+        border-radius: 2px;
+        padding: 10px 18px;
+        color: #fff;
+        font-size: 14px;
+    }
+    .order-back-btn a{
+        font-size: 12px;
+        color: #64676A;
+    }
+    .order-wrap .cell-order-wrap{
+        padding-left: 14px;
+        text-align: left;
+    }
+
+    #js-order-list-wrap tr{
+        transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -webkit-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+    }
+    #js-order-list-wrap tr:hover{
+        background: #f4f6f9;
+    }
+    #js-order-list-wrap tr:hover .or-article-detail{
+        color: #4895e7;
+    }

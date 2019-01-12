@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.account.PlatformIPAccountPriceDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.account.PlatformIPAccountPrice">
+        INSERT INTO `PlatformIPAccountPrice`(`iPAcctountID`, `price`, `platformPriceNameID`, `statusIndex`, `source`, `createdTime`, isOriginal)
+        VALUES (#{data.iPAcctountID}, #{data.price}, #{data.platformPriceNameID}, 1, 13, now(), #{data.isOriginal})
+    </insert>
+    <update id="update" parameterType="com.yuanrong.admin.bean.account.PlatformIPAccountPrice">
+        UPDATE PlatformIPAccountPrice set price = #{data.price} ,isOriginal = #{data.isOriginal}
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.account.PlatformIPAccountPrice">
+        SELECT * from PlatformIPAccountPrice WHERE  id = #{id}
+    </select>
+
+    <select id="getAccountPriceByIPAccountID" resultType="com.yuanrong.admin.bean.account.PlatformIPAccountPrice" parameterType="java.lang.Integer">
+        SELECT ppn.priceName , pip.* from PlatformPriceName ppn , PlatformIPAccountPrice pip
+        where ppn.id = pip.platformPriceNameID and pip.iPAcctountID = #{ipAccountID}
+    </select>
+
+    <select resultType="java.util.Map" id="getGroupPriceByIPAccountIDs">
+        select pip.iPAcctountID , GROUP_CONCAT(CONCAT(ppn.priceName,'_-_' , pip.price,'_-_' ,ifnull(pip.isOriginal , 0 ),'_-_' , pip.id,'_-_' , pip.platformPriceNameID,'_-_' , di.`name`) SEPARATOR '-_-') info
+        from PlatformIPAccountPrice pip , PlatformPriceName ppn , DictInfo di
+        where pip.platformPriceNameID =  ppn.id and di.id = pip.source
+        <if test="sourceId > 0">
+            and pip.source = #{sourceId}
+        </if>
+        and pip.iPAcctountID in
+            <foreach collection="iPAccountIDs" item="arr" index="index" open="(" separator="," close=")">
+                #{arr}
+            </foreach>
+        GROUP BY pip.iPAcctountID
+    </select>
+
+    <select resultType="java.util.Map" id="getGroupPriceByPids">
+        SELECT a.pid , GROUP_CONCAT(CONCAT(a.priceName,'_-_' , a.price ,'_-_' ,ifnull(a.isOriginal , 0 ),'_-_' , a.id,'_-_' , a.platformPriceNameID,'_-_' , a.`name`) SEPARATOR '-_-') info
+        from (
+        select pi.pid ,  ppn.priceName,  min(pip.price) as price , ifnull(pip.isOriginal , 0 ) as isOriginal , pip.id ,  pip.platformPriceNameID, di.`name`
+        from PlatformIPAccountPrice pip , PlatformPriceName ppn , DictInfo di , PlatformIPAccount pi
+        where pip.platformPriceNameID =  ppn.id and di.id = pip.source and pi.id = pip.iPAcctountID and pip.price > 0
+        and pi.pid is not null and pi.pid != ''
+        AND pi.accountStatus = 1
+        and pi.pid in
+        <foreach collection="pids" item="arr" index="index" open="(" separator="," close=")">
+            #{arr}
+        </foreach>
+        GROUP BY pi.pid , pip.source , pip.platformPriceNameID
+        ) a GROUP BY a.pid
+    </select>
+
+
+
+</mapper>

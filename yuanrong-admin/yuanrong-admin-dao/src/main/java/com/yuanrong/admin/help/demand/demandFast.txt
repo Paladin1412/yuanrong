@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--快速需求-->
+<bean id="demandFastServicesI" class="com.yuanrong.admin.rpc.service.impl.demand.DemandFastServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.demand.DemandFastServicesI" ref="demandFastServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--快速需求-->
+<dubbo:reference id="demandFastServicesI" interface="com.yuanrong.admin.rpc.api.demand.DemandFastServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+<!--快速需求-->
+@Autowired
+public DemandFastDaoI demandFastDaoI;
+
+
+4.在BaseController中，注入services
+
+<!--快速需求-->
+@Autowired
+public DemandFastServicesI demandFastServicesI;

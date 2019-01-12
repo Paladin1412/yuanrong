@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.usermanagement.RegisteredUserExtCompanyDAOI">
+    <select id="getById" parameterType="java.lang.Integer"
+            resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserExtCompany">
+        SELECT * from RegisteredUserExtCompany WHERE  recID = #{id}
+    </select>
+    <update id="updateById" parameterType="com.yuanrong.admin.bean.usermanagement.RegisteredUserExtCompany">
+        update RegisteredUserExtCompany
+        <set>
+            <if test="modifiedCount != null ">modifiedCount =#{modifiedCount},</if>
+            <if test="modifiedTime != null ">modifiedTime =#{modifiedTime},</if>
+            <if test="recID != null ">RecID =#{recID},</if>
+            <if test="companyName != null ">CompanyName =#{companyName},</if>
+            <if test="leaderName != null ">LeaderName =#{leaderName},</if>
+            <if test="mobile != null ">Mobile =#{mobile},</if>
+            <if test="roleID != null ">RoleID =#{roleID},</if>
+            <if test="companyID != null ">CompanyID =#{companyID},</if>
+            <if test="companyImageUrl != null ">CompanyImageUrl =#{companyImageUrl},</if>
+            <if test="companyCheckFailedReasonID != null ">companyCheckFailedReasonID =#{companyCheckFailedReasonID},</if>
+            <if test="companyCheckStatus != null ">
+                <choose>
+                    <when test='companyCheckStatus == 1'>
+                        companyCheckStatus =#{companyCheckStatus},
+                        companyCheckFailedReasonID = null,
+
+                    </when>
+                    <otherwise>
+                        companyCheckStatus =#{companyCheckStatus},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="createTime != null ">CreateTime =#{createTime},</if>
+            <if test="memo != null ">memo =#{memo},</if>
+            <if test="status != null ">status =#{status},</if>
+       </set>
+        where RecID= #{RecID}
+    </update>
+
+</mapper>

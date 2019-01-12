@@ -1,0 +1,1007 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.usermanagement.RegisteredUserInfoDAOI">
+
+    <insert id="save" parameterType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        INSERT INTO
+        RegisteredUserInfo
+        (
+         `Mobile`, `NickName`, `Role`, `UserType`, `RealName`, `IDCardNumber`,
+        `IDCardFaceImageUrl`, `IDCardBackImageUrl`
+        )
+        VALUES
+        (
+        #{data.mobile},#{data.nickName},#{data.role},#{data.userType},#{data.realName},#{data.IDCardNumber},
+        #{data.IDCardFaceImageUrl},#{data.IDCardBackImageUrl}
+        )
+    </insert>
+    <!--按id更新 -->
+    <update id="updateByID" parameterType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        update RegisteredUserInfo
+        <set>
+            <if test="recID != null ">RecID =#{recID },</if>
+            <if test="userName != null ">UserName =#{userName  },</if>
+            <if test="mobile != null ">Mobile =#{mobile  },</if>
+            <if test="password != null ">Password =#{password },</if>
+            <if test="userType != null ">UserType =#{userType },</if>
+
+            <if test="statusValue != null ">StatusValue =#{statusValue  },</if>
+            <if test="dynamicPwd != null ">DynamicPwd =#{dynamicPwd   },</if>
+
+            <if test="headImage != null ">HeadImage =#{headImage  },</if>
+            <if test="introduction != null ">Introduction =#{introduction    },</if>
+
+            <if test="nickName != null ">NickName =#{nickName  },</if>
+            <if test="sellerStatusValue !=null">sellerStatusValue = #{sellerStatusValue},</if>
+            <if test="buyerStatusValue !=null">buyerStatusValue = #{buyerStatusValue},</if>
+            <if test="buyerCheckFailedReasonID !=null">buyerCheckFailedReasonID = #{buyerCheckFailedReasonID},</if>
+            <if test="sellerCheckFailedReasonID !=null">sellerCheckFailedReasonID = #{sellerCheckFailedReasonID},</if>
+            <if test="role != null ">Role =#{role       },</if>
+            <if test="adminUserMediaID != null ">AdminUserMediaID =#{adminUserMediaID  },</if>
+            <if test="adminUserSalesID != null ">AdminUserSalesID =#{adminUserSalesID  },</if>
+            <if test="actionStatus != null ">ActionStatus =#{actionStatus      },</if>
+            <if test="realName != null ">RealName =#{realName          },</if>
+            <if test="IDCardNumber != null ">IDCardNumber =#{IDCardNumber      },</if>
+            <if test="IDCardFaceImageUrl != null ">IDCardFaceImageUrl =#{IDCardFaceImageUrl},</if>
+            <if test="IDCardBackImageUrl != null ">IDCardBackImageUrl =#{IDCardBackImageUrl},</if>
+            <if test="companyExtID != null ">CompanyExtID =#{companyExtID      },</if>
+
+
+            <if test="adminUserCreaterID != null ">AdminUserCreaterID =#{adminUserCreaterID},</if>
+            <if test="createTime != null ">CreateTime =#{createTime   },</if>
+            UpdateTime =now(),
+
+            <if test="buyerType  != null ">buyerType =#{buyerType },</if>
+            <if test="sellerType != null ">sellerType =#{sellerType},</if>
+            <if test="currentRole!= null ">currentRole =#{currentRole},</if>
+            <if test="buyerAuditUser!= null ">buyerAuditUser =#{buyerAuditUser},</if>
+            <if test="sellerAuditUser!= null ">sellerAuditUser =#{sellerAuditUser},</if>
+            <if test="buyerAskAudit!= null ">buyerAskAudit =#{buyerAskAudit},</if>
+            <if test="sellerAskAudit!= null ">sellerAskAudit =#{sellerAskAudit},</if>
+
+
+        </set>
+        where
+        RecID = #{recID}
+    </update>
+    <!--批量审核失败 -->
+    <update id="batchCheckedFail" parameterType="com.yuanrong.admin.seach.BatchUpdateSaleOrMedia">
+        update RegisteredUserInfo
+        <set>
+            StatusValue = '0',
+            <if test="checkFailedReasonID!= null">
+                CheckFailedReasonID = #{checkFailedReasonID}
+            </if>
+        </set>
+
+        where
+        RecID IN
+        <foreach collection="idss" index="index" item="arr" separator="," open="(" close=")">
+            #{arr}
+        </foreach>
+    </update>
+    <!--批量审核通过 -->
+    <update id="batchCheckedPass" parameterType="com.yuanrong.admin.seach.BatchUpdateSaleOrMedia">
+        update RegisteredUserInfo
+        <set>
+            StatusValue = '1'
+        </set>
+        where
+        RecID IN
+        <foreach collection="idss" index="index" item="arr" separator="," open="(" close=")">
+            #{arr}
+        </foreach>
+    </update>
+    <!--批量重置密码 -->
+    <update id="batchResetPassword" parameterType="com.yuanrong.admin.seach.BatchUpdateSaleOrMedia">
+        update RegisteredUserInfo
+        <set>
+            password = #{resetPassword}
+        </set>
+        where
+        RecID IN
+        <foreach collection="ids" index="index" item="arr" separator="," open="(" close=")">
+            #{arr}
+        </foreach>
+    </update>
+    <!--批量更换媒介 -->
+    <update id="batchUpdateMediaForUser" parameterType="com.yuanrong.admin.seach.BatchUpdateSaleOrMedia">
+        update RegisteredUserInfo
+        <set>
+            <if test="mediaID != null ">
+                AdminUserMediaID =#{mediaID}
+            </if>
+        </set>
+        where
+        RecID IN
+        <foreach collection="ids" index="index" item="arr" separator="," open="(" close=")">
+            #{arr}
+        </foreach>
+    </update>
+    <!--批量更换销售 -->
+    <update id="batchUpdateSaleForUser" parameterType="com.yuanrong.admin.seach.BatchUpdateSaleOrMedia">
+        update RegisteredUserInfo
+        <set>
+            <if test="saleID != null ">
+                AdminUserSalesID =#{saleID}
+            </if>
+        </set>
+        where
+        RecID IN
+        <foreach collection="ids" index="index" item="arr" separator="," open="(" close=")">
+            #{arr}
+        </foreach>
+    </update>
+    <!--添加公司，返回主键-->
+    <insert id="saveConpany" parameterType="com.yuanrong.admin.seach.RegisteredUserAndCompany">
+        INSERT INTO
+        RegisteredUserExtCompany
+        (
+        `CompanyName`, `LeaderName`, `Mobile`, `RoleID`, `CompanyID`, `CompanyImageUrl`
+        )
+        VALUES
+        (
+        #{companyName},#{leaderName},#{leaderMobile},#{roleID},#{companyID},#{companyImageUrl}
+        )
+        <selectKey resultType="Integer" order="AFTER" keyProperty="companyExtID">
+            SELECT LAST_INSERT_ID() AS companyExtID
+        </selectKey>
+    </insert>
+    <!-- 添加用户后台-->
+    <insert id="saveRegisterUser" parameterType="com.yuanrong.admin.seach.RegisteredUserAndCompany">
+        INSERT INTO
+        RegisteredUserInfo
+        (
+        `Mobile`, `NickName`, `Role`, `UserType`, `RealName`, `IDCardNumber`,
+        `IDCardFaceImageUrl`,
+        `IDCardBackImageUrl`,`CompanyExtID`,`createTime`,`AdminUserCreaterID`,`AdminUserMediaID`,`AdminUserSalesID`,
+        `Username`,`buyerType`,`sellerType`,`currentRole`,`Password`,<!--,`RealNameSeller`, `IDCardNumberSeller`, `IDCardFaceImageUrlSeller`, `IDCardBackImageUrlSeller`,
+        `CompanyExtIDSeller`-->
+        `sellerStatusValue`,`buyerStatusValue`,sourceID,`buyerAskAudit`,`sellerAskAudit`
+        )
+        VALUES
+        (
+        #{userMobile},#{nickName},#{role},#{userType},#{realName},#{IDCardNumber},
+        #{IDCardFaceImageUrl},#{IDCardBackImageUrl},#{companyExtID},now(),#{adminUserCreaterID},#{adminUserMediaID},#{adminUserSalesID},
+        #{userMobile},#{buyerUserType},#{sellerUserType},#{currentRole},#{password},
+        #{sellerStatusValue},#{buyerStatusValue},2,#{buyerAskAudit},#{sellerAskAudit}
+        )
+        <selectKey resultType="Integer" order="AFTER" keyProperty="recID">
+            SELECT LAST_INSERT_ID() AS recID
+        </selectKey>
+    </insert>
+    <select id="getById" parameterType="java.lang.Integer"
+            resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        SELECT * FROM RegisteredUserInfo WHERE RecID = #{id}
+    </select>
+
+    <!--根据实体类的值进行查询 -->
+    <select id="getByObject" parameterType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo"
+            resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        SELECT
+        u.*,
+        `CompanyName` as 'registeredUserExtCompany.companyName',
+        `LeaderName` AS 'registeredUserExtCompany.leaderName',
+        c.`Mobile` AS 'registeredUserExtCompany.mobile',
+        `RoleID` AS 'registeredUserExtCompany.roleID',
+        `CompanyID` AS 'registeredUserExtCompany.companyID',
+        `CompanyImageUrl` AS 'registeredUserExtCompany.companyImageUrl',
+        `companyCheckStatus`AS `registeredUserExtCompany.companyCheckStatus`,
+        `companyCheckFailedReasonID` as `registeredUserExtCompany.companyCheckFailedReasonID`
+        FROM  RegisteredUserInfo u
+        LEFT JOIN RegisteredUserExtCompany c ON u.CompanyExtID = c.RecID
+        <where>
+            <if test="recID != null ">and u.recID= #{recID}</if>
+            <if test="mobile != null ">and u.mobile= #{mobile}</if>
+            <if test="role!=null">and role = #{role}</if>
+            <if test="buyerType !=null">and buyerType= #{buyerType}</if>
+            <if test="sellerType != null">and  sellerType = #{sellerType}</if>
+        </where>
+    </select>
+
+    <select id="getByMobile" parameterType="java.lang.String"
+            resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        SELECT * FROM RegisteredUserInfo WHERE Mobile = #{mobile}
+    </select>
+
+    <select id="getListByIds" parameterType="java.util.List"
+            resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        SELECT * FROM RegisteredUserInfo WHERE RecID IN
+        <foreach collection="Ids" item="Id" open="(" close=")" separator=",">
+            #{Id}
+        </foreach>
+    </select>
+    <!--获取手机条数 -->
+    <select id="getCountPhone" parameterType="java.lang.String"
+            resultType="java.lang.Integer">
+        SELECT COUNT(*)FROM RegisteredUserInfo WHERE Mobile = #{phone}
+    </select>
+    <select id="getCompanyUserDetailByID" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+        SELECT * from RegisteredUserExtCompany c,RegisteredUserInfo r where r.CompanyExtID = c.RecID AND c.RecID = #{id}
+    </select>
+    <!--通过用户ID获取用户信息包括媒介经理(IP添加页面)-->
+    <select id="getUserById" resultType="java.util.HashMap" parameterType="java.lang.Integer">
+        SELECT
+        u.RecID,
+        u.UserName,
+        u.Mobile,
+        u.NickName,
+        u.sellerStatusValue AS userStatus,
+        au.RealName,
+        au.UserName  as mediaUserName
+        FROM
+        RegisteredUserInfo u,
+        AdminUser au
+        WHERE
+        u.AdminUserMediaID = au.RecID
+        AND u.RecID = #{recID}
+    </select>
+    <!--    &lt;!&ndash;获取用户详情带客户公司信息 (用户列表页面用于编辑) &ndash;&gt;
+        <select id="getUserDetailByID" resultType="java.util.HashMap" parameterType="java.lang.Integer">
+            SELECT
+                u.`RecID` recID,
+                u.`Mobile` userMobile,
+                `NickName`,
+                `Role`,
+                `UserType`,
+                `RealName`,
+                `IDCardNumber`,
+                `IDCardFaceImageUrl`,
+                `IDCardBackImageUrl`,
+                `CompanyExtID`,
+                `AdminUserCreaterID`,
+                `CompanyName`,
+                `LeaderName`,
+                c.`Mobile` leaderMobile,
+                `RoleID`,
+                `CompanyID`,
+                `CompanyImageUrl`,
+                `AdminUserMediaID`,
+                `AdminUserSalesID`,
+                `StatusValue`,
+                `checkFailedReasonID`,
+                `currentRole`,
+                `buyerType` buyerUserType,
+                `sellertype` sellerUserType
+            FROM
+                RegisteredUserInfo u
+                LEFT JOIN RegisteredUserExtCompany c ON u.CompanyExtID = c.RecID
+            WHERE u.RecID = #{recID}
+        </select>-->
+    <!--获取用户详情带客户公司信息 (用户列表页面用于编辑) -->
+    <select id="getUserDetailByID" resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo"
+            parameterType="java.lang.Integer">
+        SELECT
+        u.*,
+        d.name AS 'buyerCheckFailedReason.name',
+        dd.name AS 'sellerCheckFailedReason.name',
+        `CompanyName` as 'registeredUserExtCompany.companyName',
+        `LeaderName` AS 'registeredUserExtCompany.leaderName',
+        c.`Mobile` AS 'registeredUserExtCompany.mobile',
+        `RoleID` AS 'registeredUserExtCompany.roleID',
+        `CompanyID` AS 'registeredUserExtCompany.companyID',
+        `CompanyImageUrl` AS 'registeredUserExtCompany.companyImageUrl'
+        FROM
+        RegisteredUserInfo u
+        LEFT JOIN RegisteredUserExtCompany c ON u.CompanyExtID = c.RecID
+        lEFT JOIN DictInfo d on u.buyerCheckFailedReasonID = d.id
+        left join DictInfo dd on u.sellerCheckFailedReasonID = dd.id
+        WHERE u.RecID = #{recID}
+    </select>
+    <!-- ResultMap形式返回-->
+    <!--<select id="" resultMap="test11"
+            parameterType="java.lang.Integer">
+        SELECT
+	u.* ,
+	c.CompanyName,
+	f.licenseStatus,
+	f.role
+        FROM
+        RegisteredUserInfo u
+        LEFT JOIN RegisteredUserExtCompany c ON u.CompanyExtID = c.RecID
+        left join RegisteredUserLicenseInfo f on u.RecID = f.registeredUserID
+        WHERE u.RecID = #{recID}
+    </select>
+    <resultMap type="com.yuanrong.admin.bean.usermanagement.RegisterdeUserTest" id="test11">
+        <id property="recID" column="RecID"/>
+        <result property="userName" column="UserName"/>
+        <association property="company" javaType="com.yuanrong.admin.bean.usermanagement.RegisteredUserExtCompany">
+            <result property="companyName" column="CompanyName"/>
+        </association>
+        <collection property="licenseInfos" ofType="com.yuanrong.admin.bean.usermanagement.RegisteredUserLicenseInfo">
+            <result property="licenseStatus" column="licenseStatus"/>
+            <result property="role" column="role"/>
+        </collection>
+    </resultMap>-->
+    <!--获取全部用户-->
+    <select id="getAllUserByAdmin" resultType="java.util.HashMap">
+        SELECT
+        ruu.id id,
+        ruu.nickName nickName,
+        ruu.role,
+        GROUP_CONCAT( ruu.roleRealName SEPARATOR '/' ) AS roleName,
+        ruu.mobile mobile
+        FROM
+        (
+        SELECT
+        au.RealName roleRealName,
+        Mobile mobile,
+        Role role,
+        NickName nickName,
+        ru.RecID id,
+        ru.CompanyExtID com,
+        ru.realName rrealName,
+        ru.AdminUserMediaID rmID,
+        ru.AdminUserSalesID rsID,
+        ru.CreateTime cTime
+        FROM
+        <!--查出对应的销售和媒介的名字-->
+        RegisteredUserInfo ru,
+        AdminUser au
+        WHERE
+        ( ru.AdminUserMediaID = au.RecID OR ru.AdminUserSalesID = au.RecID )
+        ) ruu
+        LEFT JOIN RegisteredUserExtCompany rc ON ruu.com = rc.RecID
+        GROUP BY
+        ruu.id
+    </select>
+    <!--&lt;!&ndash;按查询条件返回用户列表&ndash;&gt;
+    <select id="listByCondition" resultType="java.util.HashMap"
+            parameterType="com.yuanrong.admin.seach.RegisterUserSearch">
+        SELECT
+        ruu.id id,
+        ruu.nickName nickName,
+        ruu.role,
+        GROUP_CONCAT( ruu.roleRealName SEPARATOR '/' ) AS roleName,
+        ruu.mobile mobile,
+        ruu.rusv status
+        FROM
+        (
+        SELECT
+        au.RealName roleRealName,
+        Mobile mobile,
+        Role role,
+        NickName nickName,
+        ru.RecID id,
+        ru.CompanyExtID com,
+        ru.realName rrealName,
+        ru.AdminUserMediaID rmID,
+        ru.AdminUserSalesID rsID,
+        ru.CreateTime cTime,
+        ru.AdminUserCreaterID rucu,
+        ru.StatusValue rusv
+        FROM
+        &lt;!&ndash;查出对应的销售和媒介的名字&ndash;&gt;
+        RegisteredUserInfo ru,
+        AdminUser au
+        WHERE
+        ( ru.AdminUserMediaID = au.RecID OR ru.AdminUserSalesID = au.RecID )
+        ) ruu
+        LEFT JOIN RegisteredUserExtCompany rc ON ruu.com = rc.RecID
+        WHERE
+        1 =1
+        &lt;!&ndash;联系人&ndash;&gt;
+        <if test="names != null ">
+            and
+            <foreach collection="names" item="item" open="(" close=")" separator="or">
+                 rc.leaderName LIKE CONCAT('%',#{item},'%')
+            </foreach>
+            OR
+            <foreach collection="names" item="item" open="(" close=")" separator="or">
+                ruu.rrealName LIKE CONCAT('%',#{item},'%')
+            </foreach>
+        </if>
+        &lt;!&ndash;手机号&ndash;&gt;
+        <if test="mobiles != null ">
+            AND
+            <foreach collection="mobiles" item="item" open="(" close=")" separator="or">
+                ruu.mobile LIKE CONCAT('%',#{item},'%')
+            </foreach>
+
+        </if>
+        &lt;!&ndash;用户简称&ndash;&gt;
+        <if test="nickNames != null ">
+            AND
+            <foreach collection="nickNames" item="item" open="(" close=")" separator="or">
+                ruu.nickName LIKE CONCAT('%',#{item},'%')
+            </foreach>
+        </if>
+        &lt;!&ndash;注册时间&ndash;&gt;
+        <if test="registerTimeStart != null and registerTimeStart != ''">
+            and DATE_FORMAT(ruu.cTime,'%Y-%m-%d') >= #{registerTimeStart}
+        </if>
+        &lt;!&ndash;注册时间&ndash;&gt;
+        <if test="registerTimeEnd != null and registerTimeEnd != ''">
+            and DATE_FORMAT(ruu.cTime,'%Y-%m-%d') &lt;= #{registerTimeEnd}
+        </if>
+        &lt;!&ndash;媒介id&ndash;&gt;
+        <if test="mediaID != null and mediaID != ''">
+            and
+            <foreach collection="mediaIDs" index="index" item="arr" separator="or" open="(" close=")">
+                ruu.rmID =#{arr}
+            </foreach>
+        </if>
+        &lt;!&ndash;用户状态&ndash;&gt;
+        <if test="statusValue != null and statusValue != ''">
+            and
+            <foreach collection="statusValues" index="index" item="arr" separator="or" open="(" close=")">
+                ruu.rusv =#{arr}
+            </foreach>
+        </if>
+        &lt;!&ndash;销售id&ndash;&gt;
+        <if test="saleID != null and saleID != ''">
+            and
+            <foreach collection="saleIDs" index="index" item="arr" separator="or" open="(" close=")">
+                ruu.rsID = #{arr}
+            </foreach>
+        </if>
+        <if test="currLoginUser != null and currLoginUser.underUser != null and currLoginUser.underUser != ''">
+              and ruu.rucu in (${currLoginUser.underUser})
+        </if>
+        GROUP BY
+        ruu.id
+    </select>-->
+    <!--按查询条件返回用户列表  左连接，销售和媒介分开展示-->
+    <select id="listByCondition" resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo"
+            parameterType="com.yuanrong.admin.seach.RegisterUserSearch">
+        SELECT
+        ru.*,
+        au.RealName AS 'adminUserSales.RealName',
+        auu.RealName AS 'adminUserMedia.RealName',
+        rc.CompanyName AS 'registeredUserExtCompany.companyName',
+        rc.CompanyID AS 'registeredUserExtCompany.companyID',
+        rc.CompanyImageUrl AS 'registeredUserExtCompany.companyImageUrl'
+        FROM
+        RegisteredUserInfo ru
+        LEFT JOIN AdminUser au ON ru.AdminUserSalesID = au.RecID
+        LEFT JOIN AdminUser auu ON ru.AdminUserMediaID = auu.RecID
+        left JOIN RegisteredUserExtCompany rc on ru.CompanyExtID = rc.RecID
+
+        WHERE
+        1=1
+        <!--联系人-->
+        <if test="names != null and names !=''">
+            and
+            <foreach collection="names" item="item" open="(" close=")" separator="or">
+                rc.leaderName LIKE CONCAT('%',#{item},'%')
+            </foreach>
+            OR
+            <foreach collection="names" item="item" open="(" close=")" separator="or">
+                ru.realName LIKE CONCAT('%',#{item},'%')
+            </foreach>
+        </if>
+        <!--手机号-->
+        <if test="mobiles != null and mobiles !=''">
+            AND
+            <foreach collection="mobiles" item="item" open="(" close=")" separator="or">
+                ru.mobile LIKE CONCAT('%',#{item},'%')
+            </foreach>
+
+        </if>
+        <!--用户简称-->
+        <if test="nickNames != null and nickNames !=''">
+            AND
+            <foreach collection="nickNames" item="item" open="(" close=")" separator="or">
+                ru.nickName LIKE CONCAT('%',#{item},'%')
+            </foreach>
+        </if>
+        <!--注册时间-->
+        <if test="registerTimeStart != null and registerTimeStart != ''">
+            and DATE_FORMAT(ru.CreateTime,'%Y-%m-%d') >= #{registerTimeStart}
+        </if>
+        <!--注册时间-->
+        <if test="registerTimeEnd != null and registerTimeEnd != ''">
+            and DATE_FORMAT(ru.CreateTime,'%Y-%m-%d') &lt;= #{registerTimeEnd}
+        </if>
+        <!--媒介id-->
+        <if test="mediaID != null and mediaID != ''">
+            and
+            <foreach collection="mediaIDs" index="index" item="arr" separator="or" open="(" close=")">
+                ru.AdminUserMediaID =#{arr}
+            </foreach>
+        </if>
+        <!--用户状态-->
+        <if test="statusValue != null and statusValue != ''">
+            and
+            <if test="0 == statusValue">
+                ( ru.sellerStatusValue = 0 )
+            </if>
+            <if test="1 == statusValue">
+                ( ru.sellerStatusValue =1 )
+            </if>
+            <if test="2 == statusValue">
+                ( ru.sellerStatusValue =2 )
+            </if>
+            <if test="3 == statusValue">
+                (
+                (ru.sellerStatusValue =3 )
+                or (ru.buyerStatusValue IS NULL and   ru.sellerStatusValue  IS NULL))
+            </if>
+            <if test="4 == statusValue">
+                (
+                (ru.sellerStatusValue =1 )
+                or (ru.sellerStatusValue =0)
+                or (ru.sellerStatusValue =2))
+            </if>
+        </if>
+        <!-- 当前角色 -->
+        <if test ="currentRole != null and currentRole !=''">
+            and ru.currentRole = #{currentRole}
+        </if>
+        <!-- 初始角色 -->
+        <if test ="role != null">
+            and ru.Role = #{role}
+        </if>
+        <!-- 用户id-->
+        <if test ="userID != null and userID !=''">
+            and
+            <foreach collection="userIDs" index="index" item="arr" separator="or" open="(" close=")">
+                ru.RecID =#{arr}
+            </foreach>
+        </if>
+        <!--销售id-->
+        <if test="saleID != null and saleID != ''">
+            and
+            <foreach collection="saleIDs" index="index" item="arr" separator="or" open="(" close=")">
+                ru.AdminUserSalesID = #{arr}
+            </foreach>
+        </if>
+        <!-- 创建来源 -->
+        <if test ="sourceID != null and sourceID !=''">
+            and ru.sourceID = #{sourceID}
+        </if>
+        <!--注册时间-->
+        <if test="askAuditTimeStart != null and askAuditTimeStart != ''">
+            and DATE_FORMAT(ru.sellerAskAudit,'%Y-%m-%d') >= #{askAuditTimeStart}
+        </if>
+        <!--注册时间-->
+        <if test="askAuditTimeEnd != null and askAuditTimeEnd != ''">
+            and DATE_FORMAT(ru.sellerAuditUser,'%Y-%m-%d') &lt;= #{askAuditTimeEnd}
+        </if>
+        <!--<if test="currLoginUser != null and currLoginUser.underUser != null and currLoginUser.underUser != ''">
+            and ru.AdminUserCreaterID in (${currLoginUser.underUser})
+        </if>-->
+    </select>
+
+    <select id="login" resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        SELECT * FROM RegisteredUserInfo where Mobile = #{username} and Password = #{password}
+    </select>
+
+    <!-- 判断用户是否存在-->
+    <select id="judeRegisteredUserInfo" parameterType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo"
+            resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        SELECT * FROM RegisteredUserInfo
+        WHERE
+        1=1
+        <if test="mobile != null">
+            AND Mobile = #{mobile,jdbcType = VARCHAR}
+        </if>
+        <if test="password != null">
+            AND Password= #{password,jdbcType = VARCHAR}
+        </if>
+        <if test="userName != null">
+            AND UserName = #{userName,jdbcType = VARCHAR}
+        </if>
+
+    </select>
+
+    <!--添加:注册用户-->
+    <insert id="saveRegisteredUser" parameterType="java.util.Map"
+            useGeneratedKeys="true" keyProperty="RecID">
+        INSERT INTO RegisteredUserInfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mobile != null">
+                UserName,
+            </if>
+            <if test="mobile != null">
+                Mobile,
+            </if>
+            <if test="mobile != null">
+                NickName,
+            </if>
+            <if test="password != null">
+                Password,
+            </if>
+            <if test="role != null">
+                Role,
+            </if>
+            <if test="currentRole != null">
+                currentRole,
+            </if>
+            <if test="adminUserMediaID >0">
+                AdminUserMediaID,
+            </if>
+            <if test="adminUserSalesID >0">
+                AdminUserSalesID,
+            </if>
+            <if test="sourceID >0">
+                sourceID,
+            </if>
+            <if test="qq != null">
+                QQ,
+            </if>
+            <if test="weixin != null">
+                WeiXin,
+            </if>
+            StatusValue,
+            CreateTime,
+            UpdateTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mobile != null">
+                #{mobile, jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile, jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile, jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password, jdbcType=VARCHAR},
+            </if>
+            <if test="role != null">
+                #{role, jdbcType=INTEGER},
+            </if>
+            <if test="currentRole != null">
+                #{currentRole, jdbcType=INTEGER},
+            </if>
+            <if test="adminUserMediaID >0">
+                #{adminUserMediaID},
+            </if>
+            <if test="adminUserSalesID >0">
+                #{adminUserSalesID},
+            </if>
+            <if test="sourceID >0">
+                #{sourceID},
+            </if>
+            <if test="qq != null">
+                #{qq},
+            </if>
+            <if test="weixin != null">
+                #{weixin},
+            </if>
+            1,
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <!--前台查询个人中心-我的信息-->
+    <select id="getMyInfoByID" parameterType="java.util.Map" resultType="java.util.Map">
+        <choose>
+            <when test="userType == 0">
+                SELECT
+                RecID, Mobile,UserType,RealName,IDCardNumber,IDCardFaceImageUrl,IDCardBackImageUrl
+                FROM
+                RegisteredUserInfo
+                WHERE
+                RecID=#{RecID}
+            </when>
+            <otherwise>
+                SELECT
+                ru.RecID AS uRecID,ru.Mobile AS uMobile,UserType,RealName,ruec.CompanyName,ruec.CompanyImageUrl,
+                ruec.LeaderName,ruec.Mobile AS cMobile, ruec.CompanyID,ruec.RecID AS cRecID
+                FROM
+                RegisteredUserInfo AS ru
+                JOIN RegisteredUserExtCompany AS ruec
+                ON ru.CompanyExtID = ruec.RecID
+                where ru.RecID=#{RecID}
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--前台更新-个人中心-我的信息-->
+    <update id="updateMyInfoRegisterUserInfo" parameterType="java.util.Map">
+        UPDATE RegisteredUserInfo
+        SET
+        <!--更新：用户类型为个人的账号信息-->
+        <if test="Mobile != null">
+            Mobile = #{Mobile},
+        </if>
+        <if test="UserType != null">
+            UserType = #{UserType},
+        </if>
+        <if test="RealName != null">
+            RealName = #{RealName},
+        </if>
+        <if test="IDCardNumber != null">
+            IDCardNumber = #{IDCardNumber},
+        </if>
+        <if test="IDCardFaceImageUrl != null">
+            IDCardFaceImageUrl = #{IDCardFaceImageUrl},
+        </if>
+        <if test="IDCardBackImageUrl != null">
+            IDCardBackImageUrl = #{IDCardBackImageUrl}
+        </if>
+        WHERE
+        RecID=#{RecID}
+    </update>
+
+    <update id="updateMyInfoRegisterUserInfoCompany" parameterType="java.util.Map">
+        UPDATE RegisteredUserExtCompany
+        SET
+        <!--更新：用户类型为企业的账号信息-->
+        <if test="CompanyName != null">
+            CompanyName= #{companyName},
+        </if>
+        <if test="CompanyImageUrl != null">
+            CompanyImageUrl= #{companyImageUrl},
+        </if>
+        <if test="CompanyID != null">
+            CompanyID= #{companyID},
+        </if>
+        <if test="LeaderName != null">
+            LeaderName= #{leaderName},
+        </if>
+        <if test="leaderMobile != null">
+            Mobile= #{leaderMobile},
+        </if>
+        WHERE
+        RecID=#{recID}
+    </update>
+
+    <!--卖家中心，统计注册用户:账号数、创作者数、作品数-->
+    <select id="cnt_registeredUserInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM
+        (   <!--查询该注册用户的账号数-->
+        SELECT count(*) cnt_PlatformIPAccount from PlatformIPAccount pa WHERE pa.registeredUserInfoID =
+        #{registeredUserInfoID}
+        ) a
+        JOIN
+        (<!--查询该注册用户的创作者数-->
+        SELECT count(*) AS cnt_yrAuthor FROM yrAuthor WHERE registeredUserInfoID = #{registeredUserInfoID}
+        ) b
+        ON 1=1
+        JOIN
+        (<!--查询该注册用户的作品数,不包含代表作 p.isRepresentative=0 AND  and p.isRepresentative=0-->
+        SELECT count(*) AS cnt_yrProduction FROM yrProduction p,yrAuthor yra WHERE  p.yrAuthorId
+        = yra.recId AND yra.registeredUserInfoID = #{registeredUserInfoID} and p.statusIndex = 1
+        ) c
+        ON 1=1
+        JOIN
+        (
+        SELECT HeadImage,Mobile FROM RegisteredUserInfo WHERE RecID = #{registeredUserInfoID}
+        ) d
+        ON 1=1
+        JOIN
+        (
+        SELECT ifnull(SUM(money),0) as balance from userBalanceDetails where registeredUserInfoId =  #{registeredUserInfoID}
+
+        ) e ON 1=1
+    </select>
+
+    <!--判断手机号是否存-->
+    <select id="getCountMobile" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+        SELECT
+        COUNT(1) AS CNT
+        FROM RegisteredUserInfo
+        WHERE  Mobile = #{Mobile}
+    </select>
+    <!--保存发布需求的用户-->
+    <!--原 马开东写
+    (#{Mobile,jdbcType=VARCHAR}, #{Mobile,jdbcType=VARCHAR},
+     #{PageSource,jdbcType=VARCHAR}, #{Role,jdbcType=VARCHAR}
+    )
+    -->
+    <insert id="addRegisteredUserInfo"  >
+        insert into RegisteredUserInfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="UserName != null">
+                UserName  ,
+            </if>
+            <if test="Mobile != null">
+                Mobile  ,
+            </if>
+            <if test="PageSource != null">
+                PageSource  ,
+            </if>
+            <if test="Role != null">
+                Role  ,
+            </if>
+        </trim>
+
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="UserName != null">
+                #{UserName,jdbcType=VARCHAR},
+            </if>
+            <if test="Mobile != null">
+                #{Mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="PageSource != null">
+                #{PageSource,jdbcType=VARCHAR},
+            </if>
+            <if test="Role != null">
+                #{Role,jdbcType=INTEGER},
+            </if>
+        </trim>
+
+    </insert>
+
+    <!--前台更新-个人中心-我的信息-->
+    <update id="updateMobileByRecID" parameterType="java.util.Map">
+        UPDATE RegisteredUserInfo
+        SET
+        <!--更新：用户类型为个人的账号信息-->
+        <if test="replaceMobile != null">
+            Mobile = #{replaceMobile}
+        </if>
+        WHERE
+        RecID=#{recID}
+    </update>
+    <!--后台 批量审核通过卖家 -->
+    <update id="batchCheckSellerStatus" >
+
+        UPDATE RegisteredUserInfo ru
+        SET
+        ru.sellerStatusValue = #{status},
+        UpdateTime = now()
+        where ru.recId IN
+        <foreach collection="ids" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="status !=null" >
+            <choose>
+                <!--审核失败，需要把审核成功的，待审核的 -->
+                <when test="status == 0" >
+                    AND ru.sellerStatusValue IN (1,2)
+                </when>
+                <!--审核成功 ，需要把待审核的，审核失败的 -->
+                <otherwise >
+                    AND  ru.sellerStatusValue IN (0,2)
+                </otherwise>
+            </choose>
+        </if>
+    </update>
+    <!--后台 批量审核通过买家 -->
+    <update id="batchCheckBuyerStatus" >
+
+        UPDATE RegisteredUserInfo ru
+        SET
+        ru.buyerStatusValue = #{status},
+        UpdateTime = now()
+        where ru.recId IN
+        <foreach collection="ids" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="status !=null" >
+            <choose>
+                <!--审核失败，需要把审核成功的，待审核的 -->
+                <when test="status == 0" >
+                    AND ru.buyerStatusValue IN (1,2)
+                </when>
+                <!--审核成功 ，需要把待审核的，审核失败的 -->
+                <otherwise >
+                    AND  ru.buyerStatusValue IN (0,2)
+                </otherwise>
+            </choose>
+        </if>
+    </update>
+    <update id="batchCheckPerson" >
+
+        UPDATE RegisteredUserInfo ru left JOIN RegisteredUserExtCompany rc  on ru.CompanyExtID = rc.RecID
+        SET
+        ru.personalCheckStatus = #{status},
+        modifiedTime = now(),
+        UpdateTime = now()
+        where ru.recId IN
+        <foreach collection="ids" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="status !=null" >
+            <choose>
+                <!--审核失败，需要把审核成功的，待审核的 -->
+                <when test="status == 0" >
+                    AND ru.personalCheckStatus IN (1,2)
+                </when>
+                <!--审核成功 ，需要把待审核的，审核失败的 -->
+                <otherwise >
+                    AND  ru.personalCheckStatus IN (0,2)
+                </otherwise>
+            </choose>
+        </if>
+
+
+    </update>
+    <!--后台 批量审核通过公司 -->
+    <update id="batchCheckCompany" >
+
+        UPDATE RegisteredUserInfo ru left JOIN RegisteredUserExtCompany rc  on ru.CompanyExtID = rc.RecID
+        SET
+        rc.companyCheckStatus = #{status},
+        modifiedTime = now(),
+        UpdateTime = now()
+        where ru.recId IN
+        <foreach collection="ids" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="status !=null" >
+            <choose>
+                <!--审核失败，需要把审核成功的，待审核的 -->
+                <when test="status == 0" >
+                    AND ru.personalCheckStatus IN (1,2)
+                </when>
+                <!--审核成功 ，需要把待审核的，审核失败的 -->
+                <otherwise >
+                    AND  rc.companyCheckStatus IN (0,2)
+                </otherwise>
+            </choose>
+        </if>
+
+
+    </update>
+
+    <!--判断手机号是否存-->
+    <select id="getCountIDCardNumber" resultType="java.lang.Integer" >
+        SELECT
+        COUNT(1) AS CNT
+        FROM RegisteredUserInfo
+        WHERE
+        <if test="IDCardNumber !=null and IDCardNumber!=''" >
+            IDCardNumber = #{IDCardNumber} and (sellerStatusValue=1 )
+        </if>
+
+    </select>
+
+    <!--获取用户简称-->
+    <select id="getCountNickName" resultType="java.lang.Integer" >
+        SELECT
+        COUNT(1) AS CNT
+        FROM RegisteredUserInfo
+        WHERE
+        <if test="nickName !=null and nickName!=''" >
+            NickName = #{nickName}
+        </if>
+        <if test="recID !=null " >
+            and
+            RecID != #{recID}
+        </if>
+    </select>
+
+    <!-- 通过用户昵称获取用户信息 -->
+    <select id="getUserByName" resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        select
+          *
+        from
+            RegisteredUserInfo ru
+        WHERE  1=1
+            <if test="data.nickName !=null and data.nickName !=''" >
+                AND ru.NickName LIKE CONCAT('%',#{data.nickName},'%')
+            </if>
+    </select>
+
+    <select id="getbyNickName" resultType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo">
+        SELECT * from RegisteredUserInfo where NickName like concat('%',#{nickName} , '%')
+    </select>
+
+
+    <!--判断身份证件号是否重复 -->
+    <select id="getCountByIDRID"
+            resultType="java.lang.Integer">
+        SELECT COUNT(*)FROM RegisteredUserInfo WHERE
+        (sellerStatusValue = 1
+        or
+        buyerStatusValue = 1)
+        and
+        recID != #{recID}
+        <if test="companyID !=null and companyID !=''" >
+        </if>
+        <if test="IDNumber !=null and IDNumber !=''" >
+            and IDCardNumber = #{IDNumber}
+        </if>
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+

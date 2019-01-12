@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.system.SystemMenuDaoI">
+    <select id="list" parameterType="com.yuanrong.admin.bean.system.SystemMenu" resultType="com.yuanrong.admin.bean.system.SystemMenu">
+      SELECT * from systemmenu where 1=1
+      <if test="data.menuName !=null and data.menuName != ''">
+         AND menuName = #{data.menuName}
+      </if>
+    </select>
+
+
+    <!--通过用户名查询菜单-->
+    <select id="selectMenu" resultType="com.yuanrong.admin.bean.system.SystemMenu" parameterType="java.lang.Integer">
+        SELECT systemMenuId,menuName,path,menuPath,menuIco,sort,parentMenu_id,typeIndex,statusIndex,createdTime
+        FROM systemMenu where  systemMenuId in(
+        SELECT systemMenuId FROM adminUser_systemMenu where adminUserId=#{adminUserId}
+        )
+        order by  sort,systemMenuId
+    </select>
+
+</mapper>

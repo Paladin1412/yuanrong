@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.system.SystemUserDaoI">
+    <!--登录-->
+    <select id="login" resultType="com.yuanrong.admin.bean.system.SystemUser">
+        SELECT * FROM systemUser where userName = #{userName} and password=#{passWord} and isLoginIndex = 1
+    </select>
+    <insert id="save" useGeneratedKeys="true" keyColumn="systemUserId" keyProperty="data.systemUserId" parameterType="com.yuanrong.admin.bean.system.SystemUser" >
+        INSERT INTO  systemUser (`userName`, `password`, `realName`, `isLoginIndex`, `createdTime`, `modifiedTime`, `modifiedCount`,  `memo`)
+        VALUES (#{data.userName}, #{data.password}, #{data.realName},  1, now(), now(), 1, #{data.memo})
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.system.SystemUser" parameterType="com.yuanrong.admin.bean.system.SystemUser">
+        SELECT * from systemUser WHERE 1=1
+        <if test="data.userName != null and data.userName !=''">
+            and userName LIKE concat('%',#{data.userName},'%')
+        </if>
+        <if test="data.realName != null and data.realName != ''">
+            and realName LIKE concat('%',#{data.realName},'%')
+        </if>
+        <if test="data.isLoginIndex != null and data.isLoginIndex !=''">
+            and isLoginIndex = #{data.isLoginIndex}
+        </if>
+
+    </select>
+
+    <select id="getMenuInfosBySystemUser" resultType="com.yuanrong.admin.bean.system.SystemMenu" parameterType="com.yuanrong.admin.bean.system.SystemUser">
+        SELECT DISTINCT smm.* from systemMenu smm , systemRole smr , systemUser_systemRole ssr , systemRole_systemMenu srm
+        where smm.systemMenuId = srm.systemMenuId and smr.systemRoleId = ssr.systemRoleId
+        and srm.systemRoleId = smr.systemRoleId and ssr.systemUserId = #{systemUser.systemUserId}
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.system.SystemUser">
+        select * from systemUser where systemUserId = #{id}
+    </select>
+</mapper>

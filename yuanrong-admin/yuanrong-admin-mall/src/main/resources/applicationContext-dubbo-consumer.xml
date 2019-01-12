@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
+
+    <!--Dubbo的应用的名称，通常使用项目名称即可-->
+    <dubbo:application name="yuanrong-admin-mall"/>
+
+    <!--配置Dubbo的注册中心的地址-->
+    <dubbo:registry  address="${zookeeper.registry}"/>
+
+    <dubbo:protocol name="thrift" />
+    <!-- 订阅服务 -->
+    <dubbo:consumer check="false"/>
+
+    <!--reference 远程调用注解-->
+    <!-- 系统用户 -->
+    <dubbo:reference id="systemUserServicesI" interface="com.yuanrong.admin.rpc.api.system.SystemUserServicesI" timeout="1200000"  />
+
+    <!-- 系统角色 -->
+    <dubbo:reference id="systemRoleServicesI" interface="com.yuanrong.admin.rpc.api.system.SystemRoleServicesI" timeout="1200000"   />
+
+    <!-- 系统菜单 -->
+    <dubbo:reference id="systemMenuServicesI" interface="com.yuanrong.admin.rpc.api.system.SystemMenuServicesI" timeout="1200000"   />
+
+    <dubbo:reference id="registeredUserInfoService" interface="com.yuanrong.admin.rpc.api.usermanagement.RegisteredUserInfoServiceI" timeout="1200000"   />
+
+    <dubbo:reference id="adminUserServicesI" interface="com.yuanrong.admin.rpc.api.system.AdminUserServicesI" timeout="1200000"   />
+
+    <!--ip账号-->
+    <dubbo:reference id="platformIPAccountI" interface="com.yuanrong.admin.rpc.api.account.PlatformIPAccountServicesI" timeout="1200000"  />
+    <!-- IP列表 -->
+    <dubbo:reference id="ipServicesI" interface="com.yuanrong.admin.rpc.api.account.IPServicesI" timeout="1200000"   />
+
+    <!--平台价格名称-->
+    <dubbo:reference id="platformIPAccountPriceNameServicesI" interface="com.yuanrong.admin.rpc.api.account.PlatformIPAccountPriceNameRelationServicesI" timeout="1200000"  />
+
+    <!--平台IP账号价格表-->
+    <dubbo:reference id="platformIPAccountPriceServicesI" interface="com.yuanrong.admin.rpc.api.account.PlatformIPAccountPriceServicesI" timeout="1200000" />
+
+    <!--数据字典-->
+    <dubbo:reference id="dictInfoServicesI" interface="com.yuanrong.admin.rpc.api.base.DictInfoServicesI" timeout="1200000" />
+
+    <!--地址信息-->
+    <dubbo:reference id="areaCityServicesI" interface="com.yuanrong.admin.rpc.api.base.AreaCityServicesI" timeout="1200000" />
+
+    <!--创作者信息-->
+    <dubbo:reference id="yRAuthorServicesI" interface="com.yuanrong.admin.rpc.api.author.YRAuthorServicesI" timeout="1200000" />
+
+    <!--IP标签-->
+    <dubbo:reference id="iPLableServicesI" interface="com.yuanrong.admin.rpc.api.base.IPLableServicesI" timeout="1200000" />
+
+    <!--使用场景-->
+    <dubbo:reference id="scenesServicesI" interface="com.yuanrong.admin.rpc.api.base.ScenesServicesI" timeout="1200000" />
+
+    <!--标签-->
+    <dubbo:reference id="lableServicesI" interface="com.yuanrong.admin.rpc.api.base.LableServicesI" timeout="1200000" />
+
+    <!--内容形式信息-->
+    <dubbo:reference id="contentFormServicesI" interface="com.yuanrong.admin.rpc.api.base.ContentFormServicesI" timeout="1200000" />
+    <!--系统日志-->
+    <dubbo:reference id="systemLogServicesI" interface="com.yuanrong.admin.rpc.api.base.SystemLogServicesI" timeout="1200000" />
+    <!--圆融作品-->
+    <dubbo:reference id="yRProductionServicesI" interface="com.yuanrong.admin.rpc.api.author.YRProductionServicesI" timeout="1200000" />
+    <!--发布需求-->
+    <dubbo:reference id="advertiserReleaseRequirementServicesI" interface="com.yuanrong.admin.rpc.api.demand.AdvertiserReleaseRequirementServicesI" timeout="1200000" />
+
+    <!--内容价值排行榜-->
+    <dubbo:reference id="listArticleServicesImpI" interface="com.yuanrong.admin.rpc.api.rank.ListArticleServicesI" timeout="1200000" />
+    <!--IP创造力排行榜单-->
+    <dubbo:reference id="listIPCreativityImpI" interface="com.yuanrong.admin.rpc.api.rank.ListIPCreativityServicesI" timeout="1200000" />
+
+    <!--bug信息-->
+    <dubbo:reference id="bugInfoServicesI" interface="com.yuanrong.admin.rpc.api.bug.BugInfoServicesI" timeout="1200000" />
+
+    <!--用户图片-->
+    <dubbo:reference id="userImagesServicesI" interface="com.yuanrong.admin.rpc.api.resources.UserImagesServicesI" timeout="1200000" />
+
+    <!--后台用户角色-->
+    <dubbo:reference id="adminRoleServicesI" interface="com.yuanrong.admin.rpc.api.system.AdminRoleServicesI" timeout="1200000" />
+    <!--调用短信记录-->
+    <dubbo:reference id="smsRecordServicesI" interface="com.yuanrong.admin.rpc.api.base.SmsRecordServicesI" timeout="1200000" />
+    <!--购物车-->
+    <dubbo:reference id="shoppingCartServicesI" interface="com.yuanrong.admin.rpc.api.cart.ShoppingCartServicesI" timeout="1200000" />
+
+    <!--基本需求信息-->
+    <dubbo:reference id="demandServicesI" interface="com.yuanrong.admin.rpc.api.demand.DemandServicesI" timeout="1200000" />
+    <!--买家订单-->
+    <dubbo:reference id="orderInfoBuyerServicesI" interface="com.yuanrong.admin.rpc.api.order.OrderInfoBuyerServicesI" timeout="1200000" />
+    <!--卖家订单-->
+    <dubbo:reference id="orderInfoSellerServicesI" interface="com.yuanrong.admin.rpc.api.order.OrderInfoSellerServicesI" timeout="1200000" />
+
+    <!--作者快照-->
+    <dubbo:reference id="snapshotYrAuthorServicesI" interface="com.yuanrong.admin.rpc.api.order.SnapshotYrAuthorServicesI" timeout="1200000" />
+
+    <!--买家订单附加费用-->
+    <dubbo:reference id="orderCostInfoServicesI" interface="com.yuanrong.admin.rpc.api.order.OrderCostInfoServicesI" timeout="1200000" />
+
+    <!--卖家订单报价-->
+    <dubbo:reference id="orderInfoOfferServicesI" interface="com.yuanrong.admin.rpc.api.order.OrderInfoOfferServicesI" timeout="1200000" />
+
+    <!--作品快照-->
+    <dubbo:reference id="snapshotYrProductionServicesI" interface="com.yuanrong.admin.rpc.api.order.SnapshotYrProductionServicesI" timeout="1200000" />
+
+    <!--账号快照-->
+    <dubbo:reference id="snapshotAccountServicesI" interface="com.yuanrong.admin.rpc.api.order.SnapshotAccountServicesI" timeout="1200000" />
+    <!--快速需求-->
+    <dubbo:reference id="demandFastServicesI" interface="com.yuanrong.admin.rpc.api.demand.DemandFastServicesI" timeout="1200000" />
+    <!--系统配置-->
+    <dubbo:reference id="configurationServicesI" interface="com.yuanrong.admin.rpc.api.config.ConfigurationServicesI" timeout="1200000" />
+
+    <!--订单号生成-->
+    <dubbo:reference id="orderSnFactoryServicesI" interface="com.yuanrong.admin.rpc.api.order.OrderSnFactoryServicesI" timeout="1200000" ></dubbo:reference>
+
+    <!--上传文件-->
+    <dubbo:reference id="uploadServicesI" interface="com.yuanrong.admin.rpc.api.upload.UploadServicesI" timeout="1200000" ></dubbo:reference>
+    <!--支付-->
+    <dubbo:reference id="payServicesI" interface="com.yuanrong.admin.rpc.api.pay.PayServiceI" timeout="1200000" ></dubbo:reference>
+    <!--支付流水-->
+    <dubbo:reference id="payWaterServicesI" interface="com.yuanrong.admin.rpc.api.pay.PayWaterServicesI" timeout="1200000" />
+
+    <!--消息队列-->
+    <dubbo:reference id="rabbitMQServicesI" interface="com.yuanrong.admin.rpc.api.mq.RabbitMQServicesI" timeout="1200000" />
+
+    <!--企业微信-->
+    <dubbo:reference id="weChatServicesI" interface="com.yuanrong.admin.rpc.api.notice.WeChatServicesI" timeout="1200000" />
+
+    <!--交易记录-->
+    <dubbo:reference id="tradingRecordServicesI" interface="com.yuanrong.admin.rpc.api.trading.TradingRecordServicesI" timeout="1200000" />
+    <!--用户余额流水-->
+    <dubbo:reference id="userBalanceDetailsServicesI" interface="com.yuanrong.admin.rpc.api.fiance.UserBalanceDetailsServicesI" timeout="1200000" />
+    <!--作品表名表-->
+    <dubbo:reference id="demandProductionServicesI" interface="com.yuanrong.admin.rpc.api.demand.DemandProductionServicesI" timeout="1200000" />
+    <!--订单明细-->
+    <dubbo:reference id="orderDetailServicesI" interface="com.yuanrong.admin.rpc.api.order.OrderDetailServicesI" timeout="1200000" />
+    <!--卖家订单-->
+    <dubbo:reference id="sellerOrderServicesI" interface="com.yuanrong.admin.rpc.api.order.SellerOrderServicesI" timeout="1200000" />
+    <!--登录日志-->
+    <dubbo:reference id="loginDetailServicesI" interface="com.yuanrong.admin.rpc.api.base.LoginDetailServicesI" timeout="1200000" />
+
+
+</beans>

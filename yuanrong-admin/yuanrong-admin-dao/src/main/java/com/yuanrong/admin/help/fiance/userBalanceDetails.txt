@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--用户余额流水-->
+<bean id="userBalanceDetailsServicesI" class="com.yuanrong.admin.rpc.service.impl.fiance.UserBalanceDetailsServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.fiance.UserBalanceDetailsServicesI" ref="userBalanceDetailsServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--用户余额流水-->
+<dubbo:reference id="userBalanceDetailsServicesI" interface="com.yuanrong.admin.rpc.api.fiance.UserBalanceDetailsServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+//用户余额流水
+@Autowired
+public UserBalanceDetailsDaoI userBalanceDetailsDaoI;
+
+
+4.在BaseController中，注入services
+
+//用户余额流水
+@Autowired
+public UserBalanceDetailsServicesI userBalanceDetailsServicesI;

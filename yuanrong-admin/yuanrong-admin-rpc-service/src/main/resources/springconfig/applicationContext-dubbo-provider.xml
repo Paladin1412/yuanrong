@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="yuanrong-admin-rpc-service"/>
+
+    <dubbo:registry address="${zookeeper.registry}"/>
+
+    <dubbo:protocol name="dubbo" port="${zookeeper.protocol.port}"/>
+
+    <dubbo:provider id="payload" payload="134307650"/>
+    <!--<dubbo:monitor protocol="registry"/>-->
+    <!-- <bean> 普通的spring依赖注入 <dubbo:service>服务导出，引用<bean>标签注入的类 -->
+    <!-- 系统用户 -->
+    <bean id="systemUserServicesI" class="com.yuanrong.admin.rpc.service.impl.system.SystemUserServicesImpl"/>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.system.SystemUserServicesI" ref="systemUserServicesI" executes="1000" timeout="1200000"/>
+
+    <!--系统角色-->
+    <bean id="systemRoleServicesI" class="com.yuanrong.admin.rpc.service.impl.system.SystemRoleServicesImpl"/>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.system.SystemRoleServicesI" ref="systemRoleServicesI" executes="1000" timeout="1200000"/>
+
+    <!--系统菜单-->
+    <bean id="systemMenuServicesI" class="com.yuanrong.admin.rpc.service.impl.system.SystemMenuServicesImpl"/>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.system.SystemMenuServicesI" ref="systemMenuServicesI" executes="1000" timeout="1200000"/>
+    <!-- 注册用户管理 -->
+    <bean id="registeredUserInfoService" class="com.yuanrong.admin.rpc.service.impl.usermanagement.RegisteredUserInfoServiceIImpl"/>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.usermanagement.RegisteredUserInfoServiceI" ref="registeredUserInfoService" executes="1000" timeout="10000"/>
+
+    <!--IP-->
+    <bean id="iPServicesI" class="com.yuanrong.admin.rpc.service.impl.account.IPServicesImpl"/>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.account.IPServicesI" ref="iPServicesI" executes="1000" timeout="1200000"/>
+    <!--ip账号-->
+    <bean id="platformIPAccountI" class="com.yuanrong.admin.rpc.service.impl.account.PlatformIPAccountServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.account.PlatformIPAccountServicesI" ref="platformIPAccountI" executes="1000" timeout="1200000"></dubbo:service>
+    <!--AdminUser-->
+    <bean id="adminUserServicesI" class="com.yuanrong.admin.rpc.service.impl.system.AdminUserServicesImpl"/>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.system.AdminUserServicesI" ref="adminUserServicesI" executes="1000" timeout="1200000"/>
+
+    <!--平台价格名称-->
+    <bean id="platformIPAccountPriceNameServicesI" class="com.yuanrong.admin.rpc.service.impl.account.PlatformIPAccountPriceNameRelationServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.account.PlatformIPAccountPriceNameRelationServicesI" ref="platformIPAccountPriceNameServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--平台IP账号价格表-->
+    <bean id="platformIPAccountPriceServicesI" class="com.yuanrong.admin.rpc.service.impl.account.PlatformIPAccountPriceServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.account.PlatformIPAccountPriceServicesI" ref="platformIPAccountPriceServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--数据字典位置-->
+    <bean id="dictInfoServicesI" class="com.yuanrong.admin.rpc.service.impl.base.DictInfoServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.base.DictInfoServicesI" ref="dictInfoServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--地址信息-->
+    <bean id="areaCityServicesI" class="com.yuanrong.admin.rpc.service.impl.base.AreaCityServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.base.AreaCityServicesI" ref="areaCityServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--创作者信息-->
+    <bean id="yRAuthorServicesI" class="com.yuanrong.admin.rpc.service.impl.author.YRAuthorServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.author.YRAuthorServicesI" ref="yRAuthorServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--IP标签-->
+    <bean id="iPLableServicesI" class="com.yuanrong.admin.rpc.service.impl.base.IPLableServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.base.IPLableServicesI" ref="iPLableServicesI" executes="1000" timeout="1200000" ></dubbo:service>
+
+    <!--使用场景-->
+    <bean id="scenesServicesI" class="com.yuanrong.admin.rpc.service.impl.base.ScenesServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.base.ScenesServicesI" ref="scenesServicesI" executes="1000" timeout="1200000" ></dubbo:service>
+
+    <!--标签-->
+    <bean id="lableServicesI" class="com.yuanrong.admin.rpc.service.impl.base.LableServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.base.LableServicesI" ref="lableServicesI" executes="1000" timeout="1200000" ></dubbo:service>
+
+    <!--内容形式信息-->
+    <bean id="contentFormServicesI" class="com.yuanrong.admin.rpc.service.impl.base.ContentFormServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.base.ContentFormServicesI" ref="contentFormServicesI" executes="1000" timeout="1200000" ></dubbo:service>
+    <!--系统日志-->
+    <bean id="systemLogServicesI" class="com.yuanrong.admin.rpc.service.impl.base.SystemLogServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.base.SystemLogServicesI" ref="systemLogServicesI" executes="1000" timeout="1200000"></dubbo:service>
+    <!--圆融作品-->
+    <bean id="yRProductionServicesI" class="com.yuanrong.admin.rpc.service.impl.author.YRProductionServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.author.YRProductionServicesI" ref="yRProductionServicesI" executes="1000" timeout="1200000"></dubbo:service>
+    <!--发布需求-->
+    <bean id="advertiserReleaseRequirementServicesI" class="com.yuanrong.admin.rpc.service.impl.demand.AdvertiserReleaseRequirementImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.demand.AdvertiserReleaseRequirementServicesI" ref="advertiserReleaseRequirementServicesI" executes="1000" timeout="1200000"></dubbo:service>
+    <!--内容价值排行榜-->
+    <bean id="listArticleServicesImpI" class="com.yuanrong.admin.rpc.service.impl.rank.ListArticleServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.rank.ListArticleServicesI" ref="listArticleServicesImpI" executes="1000" timeout="1200000"></dubbo:service>
+    <!--IP创造力排行榜单-->
+    <bean id="listIPCreativityImpI" class="com.yuanrong.admin.rpc.service.impl.rank.ListIPCreativityImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.rank.ListIPCreativityServicesI" ref="listIPCreativityImpI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--bug信息-->
+    <bean id="bugInfoServicesI" class="com.yuanrong.admin.rpc.service.impl.bug.BugInfoServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.bug.BugInfoServicesI" ref="bugInfoServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--用户图片-->
+    <bean id="userImagesServicesI" class="com.yuanrong.admin.rpc.service.impl.resources.UserImagesServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.resources.UserImagesServicesI" ref="userImagesServicesI" executes="1000" timeout="1200000"></dubbo:service>
+    <!--购物车-->
+    <bean id="shoppingCartServicesI" class="com.yuanrong.admin.rpc.service.impl.cart.ShoppingCartServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.cart.ShoppingCartServicesI" ref="shoppingCartServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--基本需求信息-->
+    <bean id="demandServicesI" class="com.yuanrong.admin.rpc.service.impl.demand.DemandServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.demand.DemandServicesI" ref="demandServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--作者快照-->
+    <bean id="snapshotYrAuthorServicesI" class="com.yuanrong.admin.rpc.service.impl.order.SnapshotYrAuthorServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.SnapshotYrAuthorServicesI" ref="snapshotYrAuthorServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--买家订单-->
+    <bean id="orderInfoBuyerServicesI" class="com.yuanrong.admin.rpc.service.impl.order.OrderInfoBuyerServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.OrderInfoBuyerServicesI" ref="orderInfoBuyerServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--快速需求-->
+    <bean id="demandFastServicesI" class="com.yuanrong.admin.rpc.service.impl.demand.DemandFastServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.demand.DemandFastServicesI" ref="demandFastServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <bean id="configurationServicesI" class="com.yuanrong.admin.rpc.service.impl.config.ConfigurationServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.config.ConfigurationServicesI" ref="configurationServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--买家订单附加费用-->
+    <bean id="orderCostInfoServicesI" class="com.yuanrong.admin.rpc.service.impl.order.OrderCostInfoServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.OrderCostInfoServicesI" ref="orderCostInfoServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--卖家订单报价-->
+    <bean id="orderInfoOfferServicesI" class="com.yuanrong.admin.rpc.service.impl.order.OrderInfoOfferServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.OrderInfoOfferServicesI" ref="orderInfoOfferServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--卖家订单-->
+    <bean id="orderInfoSellerServicesI" class="com.yuanrong.admin.rpc.service.impl.order.OrderInfoSellerServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.OrderInfoSellerServicesI" ref="orderInfoSellerServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--作品快照-->
+    <bean id="snapshotYrProductionServicesI" class="com.yuanrong.admin.rpc.service.impl.order.SnapshotYrProductionServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.SnapshotYrProductionServicesI" ref="snapshotYrProductionServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--账号快照-->
+    <bean id="snapshotAccountServicesI" class="com.yuanrong.admin.rpc.service.impl.order.SnapshotAccountServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.SnapshotAccountServicesI" ref="snapshotAccountServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--订单号生成-->
+    <bean id="orderSnFactoryServicesI" class="com.yuanrong.admin.rpc.service.impl.order.OrderSnFactoryServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.OrderSnFactoryServicesI" ref="orderSnFactoryServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--上传文件-->
+    <bean id="uploadServicesI" class="com.yuanrong.admin.rpc.service.impl.upload.UploadServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.upload.UploadServicesI" ref="uploadServicesI" executes="1000" timeout="1200000"></dubbo:service>
+    <!--支付-->
+    <bean id="payServiceI" class="com.yuanrong.admin.rpc.service.impl.pay.PayServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.pay.PayServiceI" ref="payServiceI" executes="1000" timeout="1200000"></dubbo:service>
+    <!--支付流水-->
+    <bean id="payWaterServicesI" class="com.yuanrong.admin.rpc.service.impl.pay.PayWaterServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.pay.PayWaterServicesI" ref="payWaterServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--用户图片-->
+    <bean id="adminRoleServicesI" class="com.yuanrong.admin.rpc.service.impl.system.AdminRoleServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.system.AdminRoleServicesI" ref="adminRoleServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--调用短信记录-->
+    <bean id="smsRecordServicesI" class="com.yuanrong.admin.rpc.service.impl.base.SmsRecordImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.base.SmsRecordServicesI" ref="smsRecordServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--消息队列-->
+    <bean id="rabbitMQServicesI" class="com.yuanrong.admin.rpc.service.impl.mq.RabbitMQServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.mq.RabbitMQServicesI" ref="rabbitMQServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--企业微信-->
+    <bean id="weChatServicesI" class="com.yuanrong.admin.rpc.service.impl.notice.WeChatServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.notice.WeChatServicesI" ref="weChatServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--交易记录-->
+    <bean id="tradingRecordServicesI" class="com.yuanrong.admin.rpc.service.impl.trading.TradingRecordServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.trading.TradingRecordServicesI" ref="tradingRecordServicesI" executes="1000" timeout="1200000"></dubbo:service>
+    <!--用户余额流水-->
+    <bean id="userBalanceDetailsServicesI" class="com.yuanrong.admin.rpc.service.impl.fiance.UserBalanceDetailsServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.fiance.UserBalanceDetailsServicesI" ref="userBalanceDetailsServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--作品报名表-->
+    <bean id="demandProductionServicesI" class="com.yuanrong.admin.rpc.service.impl.demand.DemandProductionImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.demand.DemandProductionServicesI" ref="demandProductionServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--订单明细-->
+    <bean id="orderDetailServicesI" class="com.yuanrong.admin.rpc.service.impl.order.OrderDetailServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.OrderDetailServicesI" ref="orderDetailServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--卖家订单-->
+    <bean id="sellerOrderServicesI" class="com.yuanrong.admin.rpc.service.impl.order.SellerOrderServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.order.SellerOrderServicesI" ref="sellerOrderServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--登录日志-->
+    <bean id="loginDetailServicesI" class="com.yuanrong.admin.rpc.service.impl.base.LoginDetailServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.base.LoginDetailServicesI" ref="loginDetailServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+    <!--数据处理-->
+    <bean id="dataProcessServicesI" class="com.yuanrong.admin.rpc.service.impl.data.DataProcessServicesImpl"></bean>
+    <dubbo:service interface="com.yuanrong.admin.rpc.api.data.DataProcessServicesI" ref="dataProcessServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+</beans>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.base.SmsRecordDaoI">
+
+    <insert id="saveSmsRecord" parameterType="com.yuanrong.admin.bean.base.SmsRecord">
+        INSERT INTO SmsRecord
+        ( `Status`,Mobile,Source,content)
+        values
+        (#{status}, #{mobile}, #{source},#{content})
+    </insert>
+</mapper>

@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--支付流水-->
+<bean id="payWaterServicesI" class="com.yuanrong.admin.rpc.service.impl.pay.PayWaterServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.pay.PayWaterServicesI" ref="payWaterServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--支付流水-->
+<dubbo:reference id="payWaterServicesI" interface="com.yuanrong.admin.rpc.api.pay.PayWaterServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+//支付流水
+@Autowired
+public PayWaterDaoI payWaterDaoI;
+
+
+4.在BaseController中，注入services
+
+//支付流水
+@Autowired
+public PayWaterServicesI payWaterServicesI;

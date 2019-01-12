@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.base.ScenesDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.base.Scenes" useGeneratedKeys="true" keyProperty="data.Id">
+        INSERT INTO Scenes
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="data.Id != null" >
+                Id,
+            </if>
+            <if test="data.scenesName != null" >
+                scenesName,
+            </if>
+            createTime,
+            <if test="data.statusValue != null" >
+                statusValue,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="data.Id != null" >
+                #{data.Id,jdbcType=INTEGER},
+            </if>
+            <if test="data.scenesName != null" >
+                #{data.scenesName,jdbcType=VARCHAR},
+            </if>
+            now(),
+            <if test="data.statusValue != null" >
+                #{data.statusValue,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.base.Scenes" >
+        SELECT
+            *
+        from
+            Scenes s
+        WHERE 1=1
+            <if test="statusValue !=null" >
+                AND s.statusValue = #{statusValue}
+            </if>
+    </select>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.base.Scenes">
+        select * from Scenes where Id = #{id}
+    </select>
+
+    <select id="getByName" resultType="com.yuanrong.admin.bean.base.Scenes" >
+        select
+            *
+        from
+            Scenes s
+        WHERE 1=1
+            <if test="scenesName !=null and scenesName != ''" >
+                AND s.scenesName = #{scenesName}
+            </if>
+    </select>
+
+    <!--前台商城——获取创作者使用场景-->
+    <select id="getAuthorScenes" resultType="java.util.Map" >
+        SELECT
+            s.Id AS CategoryID,
+            s.scenesName AS CategoryName,
+            IF (IFNULL(t.num, 0) > 0, 1, 0) flag
+        FROM
+            Scenes s
+            LEFT JOIN (
+                SELECT
+                    us.scenesId AS CategoryID,
+                    COUNT(us.scenesId) AS num
+                FROM
+                    yrAuthorScenesRelation us,
+                    Scenes s
+                WHERE
+                    us.scenesId = s.Id
+                GROUP BY
+                    us.scenesId
+            ) t ON s.Id = t.CategoryID
+        WHERE
+            s.statusValue = 1
+            ORDER BY
+                t.num DESC
+    </select>
+</mapper>

@@ -1,0 +1,322 @@
+#content {
+    width: 1170px;
+    margin: 0 auto;
+    height: 100%;
+}
+.nav-author {
+    font-size: 14px;
+    padding-bottom: 12px;
+    margin-left: 10px;
+}
+.nav-author a {
+    color: #64676a;
+}
+.nav-author span {
+    color: #bbbfc4;
+}
+.nav-author .nav-author-details {
+    color: #48494a;
+}
+.article-detail {
+    width: 870px;
+    background: #fff;
+    /*min-height: 500px;*/
+    /*padding: 40px;*/
+    padding: 40px;
+    text-align: center;
+    position: relative;
+}
+.article-detail p {
+    line-height: 30px;
+    margin-top: 20px;
+}
+.author-info {
+    width: 274px;
+    border-radius: 2px;
+    background: #fff;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.author-desc {
+    padding-top: 20px;
+    height: 230px;
+    background: #f7f8fc;
+    text-align: center;
+}
+.author-desc img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    /*border: 1px solid red;*/
+}
+.author-name {
+    height: 46px;
+    line-height: 40px;
+    color: #303132;
+    font-weight: bold;
+}
+.article-detail-slice {
+    color: #64676a;
+    /*background: #f7f8fc;*/
+    line-height: 30px;
+    position: relative;
+    /*background: linear-gradient(to bottom, #fff,#fff,#fff, #64676a);*/
+}
+.slice-hidden:after {
+    content: "";
+    /*width: 100px;*/
+    height: 100px;
+    /*background: #fdfdfe;*/
+    background: url(../../images/contentBank/bg.png);
+    background-size: 100% 100px;
+    position: absolute;
+    /*padding-bottom: 30px;*/
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    opacity: .8;
+}
+.author-article dl {
+    display: inline-block;
+    color: #64676a;
+}
+.author-article dl dt {
+    font-weight: bold;
+    font-size: 16px;
+    color: #303132;
+}
+.author-article dl:nth-child(1){
+    border-right: 1px solid #ccc;
+    padding-right: 20px;
+}
+.author-article dl:nth-child(2){
+    padding-left: 15px;
+}
+.author-contact {
+    padding: 20px 15px 20px 35px;
+}
+.author-contact ul li {
+    margin-bottom: 10px;
+    line-height: 25px;
+    /*list-style: disc;*/
+    color: #64676a;
+}
+.author-contact ul li a:hover {
+    color: #4895E7;
+}
+.btn {
+    background: #4895e7;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 2px;
+}
+.equity {
+    background: #f7f8fc;
+    color: #82868a;
+    font-size: 12px;
+    height: 50px;
+    line-height: 25px;
+    padding: 0 40px;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    width: 870px;
+}
+.publish {
+    background: #f7f8fc;
+    color: #82868a;
+    font-size: 12px;
+    /*height: 40px;*/
+    /*line-height: 40px;*/
+    /*bottom: -40px;*/
+    left: 0px;
+    width: 870px;
+    padding: 15px 0 15px 60px;
+    /*position: absolute;*/
+    bottom: 0;
+}
+.publish ul li {
+    /*margin-bottom: 5px;*/
+    line-height: 25px;
+    /*list-style: disc;*/
+    color: #82868a;
+    text-align: left;
+    margin-left: 10px;
+}
+.not-publish ul {
+    background: #f7f8fc;
+    color: #82868a;
+    font-size: 12px;
+    /*height: 40px;*/
+    /*line-height: 40px;*/
+    bottom: -40px;
+    left: -40px;
+    width: 870px;
+    /*padding: 20px 0 15px 60px;*/
+    padding: 15px 0 15px 60px;
+    position: absolute;
+}
+.not-publish ul li {
+    line-height: 25px;
+    /*list-style: disc;*/
+    color: #82868a;
+    text-align: left;
+    margin-left: 6px;
+}
+
+/*图文热词，相似作品推荐*/
+.hot {
+    height: 240px;
+}
+.hot,.similar {
+    width: 870px;
+    margin-top: 10px;
+    background: #fff;
+    text-align: center;
+}
+.hot>h3,.similar>h3 {
+    padding-left: 25px;
+    border-bottom: 1px solid #eff1f3;
+    line-height: 45px;
+    text-align: left;
+}
+.similar_list {
+    padding: 0 25px 20px 30px;
+}
+.similar_list ul li {
+    padding:20px 0 ;
+    border-bottom: 1px solid #eff0f0;
+}
+.similar_list ul li img {
+    width: 28%;
+    height: 132px;
+    /*border: 1px solid red;*/
+    float: left;
+}
+.similar_article_list {
+    width: 70%;
+    /*overflow: hidden;*/
+    margin-left: 240px;
+    text-align: left;
+    padding-left: 20px;
+}
+.similar_article_list h3{
+    color: #48494a;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 35px;
+}
+.tags {
+    display: flex;
+    justify-content:space-between;
+}
+.publish_time span:first-child {
+    color: #82868a;
+    font-size: 12px;
+}
+.look-detail:hover {
+    color:#fff;
+}
+.publish_time span:last-child {
+    color: #64676a;
+    font-size: 12px;
+}
+.publish_time span i {
+    /*color: #4895e7;*/
+    color: #F5B923;
+    font-size: 14px;
+}
+.similar_article_list article {
+    /*color: #64676a;*/
+    color: #727477;
+    font-size: 12px;
+    line-height: 22px;
+    margin: 10px 0;
+    height: 66px;
+    overflow: hidden;
+}
+.tags span {
+    font-size: 12px;
+    /*color: #64676a;*/
+    color: #82868a;
+}
+.tags i {
+    /*font-weight: bold;*/
+    color: #303132;
+}
+.article-title {
+    padding-bottom: 30px;
+}
+.article-title .title-desc {
+    font-size: 22px;
+    color: #48494a;
+    font-weight: bold;
+    padding-bottom: 15px;
+}
+.article-title .title-detail {
+    color: #82868a;
+    font-size: 12px;
+}
+.article-title .title-detail>span {
+    margin-right: 30px;
+}
+.article-detail-slice img {
+    max-width: 100%;
+}
+.show-more {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-left: -45px;
+    cursor: pointer;
+    width: 90px;
+    height: 30px;
+    background: #eceff4;
+    line-height: 30px;
+    border-radius: 2px;
+    font-size: 12px;
+    color: #64676a;
+}
+.work-buy {
+    display: inline-block;
+    height: 38px;
+    width: 90px;
+    line-height: 40px;
+    text-align: center;
+    background: #4895e7;
+    color: #fff;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.add-buy {
+    display: inline-block;
+    height: 38px;
+    width: 90px;
+    background: #f5faff;
+    color: #4895e7;
+    line-height: 40px;
+    text-align: center;
+    margin-right: 20px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.work-price {
+    display: inline-block;
+    margin-right: 50px;
+    color: #64676a;
+    font-size: 14px;
+}
+.work-price span{
+    display: inline-block;
+}
+.bottom-work-title {
+    float: left;
+    margin-left: 10%;
+    color: #303132;
+    font-size: 16px;
+    font-weight: bold;
+}
+.title-detail i {
+    margin-right: 5px;
+}

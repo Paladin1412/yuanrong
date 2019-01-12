@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.rank.ListArticleDaoI">
+
+    <!--文章榜单-->
+    <select id="selectAllListArticle" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        	SELECT * FROM(
+                    SELECT
+                        RecID,
+                        Title,
+                        Link,
+                        Theme,
+                        Author,
+                        Creativity,
+                        Originality,
+                        TotalIndex,
+                        CreateTime,
+                        StatusValue,
+                        RangeTime,
+                        lad.DictInfoID,
+                    dictInfo.`name`  AS TypeName
+                    FROM
+                        ListArticle la,
+                        listArticleDictInfoRelationship lad
+                   left	JOIN DictInfo dictInfo ON dictInfo.id = lad.dictInfoId
+                    WHERE
+                        StatusValue = #{statusValue}
+                        AND  lad.listArticleId =la.RecID
+            ) rnt
+	        WHERE
+	              1=1
+	              <if  test="typeName != null">
+                      AND  rnt.TypeName = #{typeName}
+                  </if>
+                  <if  test="rangeTime != null">
+                      AND  rnt.RangeTime = #{rangeTime}
+                  </if>
+           order by rnt.TotalIndex desc
+        LIMIT  #{showNum}
+    </select>
+
+    <select id="selectRangeTimeListArticle" resultType="java.lang.String" parameterType="java.lang.Integer">
+        SELECT DISTINCT RangeTime FROM ListArticle
+         where  StatusValue=#{statusValue}
+        ORDER BY RangeTime DESC  LIMIT 4
+    </select>
+
+    <update id="updateListArticle" parameterType="com.yuanrong.admin.bean.rank.ListArticle" >
+        UPDATE  ListArticle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null" >
+                Title = #{title},
+            </if>
+            <if test="theme != null">
+                Theme = #{theme},
+            </if>
+            <if test="creativity != null">
+                Creativity = #{creativity},
+            </if>
+            <if test="originality != null">
+                Originality = #{originality},
+            </if>
+            <if test="totalIndex != null">
+                TotalIndex = #{totalIndex},
+            </if>
+            <if test="statusValue != null">
+                StatusValue = #{statusValue},
+            </if>
+        </trim>
+        WHERE
+        RecID = #{recID}
+    </update>
+
+</mapper>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- 配置扫描的包 -->
+    <context:component-scan base-package="com.yuanrong.admin.rpc.service.impl.quartz"/>
+    <context:component-scan base-package="com.yuanrong.admin.rpc.service.impl.config"/>
+    <!-- 分布式事务配置 start -->
+    <!-- 配置线程池 -->
+    <bean name="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="15" />
+        <property name="maxPoolSize" value="25" />
+        <property name="queueCapacity" value="100" />
+    </bean>
+
+    <!-- 配置调度任务 -->
+    <bean id="quartzScheduler" name="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="configLocation" value="classpath:quartz.properties" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="transactionManager" ref="transactionManager" />
+
+        <!-- 任务唯一的名称，将会持久化到数据库 -->
+        <property name="schedulerName" value="yuanRongScheduler" />
+        <!-- 每台集群机器部署应用的时候会更新触发器 -->
+        <property name="overwriteExistingJobs" value="true" />
+        <property name="applicationContextSchedulerContextKey" value="applicationContextKey" />
+        <property name="jobFactory">
+            <bean class="com.yuanrong.admin.rpc.service.impl.quartz.AutowiringSpringBeanJobFactory" />
+        </property>
+        <property name="triggers">
+            <list>
+                <ref bean="authorProductionSortScheduler" />
+                <ref bean="demandStatusJobsScheduler" />
+                <!--<ref bean="timeoutOrderInfoScheduler"  />-->
+            </list>
+        </property>
+        <!--<property name="jobDetails">
+            <list>
+                <ref bean="printCurrentTimeJobs" />
+                <ref bean="timeoutOrderInfoJobs" />
+            </list>
+        </property>-->
+        <property name="taskExecutor" ref="executor" />
+    </bean>
+
+    <!-- 配置Job详情，job实现业务逻辑 ****作者、作品排序定时任务*** -->
+    <bean name="authorProductionSortJobs" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.yuanrong.admin.rpc.service.impl.quartz.AuthorProductionSortJobs" />
+        <property name="durability" value="true" />
+        <property name="requestsRecovery" value="true" />
+    </bean>
+
+    <!-- 配置触发时间  ****作者、作品排序定时任务***-->
+    <bean name="authorProductionSortScheduler" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="authorProductionSortJobs" />
+        <!--<property name="startDelay" value="5000" />-->
+        <property name="cronExpression">
+            <!--1小时执行一次-->
+            <value>0 0 0/1 * * ?</value>
+        </property>
+    </bean>
+
+
+    <!-- 配置Job详情，job实现业务逻辑  需求状态为已完成：（截止日期-当前时间）< 0的定时任务*** -->
+    <bean name="demandStatusJobs" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.yuanrong.admin.rpc.service.impl.quartz.DemandStatusJobs" />
+        <property name="durability" value="true" />
+        <property name="requestsRecovery" value="true" />
+    </bean>
+
+    <!-- 配置触发需求状态为已完成：（截止日期-当前时间）< 0的定时任务***-->
+    <bean name="demandStatusJobsScheduler" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="demandStatusJobs" />
+        <!--<property name="startDelay" value="5000" />-->
+        <property name="cronExpression">
+            <!--每天凌晨0点执行一次：-->
+            <value>0 0 0 * * ?</value>
+        </property>
+    </bean>
+
+
+    <!-- 配置触发时间  订单超时 -->
+    <!--<bean name="timeoutOrderInfoScheduler" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="timeoutOrderInfoJobs" />
+        <property name="startDelay" value="5000" />
+        <property name="cronExpression">
+            <value>0/30 * * * * ?</value>
+        </property>
+    </bean>
+    &lt;!&ndash; 配置Job详情，job实现业务逻辑 &ndash;&gt;
+    <bean name="timeoutOrderInfoJobs" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.techThink.admin.rpc.service.impl.job.TestTimeJobs" />
+        <property name="durability" value="true" />
+        <property name="requestsRecovery" value="true" />
+    </bean>-->
+    <!-- 分布式事务配置 end -->
+
+    <!-- 方式二：使用MethodInvokingJobDetailFactoryBean，任务类可以不实现Job接口，
+     -->
+    <!-- 定义目标bean和bean中的方法 -->
+   <!-- <bean id="SpringQtzJob" class="com.clusterquartz.job.SpringQtz" />
+    <bean id="SpringQtzJobMethod"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="SpringQtzJob" />
+        </property>
+        <property name="targetMethod">  &lt;!&ndash; 要执行的方法名称 &ndash;&gt;
+            <value>execute</value>
+        </property>
+    </bean>
+    &lt;!&ndash; 调度触发器 &ndash;&gt;
+    <bean name="printCurrentTimeScheduler"
+          class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="SpringQtzJobMethod" />
+        <property name="cronExpression">
+            <value>0/10 * * * * ?</value>
+        </property>
+    </bean>-->
+
+        <!-- 分布式事务配置 end -->
+</beans>

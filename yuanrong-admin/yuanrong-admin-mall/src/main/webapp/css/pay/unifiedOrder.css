@@ -1,0 +1,182 @@
+#content {
+    width: 1170px;
+    margin: 0 auto;
+    height: 100%;
+    background: #fff;
+    border-radius: 2px;
+    overflow: hidden;
+}
+#content .nav-pay {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 30px;
+    border-bottom: 1px solid #ddeaf9;
+}
+#content .nav-pay .pay-title {
+    font-size: 18px;
+    color: #64676a;
+}
+#content .nav-pay .pay-step {
+    float: right;
+}
+#content .nav-pay .pay-step > span {
+    font-size: 12px;
+    display: inline-block;
+    width: 140px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+}
+#content .pay-content {
+    padding: 30px 30px 35px 30px;
+}
+#content .pay-order {
+    background: #f4f6f9;
+    padding: 30px 20px 30px 40px;
+}
+#content .pay-code {
+    border: 5px solid #ddeaf9;
+    padding: 20px 20px 20px 25px;
+}
+#pay-roll1:before {
+    content:"";
+    width:0;
+    height:0;
+    position:absolute;
+    left:0;
+    top:0;
+    border-top:solid 15px transparent;
+    border-left:solid 10px #fff;
+    border-bottom:solid 15px transparent;
+}
+#pay-roll2:before {
+    content:"";
+    width:0;
+    height:0;
+    position:absolute;
+    left:0;
+    top:0;
+    border-top:solid 15px transparent;
+    border-left:solid 10px #fff;
+    border-bottom:solid 15px transparent;
+}
+
+
+#content .nav-pay .pay-step .triangle {
+    width:0;
+    height:0;
+    border-width:28px 0 28px 28px;;
+    border-style:solid;
+    border-color:black;/*透明 灰 透明 透明 */
+    margin:40px auto;
+    position:relative;
+}
+#pay-roll1 {
+    background: #7cbc5a;
+    color: #fff;
+    position: relative;
+}
+#content .pay-header .pay-step .pay-roll1-before {
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left:10px solid #eaf4e5;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: -4px;
+}
+#content .pay-header .pay-step .pay-roll2-before {
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 10px solid #7cbc5a;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: -4px;
+}
+#pay-roll2 {
+    background: #f4f6f9;
+    color: #64676a;
+    position: relative;
+}
+.pay-order-number {
+    color: #64676a;
+    font-size: 18px;
+}
+.pay-order-number > span {
+    color:#4895e7;
+}
+.pay-order-money {
+    float: right;
+    font-size: 14px;
+    color: #64676a;
+}
+.pay-order-money > span {
+    font-size: 30px;
+    color: #fd8226;
+}
+.pay-order-tip {
+    padding-top: 10px;
+}
+.pay-order-disc {
+    color: #64676a;
+    font-size: 14px;
+}
+.pay-order-disc > span {
+    color: #4895e7;
+}
+.pay-code-item1 {
+    padding-bottom:15px;
+}
+.pay-code-item1-triangle {
+    width: 0;
+    height: 0;
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    border-right: 7px solid #fc6620;
+    display: inline-block;
+    vertical-align: middle;
+}
+.pay-code-item1-recommend {
+    background: #fc6620;
+    width: 40px;
+    height: 20px;
+    font-size: 12px;
+    color: #fff;
+    margin-left: -4px;
+    display: inline-block;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 2px;
+}
+.pay-code-item2 {
+    border: 10px solid #f4f6f9;
+    width: 225px;
+    margin: 0 auto;
+}
+.pay-code-item2 > div {
+    padding: 14px 20px;
+    background: #456084;
+}
+.pay-code-item-scan {
+    float: left;
+    margin-right: 10px;
+}
+.pay-code-item1-name {
+    font-size: 18px;
+    font-weight: 500;
+}
+.pay-code-item1-disc {
+    color: #8b8f92;
+    margin-left: 15px;
+}
+.pay-code-item2-disc {
+    color: #fff;
+    font-size: 12px;
+}
+.pay-step-item1 {
+    background: #eaf4e5;
+    color: #899883;
+}

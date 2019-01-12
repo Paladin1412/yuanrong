@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.base.LableDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.base.Lable">
+        
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.base.Lable">
+        SELECT
+            l.*
+        FROM
+            Lable l,
+            yrAuthorContenStyleLableRelation csl
+        WHERE
+            csl.lableId = l.Id
+            AND l.statusValue = 1
+            <if test="typeId != null and typeId != ''" >
+              AND  csl.typeId = #{typeId}
+            </if>
+            ORDER BY csl.typeId,l.Id
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.base.Lable">
+        select * from Lable where Id = #{id}
+    </select>
+
+    <select id="getByName" parameterType="java.lang.String" resultType="com.yuanrong.admin.bean.base.Lable">
+        select
+        *
+        from
+        Lable la
+        WHERE 1=1
+        <if test="str !=null and str != ''" >
+            AND la.lableName = #{str}
+        </if>
+    </select>
+
+    <select id="getByNameAndType" resultType="com.yuanrong.admin.bean.base.Lable">
+        select
+        la.*
+        from
+        yrAuthorContenStyleLableRelation r
+        left JOIN
+        Lable la
+        on r.lableId = la.Id
+        WHERE 1=1
+        <if test="str !=null and str != ''" >
+            AND la.lableName = #{str}
+        </if>
+        <if test="type !=null " >
+            AND r.typeId= #{type}
+        </if>
+    </select>
+    <!--前台商城——获取创作者创作者风格-->
+    <select id="getAuthorContentStyle" resultType="java.util.Map" >
+        SELECT
+            l.Id AS CategoryID,
+            l.lableName AS CategoryName,
+            IF( IFNULL( t.num, 0 ) > 0, 1, 0 ) flag
+        FROM
+            Lable l
+            LEFT JOIN (
+                SELECT
+                    yral.lableId AS CategoryID,
+                    COUNT( yral.lableId ) AS num
+                FROM
+                    yrAuthorLableRelation yral,
+                    Lable l
+                WHERE
+                    yral.lableId = l.Id
+                GROUP BY
+                    yral.lableId
+            ) t ON l.Id = t.CategoryID ,
+          yrAuthorContenStyleLableRelation csl
+        WHERE
+            l.Id = csl.lableId
+            AND l.statusValue = 1
+        ORDER BY
+            t.num DESC,csl.typeId,l.Id ASC
+    </select>
+
+</mapper>

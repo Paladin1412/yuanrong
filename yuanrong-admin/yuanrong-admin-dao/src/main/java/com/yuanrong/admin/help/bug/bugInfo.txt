@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--bug信息-->
+<bean id="bugInfoServicesI" class="com.yuanrong.admin.rpc.service.impl.bug.BugInfoServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.bug.BugInfoServicesI" ref="bugInfoServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--bug信息-->
+<dubbo:reference id="bugInfoServicesI" interface="com.yuanrong.admin.rpc.api.bug.BugInfoServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+<!--bug信息-->
+@Autowired
+public BugInfoDaoI bugInfoDaoI;
+
+
+4.在BaseController中，注入services
+
+<!--bug信息-->
+@Autowired
+public BugInfoServicesI bugInfoServicesI;

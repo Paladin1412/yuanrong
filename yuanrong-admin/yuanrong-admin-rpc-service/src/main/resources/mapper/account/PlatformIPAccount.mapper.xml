@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.account.PlatformIPAccountDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.account.PlatformIPAccount" useGeneratedKeys="true"
+            keyProperty="data.id">
+        INSERT INTO `PlatformIPAccount`(`name`, `accountID`, `articleUrl`, `platformID`, `headImageUrl`,
+        `headImageUrlLocal`,
+        `qRcodeImageUrl`,`qRcodeImageUrlLocal`, `fans`, `introduction`, `categoryID`, `lowerCauseID`, `notes`,
+        `successUrl`,
+        `successTitle`, `advantage`, `isAuthentication`, `authenticationInfo`, `cityID`, `womanPercent`,
+        `createrAdminID`,
+        `adminMediaID`, `iPID`, `createdTime`, `modifiedTime`, `accountStatus` ,invalidTime , sex , registeredUserInfoID
+        ,pid,indexUrl
+        ,avgReadCount,avgLikeCount,avgForwardCount,avgCommontCount,avgPlayCount,accountOnlyId,channelIndex)
+        VALUES (#{data.name}, #{data.accountID}, #{data.articleUrl}, #{data.platformID}, #{data.headImageUrl},
+        #{data.headImageUrlLocal}, #{data.qRcodeImageUrl}, #{data.qRcodeImageUrlLocal}, #{data.fans},
+        #{data.introduction},
+        #{data.categoryID}, #{data.lowerCauseID},
+        #{data.notes}, #{data.successUrl}, #{data.successTitle}, #{data.advantage},#{data.isAuthentication},
+        #{data.authenticationInfo},
+        #{data.cityID}, #{data.womanPercent}, #{data.createrAdminID}, #{data.adminMediaID}, #{data.iPID}, now(), now(),
+        #{data.accountStatus} , <if test="data.invalidTime!= null and data.invalidTime!= ''">#{data.invalidTime}</if>
+        <if test="data.invalidTime== null or data.invalidTime== ''">null</if>,#{data.sex}
+        ,#{data.registeredUserInfoID} , #{data.pid},#{data.indexUrl},0,0,0,0,0,#{data.accountOnlyId},#{data.channelIndex})
+    </insert>
+
+    <select id="getPlatFormInfo" resultType="com.yuanrong.admin.bean.account.ShortVideoPlatformInfo">
+        SELECT * FROM ShortVideoPlatformInfo WHERE statusIndex = 1
+    </select>
+
+    <select id="list" resultType="java.util.Map" parameterType="com.yuanrong.admin.seach.PlatformIpAccountSeach">
+        SELECT rgi.RecID , rgi.UserName,rgi.NickName , pfi.*, svp.PlatformName , svp.icoUrl , pfi.platformID , ip.iPName
+        , adm.RealName
+        , di.`name` as lowerCause,categoryDi.name AS categoryName
+        from RegisteredUserInfo rgi ,AdminUser adm ,ShortVideoPlatformInfo svp,PlatformIPAccount pfi
+        <!--left JOIN (
+        select pip.iPAcctountID , GROUP_CONCAT(CONCAT(ppn.priceName,'_-_' , pip.price,'_-_' ,ifnull(pip.isOriginal , 0 ),'_-_' , pip.id,'_-_' , pip.platformPriceNameID) SEPARATOR '-_-') info
+        from PlatformIPAccountPrice pip , PlatformPriceName ppn
+        where pip.platformPriceNameID =  ppn.id
+        <if test="data.platformPrice > 0">
+            and pip.source = #{data.platformPrice}
+        </if>
+        GROUP BY pip.iPAcctountID
+        ) price on price.iPAcctountID = pfi.id-->
+        left join IP as ip on ip.recID = pfi.iPID
+        LEFT JOIN DictInfo di on di.id= pfi.lowerCauseID
+        LEFT JOIN DictInfo categoryDi on categoryDi.id= pfi.categoryID
+        where pfi.registeredUserInfoID = rgi.RecID and svp.RecID = pfi.platformID and
+        rgi.adminUserMediaID = adm.RecID
+        <if test="data.platformIDs != null and data.platformIDs.length > 0">
+            and pfi.platformID in
+            <foreach collection="data.platformIDs" item="arr" index="index" open="("
+                     separator="," close=")">
+                #{arr}
+            </foreach>
+        </if>
+
+        <if test="data.channelIndex != null and data.channelIndex>0">
+            and pfi.channelIndex = #{data.channelIndex}
+        </if>
+
+        <if test="data.adminUserMediaIDs != null  and data.adminUserMediaIDs.length > 0">
+            and rgi.adminUserMediaID in
+            <foreach collection="data.adminUserMediaIDs" item="arr" index="index" open="("
+                     separator="," close=")">
+                #{arr}
+            </foreach>
+        </if>
+
+        <if test="data.ipids != null  and data.ipids.length > 0">
+            and pfi.iPID in
+            <foreach collection="data.ipids" item="arr" index="index" open="("
+                     separator="," close=")">
+                #{arr}
+            </foreach>
+        </if>
+
+
+        <if test="data.registerNames != null  and data.registerNames.length > 0">
+            and
+            <foreach collection="data.registerNames" item="arr" index="index" open="("
+                     separator=" or " close=")">
+                rgi.nickName like concat('%' , #{arr} , '%')
+            </foreach>
+        </if>
+
+        <if test="data.accountNames != null  and data.accountNames.length > 0">
+            and
+            <foreach collection="data.accountNames" item="arr" index="index" open="("
+                     separator=" or " close=")">
+                pfi.name like concat('%' , #{arr} , '%')
+            </foreach>
+        </if>
+
+        <if test="data.accountIDs != null and data.accountIDs.length > 0">
+            and
+            <foreach collection="data.accountIDs" item="arr" index="index" open="("
+                     separator=" or " close=")">
+                pfi.accountID like concat('%' , #{arr} , '%')
+            </foreach>
+        </if>
+
+        <if test="data.iPNames != null  and data.iPNames.length > 0">
+            and
+            <foreach collection="data.iPNames" item="arr" index="index" open="("
+                     separator=" or " close=")">
+                ip.iPName like concat('%' , #{arr} , '%')
+            </foreach>
+        </if>
+
+        <if test="data.platformAccountStatus != null and data.platformAccountStatus != ''">
+            and pfi.accountStatus = #{data.platformAccountStatus}
+        </if>
+
+        <if test="data.createdTimeStart != null and data.createdTimeStart != ''">
+            and DATE_FORMAT(pfi.createdTime,'%Y-%m-%d') >= #{data.createdTimeStart}
+        </if>
+
+        <if test="data.createdTimeEnd != null and data.createdTimeEnd != ''">
+            and DATE_FORMAT(pfi.createdTime,'%Y-%m-%d') &lt;= #{data.createdTimeEnd}
+        </if>
+
+        <if test="data.avgReadCount > 0">
+            <if test="data.numStart > 0 ">
+                and pfi.avgReadCount >= #{data.numStart}
+            </if>
+            <if test="data.numEnd > 0 ">
+                and pfi.avgReadCount &lt;= #{data.numEnd}
+            </if>
+        </if>
+
+        <if test="data.avgLikeCount > 0">
+            <if test="data.numStart > 0 ">
+                and pfi.avgLikeCount >= #{data.numStart}
+            </if>
+            <if test="data.numEnd > 0 ">
+                and pfi.avgLikeCount &lt;= #{data.numEnd}
+            </if>
+        </if>
+
+        <if test="data.avgForwardCount > 0">
+            <if test="data.numStart > 0 ">
+                and pfi.avgForwardCount >= #{data.numStart}
+            </if>
+            <if test="data.numEnd > 0 ">
+                and pfi.avgForwardCount &lt;= #{data.numEnd}
+            </if>
+        </if>
+
+        <if test="data.avgCommontCount > 0">
+            <if test="data.numStart > 0 ">
+                and pfi.avgCommontCount >= #{data.numStart}
+            </if>
+            <if test="data.numEnd > 0 ">
+                and pfi.avgCommontCount &lt;= #{data.numEnd}
+            </if>
+        </if>
+
+        <if test="data.priceID > 0 ">
+            AND pfi.id in (
+            SELECT DISTINCT iPAcctountID from PlatformIPAccountPrice ppn
+            WHERE platformPriceNameID = #{data.priceID}
+            <if test="data.priceStart > 0">
+                AND ppn.price >= #{data.priceStart}
+            </if>
+            <if test="data.priceEnd > 0">
+                AND ppn.price &lt;= #{data.priceEnd} and ppn.price > 0
+            </if>
+            <if test="data.platformPrice > 0">
+                and ppn.source = #{data.platformPrice}
+            </if>
+            )
+        </if>
+
+        <!--<if test="data.currLoginUser != null and data.currLoginUser.underUser != null and data.currLoginUser.underUser != ''">
+            and pfi.createrAdminID in (${data.currLoginUser.underUser})
+        </if>-->
+
+        <if test="data.webUser != null and data.webUser.recID > 0">
+            and pfi.registeredUserInfoID = #{data.webUser.recID}
+        </if>
+
+        <if test="data.invalidTimeStart != null and data.invalidTimeStart != ''">
+            and DATE_FORMAT(pfi.invalidTime,'%Y-%m-%d') >= #{data.invalidTimeStart}
+        </if>
+
+        <if test="data.invalidTimeEnd  != null and data.invalidTimeEnd != ''">
+            and DATE_FORMAT(pfi.invalidTime,'%Y-%m-%d') &lt;= #{data.invalidTimeEnd}
+        </if>
+        <if test="data.rgiRecIds != null and data.rgiRecIds.length >0">
+            and rgi.recId IN
+            <foreach collection="data.rgiRecIds" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="data.likeName !=null and data.likeName.length > 0">
+            AND (
+            <foreach collection="data.likeName" item="arr" index="index" open="("
+                     separator=" or " close=")">
+                <if test="arr !=''">
+                    pfi.accountID like concat('%' , #{arr} , '%')
+                </if>
+            </foreach>
+            OR
+            <foreach collection="data.likeName" item="arr" index="index" open="("
+                     separator=" or " close=")">
+                <if test="arr !=''">
+                    pfi.name like concat('%' , #{arr} , '%')
+                </if>
+            </foreach>
+            )
+        </if>
+        <if test="data.categoryID != null">
+            and pfi.categoryID = #{data.categoryID}
+        </if>
+        <if test="data.isAgent != null">
+            and pfi.isAgent = #{data.isAgent}
+        </if>
+        <if test="data.demandId != null">
+            AND pfi.id NOT IN (
+                SELECT
+                    os.referId
+                FROM
+                    orderInfoSeller os,
+                    demand d
+                WHERE
+                    os.demandId = d.demandId
+                    AND os.orderTypeValue = 2
+                    AND d.demandId = #{data.demandId}
+            )
+        </if>
+    </select>
+
+    <!--查询无IP的已有账号-->
+    <select id="ipFindAccount" resultType="java.util.HashMap"
+            parameterType="com.yuanrong.admin.bean.account.PlatformIPAccount">
+        SELECT
+        pa.id,
+        pa.NAME,
+        pa.accountID,
+        pa.headImageUrlLocal,
+        p.icoUrl
+        FROM
+        PlatformIPAccount pa,
+        ShortVideoPlatformInfo p
+        WHERE
+        p.PlatformID = pa.platformID
+        AND pa.registeredUserInfoID = #{data.registeredUserInfoID}
+        AND (pa.iPID IS NULL OR pa.iPID = '')
+        <if test="data.name != null and data.name !=''">
+            AND pa.NAME LIKE concat('%',#{data.name},'%')
+        </if>
+    </select>
+
+    <!--批量添加无IP的已有账号-->
+    <update id="updateAccount" parameterType="java.util.List">
+        update PlatformIPAccount
+        SET
+        iPID =
+        <foreach collection="listAccout" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.iPID}
+        </foreach>
+        ,modifiedTime = now()
+        where id IN
+        <foreach collection="listAccout" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <select id="getPlatFormIPAccountInfoById" resultType="java.util.Map" parameterType="java.lang.Integer">
+        SELECT rgi.RecID , rgi.UserName,rgi.NickName, pfi.lowerCauseID , pfi.*, svp.PlatformName , svp.icoUrl , pfi.platformID ,price.info , ip.iPName , adm.RealName
+        from RegisteredUserInfo rgi ,AdminUser adm ,ShortVideoPlatformInfo svp,PlatformIPAccount pfi
+        left JOIN (
+        select pip.iPAcctountID , GROUP_CONCAT(CONCAT(ppn.priceName,'_-_' , pip.price,'_-_' , ifnull(pip.isOriginal , 0 ),'_-_' , pip.id,'_-_' , pip.platformPriceNameID) SEPARATOR '-_-') info
+        from PlatformIPAccountPrice pip , PlatformPriceName ppn
+        where pip.platformPriceNameID =  ppn.id and pip.source = 13
+        GROUP BY pip.iPAcctountID
+        ) price on price.iPAcctountID = pfi.id
+        left join IP as ip on ip.recID = pfi.iPID
+
+        where pfi.registeredUserInfoID = rgi.RecID and svp.RecID = pfi.platformID and
+        rgi.adminUserMediaID = adm.RecID and pfi.id = #{id}
+    </select>
+
+    <select id="getById" resultType="com.yuanrong.admin.bean.account.PlatformIPAccount"
+            parameterType="java.lang.Integer">
+        SELECT  * FROM PlatformIPAccount WHERE  id = #{id}
+    </select>
+
+    <update id="update" parameterType="com.yuanrong.admin.bean.account.PlatformIPAccount">
+        UPDATE `PlatformIPAccount` SET `name` = #{data.name}, `accountID` = #{data.accountID}, `articleUrl` = #{data.articleUrl}, `platformID` = #{data.platformID},
+        `headImageUrl` = #{data.headImageUrl}, `headImageUrlLocal` = #{data.headImageUrlLocal}, `qRcodeImageUrl` = #{data.qRcodeImageUrl},
+        `qRcodeImageUrlLocal` = #{data.qRcodeImageUrlLocal}, `fans` = #{data.fans},
+        `introduction` = #{data.introduction}, `categoryID` = #{data.categoryID}, `lowerCauseID` = #{data.lowerCauseID}, `notes` = #{data.notes},
+        `successUrl` = #{data.successUrl}, `successTitle` = #{data.successTitle}, `advantage` = #{data.advantage}, `isAuthentication` = #{data.isAuthentication},
+        `authenticationInfo` = #{data.authenticationInfo}, `cityID` = #{data.cityID}, `womanPercent` = #{data.womanPercent},
+        `iPID` = #{data.iPID},  `modifiedTime` = now(), `accountStatus` = #{data.accountStatus}, `registeredUserInfoID` = #{data.registeredUserInfoID},
+        `invalidTime` = #{data.invalidTime}, `avgReadCount` = #{data.avgReadCount}, `avgLikeCount` = #{data.avgLikeCount}, `avgForwardCount` = #{data.avgForwardCount},
+        `avgCommontCount` = #{data.avgCommontCount}, `sex` = #{data.sex},isAgent= #{data.isAgent},agentCoopBrand=#{data.agentCoopBrand},agentCoopCondition=#{data.agentCoopCondition}
+        WHERE `id` = #{data.id};
+    </update>
+
+    <select id="getByParam" resultType="com.yuanrong.admin.bean.account.PlatformIPAccount"
+            parameterType="java.util.Map">
+        SELECT pia.* from RegisteredUserInfo rui , PlatformIPAccount pia
+        where rui.RecID = pia.registeredUserInfoID
+        <if test="data.registeredUserInfoID != null and data.registeredUserInfoID >0">
+            and pia.registeredUserInfoID = #{data.registeredUserInfoID}
+        </if>
+
+        <if test="data.mobile != null and data.mobile !='' ">
+            and rui.Mobile = #{data.mobile}
+        </if>
+
+        <if test="data.accountID != null and data.accountID !='' ">
+            and pia.accountID = #{data.accountID}
+        </if>
+
+    </select>
+
+    <select id="getByPidAndRegisterUserId" resultType="com.yuanrong.admin.bean.account.PlatformIPAccount">
+        SELECT * FROM PlatformIPAccount WHERE pid = #{pid} and registeredUserInfoID = #{registerUserId}
+    </select>
+
+    <update id="batchUpperLowerShelves" parameterType="com.yuanrong.admin.seach.PlatformIpAccountSeach">
+        update PlatformIPAccount pf ,RegisteredUserInfo ru set pf.accountStatus = #{data.platformAccountStatus}
+        <if test="data.lowerCauseID != null and data.lowerCauseID > 0">
+            , pf.lowerCauseID = #{data.lowerCauseID}
+        </if>
+        where ru.RecID = pf.registeredUserInfoID and pf.id in
+        <foreach collection="data.ids" item="id" index="index"
+                 separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        <if test="data.webUser != null and data.webUser.recID > 0">
+            and pf.registeredUserInfoID = #{data.webUser.recID}
+        </if>
+
+    </update>
+
+    <update id="batchUpdateInvalidTime" parameterType="com.yuanrong.admin.seach.PlatformIpAccountSeach">
+        UPDATE PlatformIPAccount set invalidTime = DATE_FORMAT(#{data.invalidTime},'%Y-%m-%d')
+        where id in
+        <foreach collection="data.ids" item="id" index="index"
+                 separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        <if test="data.webUser != null and data.webUser.recID > 0">
+            and registeredUserInfoID = #{data.webUser.recID}
+        </if>
+    </update>
+
+    <update id="batchUpdatePrice" parameterType="com.yuanrong.admin.seach.PlatformIpAccountSeach">
+        update PlatformIPAccount pi , PlatformIPAccountPrice pip set pip.price = (pip.price +
+        (pip.price*(#{data.rangePer}/100)))
+        where pi.id = pip.iPAcctountID and pip.source = 13
+        <if test="data.webUser != null and data.webUser.recID > 0">
+            and pi.registeredUserInfoID = #{data.webUser.recID}
+        </if>
+        and pi.id in
+        <foreach collection="data.ids" item="id" index="index"
+                 separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="listMall" parameterType="com.yuanrong.admin.seach.PlatformIpAccountSearchMall"
+            resultType="com.yuanrong.admin.result.PlatformIPAccountResult">
+        SELECT pi.* , di.`name` as 'dictInfoCategory.name' , svp.icoUrl as 'shortVideoPlatformInfo.icoUrl' ,
+        svp.PlatformName as 'shortVideoPlatformInfo.platformName', if(sc.shoppingCartId is null , 0 , 1) as 'isAddCart'
+        from ShortVideoPlatformInfo svp , PlatformIPAccount pi
+        LEFT JOIN shoppingCart sc on sc.productId = pi.accountOnlyId and sc.cartTypeIndex =3 and sc.registeredUserInfoId
+        = #{data.registerUserInfoId}
+        <!--LEFT JOIN (
+                select pip.iPAcctountID , GROUP_CONCAT(CONCAT(ppn.priceName,'_-_' , pip.price,'_-_' ,ifnull(pip.isOriginal , 0 ),'_-_' , pip.id,'_-_' , pip.platformPriceNameID,'_-_' , di.`name`) SEPARATOR '-_-') info
+                from PlatformIPAccountPrice pip , PlatformPriceName ppn , DictInfo di
+                where pip.platformPriceNameID =  ppn.id and di.id = pip.source
+        ) priceInfo on priceInfo.iPAcctountID = pi.id -->
+        LEFT JOIN DictInfo di on di.id = pi.categoryID
+        where pi.accountStatus = 1 and svp.RecID = pi.platformID
+        and pi.pid is not null and pi.pid != ''
+        and pi.id in (
+        SELECT DISTINCT ppp.iPAcctountID from PlatformIPAccountPrice ppp where ppp.price >0
+        )
+
+        <if test="data.platFormId > 0">
+            and pi.platformID = #{data.platFormId}
+        </if>
+
+        <if test="data.platFormId == -1">
+            and pi.platformID in (1,2,3,10)
+        </if>
+
+        <if test="data.categoryID != null and data.categoryID > 0">
+            and pi.categoryID = #{data.categoryID}
+        </if>
+
+        <if test="data.fansNumStart !=null">
+            and pi.fans >= #{data.fansNumStart}
+        </if>
+        <if test="data.fansNumEnd !=null">
+            and pi.fans &lt; #{data.fansNumEnd}
+        </if>
+        <if test="data.fansNumMax !=null">
+            and pi.fans >= #{data.fansNumMax}
+        </if>
+        <if test="data.referQuoStart !=null">
+            and pi.id in (
+            SELECT ppp.iPAcctountID from PlatformIPAccountPrice ppp where ppp.price >= #{data.referQuoStart}
+            )
+        </if>
+        <if test="data.referQuoEnd !=null">
+            and pi.id in (
+            SELECT ppp.iPAcctountID from PlatformIPAccountPrice ppp where ppp.price > 0 and ppp.price &lt;=
+            #{data.referQuoEnd}
+            )
+        </if>
+        <if test="data.referQuoMax !=null">
+            and pi.id in (
+            SELECT ppp.iPAcctountID from PlatformIPAccountPrice ppp where ppp.price >= #{data.referQuoMax}
+            )
+        </if>
+
+        <if test="data.search != null">
+            AND (
+            pi.accountID like CONCAT('%',#{data.search},'%') OR
+            pi.name like CONCAT('%',#{data.search},'%') OR
+            pi.introduction like CONCAT('%',#{data.search},'%')
+            )
+        </if>
+        <if test="data.isAgent != null">
+            AND (
+            pi.isAgent = #{data.isAgent}
+            )
+        </if>
+        GROUP BY pi.pid
+        <if test="data.order != null and data.order != ''">
+            order by ${data.order}
+        </if>
+    </select>
+    <update id="updateAccountStatusByUserIDs" parameterType="com.yuanrong.admin.seach.PlatformIpAccountSeach">
+        UPDATE PlatformIPAccount
+        SET accountStatus = 1
+        WHERE
+        accountStatus = 2
+        and registeredUserInfoID in
+        <foreach collection="ids" item="id" index="index"
+                 separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="getAccountInfoByPlatformAndAccountID" resultType="com.yuanrong.admin.bean.account.PlatformIPAccount">
+        SELECT * from PlatformIPAccount where accountID = #{accountID} and platformID = #{platformId} group by
+        accountID,platformID
+    </select>
+
+    <select id="getShortVideoPlatformInfo" resultType="java.util.HashMap">
+        SELECT RecID,PlatformName,PlatformID FROM ShortVideoPlatformInfo where StatusValue=1
+    </select>
+
+    <select id="getPlatformIdsByCategorys" resultType="java.util.HashMap">
+        select group_concat(PlatformID) platformIDs FROM ShortVideoPlatformInfo where category in (${category}) and  statusIndex=1;
+    </select>
+
+    <select id="getAccountByPidAndPlatformId" resultType="com.yuanrong.admin.bean.account.Account">
+        SELECT * from account where pid = #{pid} and shortVideoPlatformInfoId = #{platformId}
+    </select>
+
+    <insert id="saveAccount" parameterType="com.yuanrong.admin.bean.account.Account" keyProperty="account.accountId"
+            useGeneratedKeys="true">
+        INSERT INTO `account`(`pid`, `shortVideoPlatformInfoId`) VALUES ( #{account.pid}, #{account.shortVideoPlatformInfoId});
+    </insert>
+
+    <select id="list_PlatformIPAccountByIds" resultType="com.yuanrong.admin.bean.account.PlatformIPAccount">
+        SELECT * FROM PlatformIPAccount WHERE id IN
+        <foreach collection="ids" item="arr" index="index" open="(" separator="," close=")">
+            #{arr}
+        </foreach>
+    </select>
+
+    <select id="getAccountById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.account.Account">
+        SELECT * from account where accountId = #{id}
+    </select>
+
+    <select id="getShelvesbyAccountId" resultType="com.yuanrong.admin.result.PlatformIPAccountResult">
+      SELECT * from PlatformIPAccount where accountOnlyId = #{accountOnlyId}
+    </select>
+
+
+    <select id="list_PlatformIPAccountByShopCartIds" resultType="com.yuanrong.admin.bean.account.PlatformIPAccount">
+        SELECT  svp.icoUrl,pipa.*,sc.shoppingCartId
+        FROM   shoppingCart sc ,PlatformIPAccount pipa ,ShortVideoPlatformInfo svp
+        WHERE  pipa.platformID = svp.PlatformID AND sc.statusIndex=1 AND sc.cartTypeIndex=3
+        AND sc.registeredUserInfoId=#{registeredUserInfoId} AND sc.shoppingCartId IN (${shopCartIds})
+        AND sc.productId=pipa.accountOnlyId  AND pipa.accountStatus=1
+    </select>
+
+    <!--修改是否代理-->
+    <update id="updateAgent" parameterType="com.yuanrong.admin.seach.PlatformIpAccountSeach">
+        update PlatformIPAccount
+        set isAgent=#{data.isAgent} ,
+        <if test="data.agentCoopBrand != null and data.agentCoopBrand != ''">
+            agentCoopBrand = #{data.agentCoopBrand},
+        </if>
+        <if test="data.agentCoopCondition != null and data.agentCoopCondition != ''">
+            agentCoopCondition=#{data.agentCoopCondition},
+        </if>
+        lastUpdate=now()
+        where id=#{data.id}
+    </update>
+
+    <select id="getPlatformIPAccountByNameLikeSearch"  resultType="com.yuanrong.admin.bean.account.PlatformIPAccount" >
+        SELECT p.id,p.name,p.accountID,p.fans,p.headImageUrlLocal,s.PlatformName platformName,s.icoUrl
+        FROM PlatformIPAccount as p
+        Left JOIN ShortVideoPlatformInfo  as s
+        ON   p.platformID = s.PlatformID
+        WHERE
+        registeredUserInfoID = #{data.registeredUserInfoID}
+        <if test = "data.name != null">
+            AND (`name` like concat('%',#{data.name},'%') OR `accountID` like concat('%',#{data.name},'%'))
+        </if>
+        AND p.platformID in (${data.categorys})
+        AND p.accountStatus=1;
+    </select>
+
+    <select id="getPlatformIPAccountById_RegistId"  resultType="com.yuanrong.admin.bean.account.PlatformIPAccount" >
+        SELECT *
+        FROM PlatformIPAccount
+        WHERE registeredUserInfoID = #{data.registeredUserInfoID}
+        AND id = #{data.id}
+        AND accountStatus=1
+    </select>
+</mapper>

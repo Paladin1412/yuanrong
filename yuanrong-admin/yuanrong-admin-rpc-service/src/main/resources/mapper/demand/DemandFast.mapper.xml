@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.demand.DemandFastDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.demand.DemandFast">
+        INSERT INTO demandFast
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="data.demandSn != null">
+                demandSn ,
+            </if>
+            <if test="data.nickname != null">
+                nickname ,
+            </if>
+            <if test="data.mobile != null">
+                mobile ,
+            </if>
+            <if test="data.demandTypeIndex != null">
+                demandTypeIndex ,
+            </if>
+            <if test="data.demandFastStatusIndex != null">
+                demandFastStatusIndex ,
+            </if>
+            <if test="data.saleManId != null">
+                saleManId ,
+            </if>
+            <if test="data.createdTime != null">
+                createdTime ,
+            </if>
+            <if test="data.modifiedTime != null">
+                modifiedTime ,
+            </if>
+            <if test="data.modifiedCount != null">
+                modifiedCount ,
+            </if>
+            <if test="data.memo != null">
+                memo ,
+            </if>
+            <if test="data.statusIndex != null">
+                statusIndex ,
+            </if>
+            <if test="data.createdAdminUser != null">
+                createdAdminUser ,
+            </if>
+            <if test="data.registeredUserInfoId > 0">
+                registeredUserInfoId ,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="data.demandSn != null">
+                #{data.demandSn},
+            </if>
+            <if test="data.nickname != null">
+                #{data.nickname} ,
+            </if>
+            <if test="data.mobile != null">
+                #{data.mobile},
+            </if>
+            <if test="data.demandTypeIndex != null">
+                #{data.demandTypeIndex} ,
+            </if>
+            <if test="data.demandFastStatusIndex != null">
+                #{data.demandFastStatusIndex} ,
+            </if>
+            <if test="data.saleManId != null">
+                #{data.saleManId} ,
+            </if>
+            <if test="data.createdTime != null">
+                #{data.createdTime} ,
+            </if>
+            <if test="data.modifiedTime != null">
+                #{data.modifiedTime} ,
+            </if>
+            <if test="data.modifiedCount != null">
+                #{data.modifiedCount} ,
+            </if>
+            <if test="data.memo != null">
+                #{data.memo} ,
+            </if>
+            <if test="data.statusIndex != null">
+                #{data.statusIndex} ,
+            </if>
+            <if test="data.createdAdminUser != null">
+                #{data.createdAdminUser} ,
+            </if>
+            <if test="data.registeredUserInfoId > 0">
+                #{data.registeredUserInfoId}  ,
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 通过注册用户id，获取快速需求列表 -->
+    <select id="list" resultType="com.yuanrong.admin.bean.demand.DemandFast"
+            parameterType="com.yuanrong.admin.bean.demand.DemandFast">
+        SELECT * from demandFast
+        WHERE
+        1=1
+        <if test="data.registeredUserInfoId != null">
+            AND registeredUserInfoId=#{data.registeredUserInfoId}
+        </if>
+        <if test="data.demandSn != null">
+            AND demandSn =#{data.demandSn}
+        </if>
+        <if test="data.beginTime != null">
+            AND createdTime &gt; #{data.beginTime}
+        </if>
+        <if test="data.endTime != null">
+            AND createdTime &lt; #{data.endTime}
+        </if>
+
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.demand.DemandFast">
+        select
+            df.*,
+            ru.RecID AS 'registeredUserInfo.RecID',
+            ru.NickName AS 'registeredUserInfo.NickName',
+            ru.Mobile AS 'registeredUserInfo.Mobile'
+        from
+            demandFast df
+            LEFT JOIN RegisteredUserInfo ru ON  ru.RecID = df.registeredUserInfoId
+        where demandFastId = #{id}
+    </select>
+
+    <!--后台—快速需求列表查询-->
+    <select id="demandFastList" resultType="com.yuanrong.admin.result.DemandFastListResult">
+        SELECT
+            df.*,
+            au.RealName,
+            d.demandSn as demandNum,
+            IF(ru.RecID IS NULL ,0,1) as flag,
+            b.pendingNum
+        FROM
+            demandFast df
+            LEFT JOIN demand d ON df.demandId = d.demandId
+            LEFT JOIN RegisteredUserInfo ru ON ru.RecID = df.registeredUserInfoId
+            LEFT JOIN AdminUser au ON df.saleManId = au.RecID ,
+            (
+                SELECT
+                  count( df.demandFastId ) as pendingNum
+                FROM
+                  demandFast df
+                WHERE
+                  df.demandFastStatusIndex =1
+                  AND df.statusIndex = 1
+            ) b
+        WHERE
+            df.statusIndex = 1
+        /*需求号*/
+        <if test="data.demandSn != null and data.demandSn.length!=0 ">
+            AND df.demandSn IN
+            <foreach collection="data.demandSn" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        /*需求类型*/
+        <if test="data.demandTypeIndex != null">
+            AND df.demandTypeIndex = #{data.demandTypeIndex}
+        </if>
+        /*需求状态*/
+        <if test="data.demandStatusIndex != null">
+            AND df.demandFastStatusIndex = #{data.demandStatusIndex}
+        </if>
+        /*销售经理*/
+        <if test="data.saleId != null">
+            AND au.RecID = #{data.saleId}
+        </if>
+        /*用户手机号*/
+        <if test="data.mobile != null and data.mobile.length!=0">
+            AND
+            <foreach collection="data.mobile" item="item" open="(" close=")" separator="or">
+                <if test="item !=''" >
+                    df.mobile LIKE CONCAT('%',#{item},'%')
+                </if>
+            </foreach>
+        </if>
+        /*创建时间Begin*/
+        <if test="data.createdTimeBegin != null and data.createdTimeBegin !=''">
+            and DATE_FORMAT(df.createdTime,'%Y-%m-%d') &gt;= #{data.createdTimeBegin}
+        </if>
+        /*创建时间End*/
+        <if test="data.createdTimeEnd != null and data.createdTimeEnd !=''">
+            and DATE_FORMAT(df.createdTime,'%Y-%m-%d') &lt;= #{data.createdTimeEnd}
+        </if>
+    </select>
+    <select id="countDemandFastByRegisteredUserID" parameterType="java.lang.Integer" resultType="java.util.Map">
+        select count(1) as coNum from demandFast where registeredUserInfoId = #{registeredUserInfoId}
+    </select>
+    <!-- 更新快速需求 通用类 判断条件只有id 不带逻辑-->
+    <update id="updateStatus" parameterType="com.yuanrong.admin.bean.demand.DemandFast">
+        update demandFast
+        <set>
+            <if test="refuseReason != null ">refuseReason =#{refuseReason },</if>
+            <if test="demandFastStatusIndex != null ">demandFastStatusIndex =#{demandFastStatusIndex },</if>
+            <if test="registeredUserInfoId != null ">registeredUserInfoId =#{registeredUserInfoId},</if>
+            <if test="demandId != null ">demandId =#{demandId },</if>
+            <if test="mobile != null ">mobile =#{mobile},</if>
+
+            modifiedTime = now()
+        </set>
+        where
+        demandFastId = #{demandFastId}
+    </update>
+
+    <!--删除快速需求—假删-->
+    <update id="deleteDemandFast" parameterType="java.lang.Integer">
+        update
+          demandFast
+        SET
+          statusIndex = 0
+        WHERE
+          demandFastId = #{demandFastId}
+    </update>
+</mapper>

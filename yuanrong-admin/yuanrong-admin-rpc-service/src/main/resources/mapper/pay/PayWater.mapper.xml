@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.pay.PayWaterDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.pay.PayWater">
+        INSERT INTO `payWater`(`outTradeNo`, `transactionId`, `totalFee`, `openid`, `isSubscribe`, `tradeType`, `bankType`,
+         `timeEnd`, `mchId`, `payTypeIndex`, `createdTime` , `registeredUserInfoId`)
+        VALUES (#{data.outTradeNo},#{data.transactionId},#{data.totalFee},#{data.openid},#{data.isSubscribe},#{data.tradeType},#{data.bankType}
+        ,#{data.timeEnd},#{data.mchId},#{data.payTypeIndex},now() , #{data.registeredUserInfoId})
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.pay.PayWater" parameterType="com.yuanrong.admin.bean.pay.PayWater">
+        SELECT * from payWater
+    </select>
+ <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.pay.PayWater">
+        select * from payWater where payWaterId = #{id}
+    </select>
+ 
+    <select id="getByOutTradeNo" resultType="com.yuanrong.admin.bean.pay.PayWater">
+        SELECT * FROM payWater where outTradeNo = #{outTradeNo}
+    </select>
+    
+</mapper>

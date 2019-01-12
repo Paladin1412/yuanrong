@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--作者快照-->
+<bean id="snapshotYrAuthorServicesI" class="com.yuanrong.admin.rpc.service.impl.order.SnapshotYrAuthorServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.order.SnapshotYrAuthorServicesI" ref="snapshotYrAuthorServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--作者快照-->
+<dubbo:reference id="snapshotYrAuthorServicesI" interface="com.yuanrong.admin.rpc.api.order.SnapshotYrAuthorServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+<!--作者快照-->
+@Autowired
+public SnapshotYrAuthorDaoI snapshotYrAuthorDaoI;
+
+
+4.在BaseController中，注入services
+
+<!--作者快照-->
+@Autowired
+public SnapshotYrAuthorServicesI snapshotYrAuthorServicesI;

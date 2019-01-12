@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.demand.DemandDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.demand.Demand" useGeneratedKeys="true" keyProperty="data.demandId">
+        INSERT  INTO  demand
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+           <if test="data.demandSn != null">
+               demandSn  ,
+           </if>
+            <if test="data.demandName != null">
+                demandName  ,
+            </if>
+            <if test="data.demandTypeIndex != null">
+                demandTypeIndex  ,
+            </if>
+            <if test="data.registeredUserInfoId != null">
+                registeredUserInfoId  ,
+            </if>
+            <if test="data.demandStatusIndex != null">
+                demandStatusIndex  ,
+            </if>
+            <if test="data.tradeId != null">
+                tradeId  ,
+            </if>
+            <if test="data.mobile != null">
+                mobile  ,
+            </if>
+            <if test="data.budgetMoney != null">
+                budgetMoney  ,
+            </if>
+            <if test="data.remark != null">
+                remark  ,
+             </if>
+            <if test="data.attachment != null">
+                attachment  ,
+            </if>
+            <if test="data.contentForms != null">
+                contentForms  ,
+            </if>
+            <if test="data.saleMark != null">
+                saleMark  ,
+            </if>
+            <if test="data.refuseReason != null">
+                refuseReason  ,
+            </if>
+            <if test="data.platformName != null">
+                platformName  ,
+            </if>
+            <if test="data.spreadTime != null">
+                spreadTime  ,
+            </if>
+            <if test="data.yrCategory != null">
+                yrCategory  ,
+            </if>
+            <if test="data.fans != null">
+                fans  ,
+            </if>
+            <if test="data.scenes != null">
+                scenes  ,
+            </if>
+            <if test="data.expectedTime != null">
+                expectedTime  ,
+            </if>
+            createdTime  ,
+            <if test="data.modifiedCount != null">
+                modifiedCount  ,
+            </if>
+            modifiedTime  ,
+            <if test="data.statusIndex != null">
+                statusIndex  ,
+            </if>
+            <if test="data.sourceId != null">
+                sourceId  ,
+            </if>
+            <if test="data.createUser != null">
+                createUser  ,
+            </if>
+            <if test="data.cancelReason != null" >
+                cancelReason ,
+            </if>
+            <if test="data.expectNum != null">
+                expectNum  ,
+            </if>
+            <if test="data.expectOffer != null">
+                expectOffer  ,
+            </if>
+            <if test="data.isShow != null">
+                isShow  ,
+            </if>
+            <if test="data.requireWordNum != null">
+                requireWordNum  ,
+            </if>
+            <if test="data.requireSeconds != null">
+                requireSeconds  ,
+            </if>
+            <if test="data.referURL != null">
+                referURL  ,
+            </if>
+            auditTime,
+            <if test="data.auditUser != null">
+                auditUser  ,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+           <if test="data.demandSn != null">
+               #{data.demandSn},
+           </if>
+            <if test="data.demandName != null">
+                #{data.demandName},
+            </if>
+            <if test="data.demandTypeIndex != null">
+                #{data.demandTypeIndex}  ,
+            </if>
+            <if test="data.registeredUserInfoId != null">
+                #{data.registeredUserInfoId}  ,
+            </if>
+            <if test="data.demandStatusIndex != null">
+                #{data.demandStatusIndex}   ,
+            </if>
+            <if test="data.tradeId != null">
+                #{data.tradeId}  ,
+            </if>
+            <if test="data.mobile != null">
+                #{data.mobile}  ,
+            </if>
+            <if test="data.budgetMoney != null">
+                #{data.budgetMoney}  ,
+            </if>
+            <if test="data.remark != null">
+                #{data.remark}  ,
+            </if>
+            <if test="data.attachment != null">
+                #{data.attachment}  ,
+            </if>
+            <if test="data.contentForms != null">
+                #{data.contentForms}  ,
+            </if>
+            <if test="data.saleMark != null">
+                #{data.saleMark}  ,
+            </if>
+            <if test="data.refuseReason != null">
+                #{data.refuseReason}  ,
+            </if>
+            <if test="data.platformName != null">
+                #{data.platformName}  ,
+            </if>
+            <if test="data.spreadTime != null">
+                #{data.spreadTime}  ,
+            </if>
+            <if test="data.yrCategory != null">
+                #{data.yrCategory}  ,
+            </if>
+            <if test="data.fans != null">
+                #{data.fans}   ,
+            </if>
+            <if test="data.scenes != null">
+                #{data.scenes}  ,
+            </if>
+            <if test="data.expectedTime != null">
+                #{data.expectedTime}   ,
+            </if>
+                now()  ,
+            <if test="data.modifiedCount != null">
+                #{data.modifiedCount}   ,
+            </if>
+            now()  ,
+            <if test="data.statusIndex != null">
+                #{data.statusIndex}   ,
+            </if>
+            <if test="data.sourceId != null">
+                  #{data.sourceId}  ,
+            </if>
+            <if test="data.createUser != null">
+                  #{data.createUser}  ,
+            </if>
+            <if test="data.cancelReason != null" >
+                #{data.cancelReason}  ,
+            </if>
+            <if test="data.expectNum != null">
+                #{data.expectNum}  ,
+            </if>
+            <if test="data.expectOffer != null">
+                #{data.expectOffer}  ,
+            </if>
+            <if test="data.isShow != null">
+                #{data.isShow}  ,
+            </if>
+            <if test="data.requireWordNum != null">
+                #{data.requireWordNum}  ,
+            </if>
+            <if test="data.requireSeconds != null">
+                #{data.requireSeconds}  ,
+            </if>
+            <if test="data.referURL != null">
+                #{data.referURL}  ,
+            </if>
+            now(),
+            <if test="data.auditUser != null">
+                #{data.auditUser}  ,
+            </if>
+        </trim>
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.demand.Demand" parameterType="com.yuanrong.admin.bean.demand.Demand">
+        SELECT * from demand where demandStatusIndex != 1 and   demandStatusIndex !=7
+    </select>
+
+    <!--前台需求大厅-->
+    <select id="getDemandHall" resultType="com.yuanrong.admin.bean.demand.Demand" parameterType="com.yuanrong.admin.bean.demand.Demand">
+        SELECT * from demand
+        WHERE
+        1=1
+        <if test="data.demandTypeIndex > 0">
+          AND  demandTypeIndex = #{data.demandTypeIndex}
+        </if>
+        <!--买卖家中心获取需求状态 2 待处理、3 待推荐-->
+        <if test="data.demandStatusIndex == 2">
+            AND  (demandStatusIndex = 2 or demandStatusIndex = 3)
+        </if>
+        AND demandTypeIndex !=2
+        AND statusIndex=1
+        AND isShow =1
+        AND demandStatusIndex &gt; 1   AND demandStatusIndex != 7 AND demandStatusIndex != 5
+        ORDER BY  demandStatusIndex asc,auditTime desc
+    </select>
+
+   <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.demand.Demand">
+        select * from demand where demandId = #{id}
+    </select>
+    <!--依据需求号获取需求详情-->
+    <select id="getByDemandSn" parameterType="java.lang.String" resultType="com.yuanrong.admin.bean.demand.Demand">
+        select * from demand where demandSn = #{data}
+    </select>
+
+    <!--后台—需求列表查询-->
+    <select id="demandList" parameterType= "com.yuanrong.admin.seach.DemandListParamSearch" resultType="com.yuanrong.admin.result.DemandListResult">
+        SELECT
+            d.*,
+            ru.RecID AS userId,
+            ru.NickName,
+            au.RealName,
+            IFNULL(b.num,0) AS orderNum,
+            c.sumCostMoney,
+            c.sumInvoice,
+            c.sumMoney,
+            c.sumOfferMoney
+        FROM
+            demand d
+            LEFT JOIN RegisteredUserInfo ru ON ru.RecID = d.registeredUserInfoId
+            LEFT JOIN AdminUser au ON au.RecID = ru.AdminUserSalesID
+            LEFT JOIN
+            (
+                SELECT
+                    os.demandId,
+                    count(os.demandId) AS num
+                FROM
+                    orderInfoSeller os,
+                    orderInfoBuyer ob
+                WHERE
+                    ob.refreId = os.orderInfoSellerId
+                    AND os.statusIndex = 1
+                    AND ob.statusIndex = 1
+                    GROUP BY
+                      os.demandId
+            ) b ON b.demandId = d.demandId
+            LEFT JOIN
+            (
+                SELECT
+                    os.demandId,
+                    SUM( IFNULL( od.price, 0 ) ) AS sumCostMoney,
+                    SUM( IFNULL( oc.money, 0 ) ) AS sumInvoice,
+                    SUM( IFNULL( ob.receivableMoney, 0 ) ) AS sumMoney,
+                    SUM( IFNULL( os.referPrice, 0 ) ) AS sumOfferMoney
+                FROM
+                    orderInfoSeller os
+                    LEFT JOIN orderInfoBuyer ob ON os.orderInfoSellerId = ob.refreId
+                    LEFT JOIN orderDetail od ON ob.orderInfoBuyerId = od.orderInfoBuyerId
+                    LEFT JOIN orderCostInfo oc ON oc.orderInfoId = ob.orderInfoBuyerId
+                WHERE
+                    os.statusIndex = 1
+                    AND ob.statusIndex = 1
+                    AND oc.costTypeIndex = 1
+                    AND oc.costId = 242
+                    AND ob.orderStatusValue = 2
+                    AND ob.orderInfoType != 1
+                    GROUP BY
+                      os.demandId
+            ) c ON c.demandId = d.demandId
+        WHERE
+            d.statusIndex = 1
+            /*需求号*/
+            <if test="data.demandSn != null and data.demandSn.length!=0 " >
+            AND  d.demandSn IN
+                <foreach collection="data.demandSn" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            /*需求名称*/
+            <if test="data.demandName != null and data.demandName !=''" >
+            AND  d.demandName LIKE CONCAT('%',#{data.demandName},'%')
+            </if>
+            /*需求类型*/
+            <if test="data.demandTypeIndex != null" >
+            AND  d.demandTypeIndex = #{data.demandTypeIndex}
+            </if>
+            /*需求状态*/
+            <if test="data.demandStatusIndex != null" >
+            AND  d.demandStatusIndex = #{data.demandStatusIndex}
+            </if>
+            /*销售经理*/
+            <if test="data.saleId != null" >
+            AND au.RecID = #{data.saleId}
+            </if>
+            /*用户昵称*/
+            <if test="data.nickName != null and data.nickName.length!=0" >
+            AND
+                <foreach collection="data.nickName" item="item" open="(" close=")" separator="or">
+                    <if test="item !=''" >
+                        ru.NickName LIKE CONCAT('%',#{item},'%')
+                    </if>
+                </foreach>
+            </if>
+            /*用户手机号*/
+            <if test="data.mobile != null and data.mobile.length!=0" >
+            AND
+                <foreach collection="data.mobile" item="item" open="(" close=")" separator="or">
+                    <if test="item!=''" >
+                       ru.Mobile LIKE CONCAT('%',#{item},'%')
+                    </if>
+                </foreach>
+            </if>
+            /*创建时间Begin*/
+            <if test="data.createdTimeBegin != null and data.createdTimeBegin !=''">
+                and DATE_FORMAT(d.createdTime,'%Y-%m-%d') &gt;= #{data.createdTimeBegin}
+            </if>
+            /*创建时间End*/
+            <if test="data.createdTimeEnd != null and data.createdTimeEnd !=''">
+                and DATE_FORMAT(d.createdTime,'%Y-%m-%d') &lt;= #{data.createdTimeEnd}
+            </if>
+            /* 前台当前注册用户判断*/
+            <if test="data.webUser != null and data.webUser.recID!=null">
+                and
+                ru.recID = #{data.webUser.recID}
+            </if>
+            GROUP BY d.demandId
+            ORDER BY d.createdTime DESC
+    </select>
+
+    <!--查询状态个数（待审核、待推荐）-->
+    <select id="statusNum" resultType="java.util.Map">
+        SELECT * FROM
+        (
+            SELECT
+            count( d.demandId ) AS checkNum
+        FROM
+            demand d
+        WHERE
+            d.demandStatusIndex = 1
+            AND d.statusIndex = 1
+        ) a
+        JOIN
+        (
+            SELECT
+                count( d.demandId ) AS recommendNum
+            FROM
+                demand d
+            WHERE
+                d.demandStatusIndex =3
+                AND d.statusIndex = 1
+        )b
+    </select>
+    <select id="getDetailByDemand" parameterType="com.yuanrong.admin.bean.demand.Demand" resultType="com.yuanrong.admin.bean.demand.Demand">
+        select d.*, di.name as 'tradeDictinfo.name' from demand d
+        left JOIN DictInfo di on d.tradeId = di.id
+        where d.demandSn = #{demandSn}
+        <if test="webUser != null">
+            and d.registeredUserInfoId =
+            #{webUser.recID}
+        </if>
+    </select>
+
+    <!--后台—通过需求Id，需求类型获取信息-->
+    <select id="findById" resultType="com.yuanrong.admin.bean.demand.Demand">
+        SELECT
+            d.*,
+            ru.RecID AS 'registeredUserInfo.RecID',
+            ru.NickName AS 'registeredUserInfo.NickName',
+            ru.Mobile AS 'registeredUserInfo.Mobile'
+        FROM
+            demand d
+            LEFT JOIN RegisteredUserInfo ru ON ru.RecID = d.registeredUserInfoId
+        WHERE
+            1 = 1
+            <if test="demandId !=null" >
+                AND d.demandId = #{demandId}
+            </if>
+    </select>
+
+    <!--后台—编辑修改需求-->
+    <update id="updateDemand" parameterType="com.yuanrong.admin.bean.demand.Demand">
+        update demand
+        <set >
+            <if test="data.demandSn != null" >
+                demandSn = #{data.demandSn,jdbcType=VARCHAR},
+            </if>
+            <if test="data.demandName != null" >
+                demandName = #{data.demandName,jdbcType=VARCHAR},
+            </if>
+            <if test="data.demandTypeIndex != null" >
+                demandTypeIndex = #{data.demandTypeIndex,jdbcType=INTEGER},
+            </if>
+            <if test="data.registeredUserInfoId != null" >
+                registeredUserInfoId = #{data.registeredUserInfoId,jdbcType=INTEGER},
+            </if>
+            <if test="data.demandStatusIndex != null" >
+                demandStatusIndex = #{data.demandStatusIndex,jdbcType=INTEGER},
+            </if>
+            <if test="data.tradeId != null" >
+                tradeId = #{data.tradeId,jdbcType=INTEGER},
+            </if>
+            <if test="data.mobile != null" >
+                mobile = #{data.mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="data.budgetMoney != null" >
+                budgetMoney = #{data.budgetMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="data.remark != null" >
+                remark = #{data.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="data.contentForms != null" >
+                contentForms = #{data.contentForms,jdbcType=VARCHAR},
+            </if>
+            <if test="data.saleMark != null" >
+                saleMark = #{data.saleMark,jdbcType=VARCHAR},
+            </if>
+            <if test="data.refuseReason != null" >
+                refuseReason = #{data.refuseReason,jdbcType=VARCHAR},
+            </if>
+            <if test="data.platformName != null" >
+                platformName = #{data.platformName,jdbcType=VARCHAR},
+            </if>
+            <if test="data.spreadTime != null" >
+                spreadTime = #{data.spreadTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="data.yrCategory != null" >
+                yrCategory = #{data.yrCategory,jdbcType=VARCHAR},
+            </if>
+            <if test="data.fans != null" >
+                fans = #{data.fans,jdbcType=VARCHAR},
+            </if>
+            <if test="data.scenes != null" >
+                scenes = #{data.scenes,jdbcType=VARCHAR},
+            </if>
+            <if test="data.expectedTime != null" >
+                expectedTime = #{data.expectedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="data.createdTime != null" >
+                createdTime = #{data.createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="data.modifiedCount != null" >
+                modifiedCount = #{data.modifiedCount,jdbcType=INTEGER},
+            </if>
+                modifiedTime = now(),
+            <if test="data.statusIndex != null" >
+                statusIndex = #{data.statusIndex,jdbcType=INTEGER},
+            </if>
+            <if test="data.sourceId != null" >
+                sourceId = #{data.sourceId,jdbcType=INTEGER},
+            </if>
+            <if test="data.createUser != null" >
+                createUser = #{data.createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="data.cancelReason != null" >
+                cancelReason = #{data.cancelReason,jdbcType=VARCHAR},
+            </if>
+            <if test="data.attachment != null" >
+                attachment = #{data.attachment,jdbcType=VARCHAR},
+            </if>
+            <if test="data.expectNum != null">
+                expectNum = #{data.expectNum}  ,
+            </if>
+            <if test="data.expectOffer != null">
+                expectOffer = #{data.expectOffer}  ,
+            </if>
+            <if test="data.isShow != null">
+                isShow = #{data.isShow}  ,
+            </if>
+            <if test="data.requireWordNum != null and data.requireWordNum !=''">
+                requireWordNum = #{data.requireWordNum}  ,
+            </if>
+            <if test="data.requireSeconds != null and data.requireSeconds !=''">
+                requireSeconds = #{data.requireSeconds}  ,
+            </if>
+            <if test="data.referURL != null and data.referURL !=''">
+                referURL = #{data.referURL}  ,
+            </if>
+        </set>
+        where demandId = #{data.demandId,jdbcType=INTEGER}
+    </update>
+
+    <!--后台/前台—修改需求状态-->
+    <update id="updateDemandStatus" parameterType="com.yuanrong.admin.bean.demand.Demand">
+        update demand
+        <set >
+            <if test="data.demandStatusIndex != null" >
+                demandStatusIndex = #{data.demandStatusIndex},
+            </if>
+            <if test="data.refuseReason != null" >
+                refuseReason = #{data.refuseReason},
+            </if>
+            modifiedTime = now(),
+            <if test="data.cancelReason != null" >
+                cancelReason = #{data.cancelReason},
+            </if>
+            <if test="data.demandStatusIndex != null and data.demandStatusIndex == 2" >
+                auditTime = now(),
+            </if>
+            <if test="data.auditUser != null" >
+                auditUser = #{data.auditUser},
+            </if>
+        </set>
+        where
+        1=1
+        <if test="data.demandId != null">
+            and demandId = #{data.demandId}
+        </if>
+        <if test="data.demandSn != null">
+            and demandSn = #{data.demandSn}
+        </if>
+        <if test="data.webUser != null">
+            and registeredUserInfoId =
+            #{data.webUser.recID}
+        </if>
+    </update>
+
+    <insert id="insertBatchDemandAccountRelation" parameterType="java.util.List">
+        insert into demandAccountRelation (demandId,platformIPAccountId)
+        values
+        <foreach collection="demandAccountList" item="item" index="index" separator=",">
+            (#{item.demandId},#{item.platformIPAccountId})
+        </foreach>
+    </insert>
+
+    <insert id="insertBatchDemandYrAuthorRelation" parameterType="java.util.List">
+        insert into demandYrAuthorRelation (demandId,yrAuthorId)
+        values
+        <foreach collection="demandYrAuthorList" item="item" index="index" separator=",">
+            (#{item.demandId},#{item.yrAuthorId})
+        </foreach>
+    </insert>
+
+    <!--后台—获取需求的选购商品(前台选购的创作者/账号)-->
+    <select id="getDemandGoods" resultType="java.util.Map">
+        <if test="demandTypeIndex == 3" >
+            SELECT
+                pia.id,
+                pia.`name` as goodsName,
+                pia.accountID,
+                pia.headImageUrlLocal AS headImg,
+                DATE_FORMAT(pia.invalidTime,'%Y-%m-%d') AS invalidTime,
+                spl.PlatformName,
+                ru.NickName AS userName,
+                ru.RecID AS userId
+            FROM
+                demandAccountRelation dar,
+                PlatformIPAccount pia
+                LEFT JOIN ShortVideoPlatformInfo spl ON  spl.PlatformID = pia.platformID,
+                RegisteredUserInfo ru
+            WHERE
+                pia.id = dar.platformIPAccountId
+                AND ru.RecID = pia.registeredUserInfoID
+                AND dar.demandId = #{demandId}
+        </if>
+        <if test="demandTypeIndex == 1" >
+            SELECT
+                yra.recId,
+                yra.authorNickname as goodsName,
+                yra.authorImg AS headImg,
+                yra.createdPrice as pricesInfo,
+                ru.NickName AS userName,
+                ru.RecID AS userId
+            FROM
+                demandYrAuthorRelation dya,
+                yrAuthor yra,
+                RegisteredUserInfo ru
+            WHERE
+                yra.recId = dya.yrAuthorId
+                AND ru.RecID = yra.registeredUserInfoID
+                AND dya.demandId = #{demandId}
+        </if>
+    </select>
+
+    <!--前台—获取需求的选购商品(前台选购的创作者/账号)-->
+    <select id="getDemandGoodsFront" resultType="java.util.Map">
+        <if test="demandTypeIndex == 3" >
+            SELECT
+            pia.id,
+            pia.`name` as name,
+            pia.accountID as accountID,
+            pia.headImageUrlLocal AS headImageUrlLocal,
+            spl.icoUrl as platformLogo,
+            pia.fans as fans
+            FROM
+            demandAccountRelation dar,
+            PlatformIPAccount pia
+            LEFT JOIN ShortVideoPlatformInfo spl ON  spl.PlatformID = pia.platformID,
+            RegisteredUserInfo ru
+            WHERE
+            pia.id = dar.platformIPAccountId
+            AND ru.RecID = pia.registeredUserInfoID
+            AND dar.demandId = #{demandId}
+        </if>
+        <if test="demandTypeIndex == 1" >
+            SELECT
+            yra.authorNickname as authorNickname,
+            yra.authorImg AS authorImg,
+            yra.createdPrice as priceInfo,
+            yra.Introduction as introduction
+
+            FROM
+            demandYrAuthorRelation dya,
+            yrAuthor yra,
+            RegisteredUserInfo ru
+            WHERE
+            yra.recId = dya.yrAuthorId
+            AND ru.RecID = yra.registeredUserInfoID
+            AND dya.demandId = #{demandId}
+        </if>
+    </select>
+    <!--后台—通过需求Id获取订单列表-->
+    <select id="getOrderListByDemandId" resultType="com.yuanrong.admin.result.DemandOrderListResult">
+        SELECT
+            ob.*,
+            od.price AS 'orderDetail.price',
+            od.basePrice AS 'orderDetail.basePrice',
+            od.orderDetailId AS 'orderDetail.orderDetailId',
+            od.production AS 'orderDetail.production',
+            sac.`name` as 'snapshotAccount.name',
+            sac.headImageUrlLocal as 'snapshotAccount.headImageUrlLocal',
+            sac.platformLogo as 'snapshotAccount.platformLogo',
+            sac.platformIPAccountId as 'snapshotAccount.platformIPAccountId',
+            sya.authorImg as 'snapshotYrAuthor.authorImg',
+            sya.authorNickname as 'snapshotYrAuthor.authorNickname',
+            sya.yrAuthorId as 'snapshotYrAuthor.yrAuthorId',
+            syp.title as 'snapshotYrProduction.title',
+            syp.imgNum as 'snapshotYrProduction.imgNum',
+            syp.wordNum as 'snapshotYrProduction.wordNum',
+            syp.yrProductionId as 'snapshotYrProduction.yrProductionId',
+            au.RealName as 'mediaUser.RealName',
+            os.returnTime as 'orderInfoSeller.returnTime',
+            os.createdTime as 'orderInfoSeller.createdTime',
+            os.returnImg as 'orderInfoSeller.returnImg',
+            os.returnUrl as 'orderInfoSeller.returnUrl'
+        FROM
+            orderInfoBuyer ob
+            LEFT JOIN orderInfoSeller os ON os.orderInfoSellerId = ob.refreId
+            LEFT JOIN orderDetail od ON ob.orderInfoBuyerId = od.orderInfoBuyerId
+            LEFT JOIN snapshotAccount sac ON sac.orderDetailId = od.orderDetailId
+            LEFT JOIN snapshotYrAuthor sya ON sya.orderDetailId = od.orderDetailId
+            LEFT JOIN snapshotYrProduction syp ON syp.orderDetailId = od.orderDetailId
+            LEFT JOIN sellerOrder so ON so.orderDetailId = od.orderDetailId
+            LEFT JOIN AdminUser au ON au.RecID = so.mediaUserId
+        WHERE
+            ob.statusIndex = 1
+            <if test="demandId != null" >
+                AND os.demandId = #{demandId}
+            </if>
+            <if test="orderType != null" >
+                AND os.orderTypeValue = #{orderType}
+            </if>
+            ORDER BY ob.createdTime ASC
+    </select>
+
+    <!--后台—通过需求Id获取报名列表-->
+    <select id="getDemandSignList" resultType="com.yuanrong.admin.result.DemandSignListResult">
+        <if test="orderType !=null and orderType == 2 " >
+            SELECT
+                os.*,
+                au.RealName AS 'media.RealName',
+                pla.id AS 'platformIPAccount.id',
+                pla.`name` AS 'platformIPAccount.name',
+                pla.headImageUrlLocal AS 'platformIPAccount.headImageUrlLocal',
+                sp.PlatformName AS 'platformIPAccount.shortVideoPlatformInfo.platformname',
+                sp.icoUrl AS 'platformIPAccount.shortVideoPlatformInfo.icoUrl',
+                GROUP_CONCAT( CONCAT( of.priceName, '-_-', of.price, '-_-', of.executePrice ) SEPARATOR '_-_' ) AS moneyDetail
+            FROM
+                orderInfoSeller os
+                LEFT JOIN orderInfoOffer of ON of.orderInfoSellerId = os.orderInfoSellerId
+                LEFT JOIN PlatformIPAccount pla ON pla.id = os.referId
+                LEFT JOIN ShortVideoPlatformInfo sp ON sp.PlatformID = pla.platformID
+                LEFT JOIN RegisteredUserInfo ru ON ru.RecID = pla.registeredUserInfoID
+                LEFT JOIN AdminUser au ON au.RecID = ru.AdminUserMediaID
+            WHERE
+                os.statusIndex = 1
+                <if test="demandId != null" >
+                    AND os.demandId = #{demandId}
+                </if>
+                <if test="orderType != null" >
+                    AND os.orderTypeValue = #{orderType}
+                </if>
+                GROUP BY
+                    os.orderInfoSellerId
+                ORDER BY
+                    os.createdTime desc
+        </if>
+        <if test="orderType !=null and orderType == 3 " >
+            SELECT
+                os.*,
+                au.RealName AS 'media.RealName',
+                yra.authorImg AS 'yRAuthor.authorImg',
+                yra.recId AS 'yRAuthor.recId',
+                yra.authorNickname AS 'yRAuthor.authorNickname',
+                GROUP_CONCAT( CONCAT( of.priceName, '-_-', of.price, '-_-', of.executePrice ) SEPARATOR '_-_' ) AS moneyDetail
+            FROM
+                orderInfoSeller os
+                LEFT JOIN orderInfoOffer of ON of.orderInfoSellerId = os.orderInfoSellerId
+                LEFT JOIN yrAuthor yra ON yra.recId = os.referId
+                LEFT JOIN RegisteredUserInfo ru ON ru.RecID = yra.registeredUserInfoId
+                LEFT JOIN AdminUser au ON au.RecID = ru.AdminUserMediaID
+            WHERE
+                os.statusIndex = 1
+                <if test="demandId != null" >
+                    AND os.demandId = #{demandId}
+                </if>
+                <if test="orderType != null" >
+                    AND os.orderTypeValue = #{orderType}
+                </if>
+                GROUP BY
+                    os.orderInfoSellerId
+                ORDER BY
+                    os.createdTime desc
+        </if>
+        <if test="orderType !=null and orderType == 4" >
+            SELECT
+                os.*,
+                au.RealName AS 'media.RealName',
+                yp.title AS 'yRProduction.title',
+                yp.recId AS 'yRProduction.recId',
+                yp.productQuotedPrice AS 'yRProduction.productQuotedPrice',
+                yp.wordNum AS 'yRProduction.wordNum',
+                yp.sellPrice AS 'yRProduction.sellPrice',
+                yp.yrProductionStatusIndex AS 'yRProduction.yrProductionStatusIndex',
+                yp.imgNum AS 'yRProduction.imgNum',
+                yp.contentEvaluationScore AS 'yRProduction.contentEvaluationScore',
+                yp.originalScore AS 'yRProduction.originalScore'
+            FROM
+                orderInfoSeller os
+                LEFT JOIN yrProduction yp ON yp.recId = os.referId
+                LEFT JOIN yrAuthor yra ON yra.recId = yp.yrAuthorId
+                LEFT JOIN RegisteredUserInfo ru ON ru.RecID = yra.registeredUserInfoId
+                LEFT JOIN AdminUser au ON au.RecID = ru.AdminUserMediaID
+            WHERE
+                os.statusIndex = 1
+                <if test="demandId != null" >
+                    AND os.demandId = #{demandId}
+                </if>
+                <if test="orderType != null" >
+                    AND os.orderTypeValue = #{orderType}
+                </if>
+                GROUP BY
+                    os.orderInfoSellerId
+                ORDER BY
+                    os.createdTime desc
+        </if>
+    </select>
+
+    <!--需求删除 假删-->
+    <update id="deleteDemand" parameterType="java.lang.Integer">
+        UPDATE
+            demand d
+            LEFT JOIN orderInfoSeller os ON d.demandId = os.demandId
+            LEFT JOIN orderInfoBuyer ob ON ob.refreId = os.orderInfoSellerId
+            LEFT JOIN orderDetail od ON od.orderInfoBuyerId = ob.orderInfoBuyerId
+            LEFT JOIN sellerOrder so ON so.orderDetailId = od.orderDetailId
+        SET
+          d.statusIndex = 0,
+          os.statusIndex = 0,
+          ob.statusIndex = 0,
+          od.statusIndex = 0,
+          so.statusIndex = 0
+        WHERE
+          d.demandId = #{demandId}
+    </update>
+    <!--更改需求状态：（截止日期-当前时间）< 0 -->
+   <update id="updateDemandStatusIndex" >
+      UPDATE demand
+      SET demandStatusIndex = 4
+      WHERE
+	 (
+        	( UNIX_TIMESTAMP( DATE_ADD( expectedTime, INTERVAL 1 DAY ) ) - UNIX_TIMESTAMP( NOW( ) ) ) &lt;0
+  	    OR ( UNIX_TIMESTAMP( DATE_ADD( spreadTime, INTERVAL 1 DAY ) ) - UNIX_TIMESTAMP( NOW( ) ) ) &lt; 0
+	 )
+	 AND ( demandStatusIndex = 2 OR demandStatusIndex = 3 )
+   </update>
+
+    <!--需求大厅统计类型数据-->
+    <select id="demandTypeCnt"  resultType="java.util.HashMap">
+        SELECT demandTypeIndex,count(demandTypeIndex) demandTypeCnt FROM demand
+        WHERE 	demandTypeIndex != 2
+        AND statusIndex = 1
+        AND isShow = 1
+        AND (demandStatusIndex &gt;1 and  demandStatusIndex &lt; 7)
+        GROUP BY demandTypeIndex
+    </select>
+
+</mapper>

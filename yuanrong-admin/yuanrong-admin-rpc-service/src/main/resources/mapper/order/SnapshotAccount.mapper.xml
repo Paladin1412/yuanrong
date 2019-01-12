@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.order.SnapshotAccountDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.order.SnapshotAccount" useGeneratedKeys="true" keyProperty="data.snapshotAccountId">
+        INSERT INTO `snapshotAccount`
+            (`orderDetailId`, `name`, `accountID`, `platformName`, `platformLogo`, `headImageUrlLocal`, `qRcodeImageUrlLocal`, `introduction`, `categoryName`,
+             `priceInfo`, `invalidTime`, `pid`, `platformIPAccountId`, `createdTime`, `modifiedTime`, `fans`)
+            SELECT
+                #{data.orderDetailId} as 'orderDetailId' ,
+                pia.`name`,
+                pia.accountID,
+                pfi.PlatformName AS platformName,
+                pfi.icoUrl ASplatformLogo,
+                pia.headImageUrlLocal,
+                pia.qRcodeImageUrlLocal,
+                pia.introduction,
+                dic.`name` AS categoryName,
+                #{data.priceInfo} as 'priceInfo' ,
+                pia.invalidTime,
+                pia.pid,
+                pia.id AS platformIPAccountId,
+                now(),
+                now(),
+                pia.fans
+            FROM
+                PlatformIPAccount pia
+                left join DictInfo dic on pia.categoryID = dic.id
+                left join ShortVideoPlatformInfo pfi on pia.platformID = pfi.PlatformID
+            WHERE
+                1=1
+                AND pia.id=#{data.platformIPAccountId}
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.order.SnapshotAccount" parameterType="com.yuanrong.admin.bean.order.SnapshotAccount">
+        SELECT * from snapshotAccount
+    </select>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.order.SnapshotAccount">
+        select * from snapshotAccount where snapshotAccountId = #{id}
+    </select>
+
+    <!--通过订单Id获取账号快照-->
+    <select id="getByOrderInfoSellerId" parameterType="java.lang.Integer"
+            resultType="com.yuanrong.admin.bean.order.SnapshotAccount">
+        SELECT * FROM snapshotAccount where orderInfoSellerId = #{orderInfoSellerId}
+    </select>
+
+    <!--通过订单明细Id获取账号快照-->
+    <select id="getByOrderDetailId" parameterType="java.lang.Integer"
+            resultType="com.yuanrong.admin.bean.order.SnapshotAccount">
+        SELECT * FROM snapshotAccount where orderDetailId = #{orderDetailId}
+    </select>
+ 
+</mapper>

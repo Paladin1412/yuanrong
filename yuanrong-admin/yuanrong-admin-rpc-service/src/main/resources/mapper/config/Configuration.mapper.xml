@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.config.ConfigurationDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.config.Configuration">
+        
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.config.Configuration" parameterType="com.yuanrong.admin.bean.config.Configuration">
+        SELECT * from configuration
+    </select>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.config.Configuration">
+        select * from configuration where configurationId = #{id}
+    </select>
+
+    <select id="getbyKey" parameterType="java.lang.String" resultType="java.lang.String">
+      SELECT cValue from configuration where cName = #{key}
+    </select>
+ 
+</mapper>

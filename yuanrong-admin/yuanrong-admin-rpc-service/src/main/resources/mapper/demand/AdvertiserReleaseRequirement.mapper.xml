@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.demand.AdvertiserReleaseRequirementDaoI">
+    <!--tangzheng 查询需求列表 -->
+    <!--com.yuanrong.admin.bean.demand.AdvertiserReleaseRequirement-->
+    <select id="lastDemand" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        SELECT
+        DictInfo.`name` AS demandStatus,
+        dic.`name` AS CategoryName,
+        Scenes.scenesName,
+        b.contentFormName,
+        a.*
+        FROM
+        AdvertiserReleaseRequirement a
+        LEFT JOIN (
+            SELECT
+            acf.advertiserReleaseRequirementId,
+            GROUP_CONCAT( DISTINCT cf.contentFormName ) AS contentFormName
+            FROM
+            AdvertiserReleaseRequirement_contentForm AS acf
+            LEFT JOIN ContentForm AS cf ON acf.contentFormId = cf.Id
+            GROUP BY
+            advertiserReleaseRequirementId
+        ) b ON a.RecID = b.advertiserReleaseRequirementId
+        LEFT	JOIN Scenes
+        ON Scenes.Id = a.ScenesID
+        LEFT	JOIN DictInfo
+        ON  DictInfo.Id = a.DictInfoID
+        LEFT	JOIN DictInfo dic
+        ON  dic.Id = a.CategoryID
+        WHERE
+        1=1
+        <if test="dictInfoValue != null">
+            AND  a.DictInfoID=#{dictInfoValue}
+        </if>
+        <if test="RegisteredUserInfoID != null">
+            AND  a.RegisteredUserInfoID=#{RegisteredUserInfoID}
+        </if>
+           AND a.StatusValue &gt; #{StatusValue}
+        ORDER BY 	a.CreateTime DESC;
+
+    </select>
+
+    <!-- tangzheng 查询需求列表：围观人数图像-->
+    <select id="getOnLookerImgUrl" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+        SELECT advertiserReleaseRequirementId,onlookerImgUrl
+        FROM RequirementOnlookerImgUrl
+        WHERE advertiserReleaseRequirementId=#{advertiserReleaseRequirementId}
+    </select>
+
+    <!-- tangzheng - yuangorngbank发布需求同步插入到表中V1.1  -->
+    <insert id="addReleaseRequirement"  parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="RecID">
+        insert into AdvertiserReleaseRequirement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ProType != null">
+                ProType  ,
+            </if>
+            <if test="ScenesID != null">
+                ScenesID ,
+            </if>
+            <if test="CategoryID != null">
+                CategoryID   ,
+            </if>
+            <if test="ModifyNum != null">
+                ModifyNum   ,
+            </if>
+            <if test="Author != null">
+                Author  ,
+            </if>
+            <if test="AuthorID != null">
+                AuthorID ,
+            </if>
+            <if test="ProName != null">
+                ProName ,
+            </if>
+            <if test="ProDescription != null">
+                ProDescription ,
+            </if>
+            <if test="ProBudget != null">
+                ProBudget  ,
+            </if>
+            <if test="Validity != null">
+                Validity  ,
+            </if>
+            <if test="IPhoneNum != null">
+                IPhoneNum  ,
+            </if>
+            <if test="VerCode != null">
+                VerCode ,
+            </if>
+            <if test="CreateTime != null">
+                CreateTime   ,
+            </if>
+            <if test="LastModifyTime != null">
+                LastModifyTime  ,
+            </if>
+            <if test="StatusValue != null">
+                StatusValue ,
+            </if>
+            <if test="RegisteredUserInfoID != null">
+                RegisteredUserInfoID ,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ProType != null">
+                 #{ProType,jdbcType=INTEGER},
+            </if>
+            <if test="ScenesID != null">
+                #{ScenesID,jdbcType=INTEGER},
+            </if>
+            <if test="CategoryID != null">
+                #{CategoryID,jdbcType=INTEGER},
+            </if>
+            <if test="ModifyNum != null">
+                #{ModifyNum,jdbcType=INTEGER},
+            </if>
+            <if test="Author != null">
+                #{Author,jdbcType=VARCHAR},
+            </if>
+            <if test="AuthorID != null">
+                #{AuthorID,jdbcType=INTEGER},
+            </if>
+            <if test="ProName != null">
+                #{ProName,jdbcType=VARCHAR},
+            </if>
+            <if test="ProDescription != null">
+                #{ProDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="ProBudget != null">
+                #{ProBudget},
+            </if>
+            <if test="Validity != null">
+                #{Validity,jdbcType=INTEGER},
+            </if>
+            <if test="IPhoneNum != null">
+                #{IPhoneNum,jdbcType=VARCHAR},
+            </if>
+            <if test="VerCode != null">
+                #{VerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="CreateTime != null">
+                #{CreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="LastModifyTime != null">
+                #{LastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="StatusValue != null">
+                #{StatusValue,jdbcType=INTEGER},
+            </if>
+            <if test="RegisteredUserInfoID != null">
+                #{RegisteredUserInfoID,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertAdvertiserReleaseRequirement_contentForm" parameterType="java.util.HashMap" >
+          INSERT  INTO AdvertiserReleaseRequirement_contentForm
+          (advertiserReleaseRequirementId,contentFormId)
+          VALUES
+          (#{advertiserReleaseRequirementId},#{contentFormId})
+    </insert>
+
+
+
+</mapper>

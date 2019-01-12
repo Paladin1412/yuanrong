@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--卖家订单-->
+<bean id="orderInfoSellerServicesI" class="com.yuanrong.admin.rpc.service.impl.order.OrderInfoSellerServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.order.OrderInfoSellerServicesI" ref="orderInfoSellerServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--卖家订单-->
+<dubbo:reference id="orderInfoSellerServicesI" interface="com.yuanrong.admin.rpc.api.order.OrderInfoSellerServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+//卖家订单
+@Autowired
+public OrderInfoSellerDaoI orderInfoSellerDaoI;
+
+
+4.在BaseController中，注入services
+
+//卖家订单
+@Autowired
+public OrderInfoSellerServicesI orderInfoSellerServicesI;

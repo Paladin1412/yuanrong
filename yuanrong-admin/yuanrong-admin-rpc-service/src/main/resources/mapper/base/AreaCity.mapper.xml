@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.base.AreaCityDaoI">
+    <select id="getAreaCityByParentID" resultType="com.yuanrong.admin.bean.base.AreaCity" parameterType="java.lang.String">
+        select * from AreaCity where
+        <choose>
+            <when test="padcd != null and padcd != ''">
+                padcd = #{padcd}
+            </when>
+            <otherwise>
+                padcd is null
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

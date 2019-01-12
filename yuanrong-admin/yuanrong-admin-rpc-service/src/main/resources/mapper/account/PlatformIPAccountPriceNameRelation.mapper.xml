@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.account.PlatformIPAccountPriceNameRelationDaoI">
+    <select id="getByShortVideoPlatformInfoIDs" resultType="java.util.Map" parameterType="int[]">
+        select DISTINCT ppn.* from PlatformIPAccountPriceNameRelation pfin , PlatformPriceName ppn
+        where ppn.id = pfin.platformPriceID AND pfin.shortVideoPlatformInfoID in
+        <foreach collection="platformInfoIDs" item="arr" index="no" open="("
+                 separator="," close=")">
+            #{arr}
+        </foreach>
+    </select>
+    
+    <select id="getPlatformPriceNameByID" resultType="java.util.Map" parameterType="java.lang.Integer">
+        SELECT  * from PlatformPriceName WHERE  id = #{id}
+    </select>
+
+    <!--通过平台ID和自增ID查询该平台是否有此报价-->
+    <select id="getByPlatformIdAndID" resultType="com.yuanrong.admin.bean.account.PlatformIPAccountPriceNameRelation" parameterType="com.yuanrong.admin.bean.account.PlatformIPAccountPriceNameRelation">
+        SELECT * from PlatformIPAccountPriceName where id=#{data.id} and shortVideoPlatformInfoID = #{data.id}
+    </select>
+
+    <!--通过名称查找平台是否存在-->
+    <select id="getPlatFormByName" resultType="java.util.Map" parameterType="java.lang.String">
+        SELECT * from ShortVideoPlatformInfo where statusIndex = 1 and PlatformName = #{name}
+    </select>
+</mapper>

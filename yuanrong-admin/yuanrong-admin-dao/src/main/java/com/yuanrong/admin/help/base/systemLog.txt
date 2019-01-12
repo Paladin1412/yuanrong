@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--系统日志-->
+<bean id="systemLogServicesI" class="com.yuanrong.admin.rpc.service.impl.base.SystemLogServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.base.SystemLogServicesI" ref="systemLogServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--系统日志-->
+<dubbo:reference id="systemLogServicesI" interface="com.yuanrong.admin.rpc.api.base.SystemLogServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+<!--系统日志-->
+@Autowired
+public SystemLogDaoI systemLogDaoI;
+
+
+4.在BaseController中，注入services
+
+<!--系统日志-->
+@Autowired
+public SystemLogServicesI systemLogServicesI;

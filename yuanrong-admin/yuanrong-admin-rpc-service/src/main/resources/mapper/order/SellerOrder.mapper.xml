@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.order.SellerOrderDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.order.SellerOrder">
+        INSERT INTO `sellerOrder`(`orderDetailId`, `orderSn`, `price`, `payable`, `sellerOrderType`, `orderStatus`, `num`, `production`,
+        `sellerServiceRate`, `registeredUserInfoId`, `createdTime`, `statusIndex`, `modifiedTime`,
+        `channelIndex`, `modifiedCount`, `memo`,mediaUserId ,cancelReason)
+        VALUES (#{data.orderDetailId}, #{data.orderSn}, #{data.price}, #{data.payable}, #{data.sellerOrderType},
+        #{data.orderStatus}, #{data.num}, #{data.production}, #{data.sellerServiceRate}, #{data.registeredUserInfoId},
+        now(), 1, now(), #{data.channelIndex}, 1, #{data.memo},#{data.mediaUserId},#{data.cancelReason})
+    </insert>
+    <select id="list" resultType="com.yuanrong.admin.bean.order.SellerOrder"
+            parameterType="com.yuanrong.admin.seach.SellerOrderSearch">
+        SELECT so.sellerOrderId,so.orderSn, demand.demandName as 'demand.demandName', demand.demandId as 'demand.demandId',
+        so.sellerOrderType, sa.NAME AS 'snapshotAccount.name', sa.accountID AS 'snapshotAccount.accountID',
+        sya.authorNickname AS 'snapshotYrAuthor.authorNickname', syp.title as 'snapshotYrProduction.title',syp.yrProductionId AS 'snapshotYrProduction.yrProductionId',
+        syp.imgNum as 'snapshotYrProduction.imgNum', syp.wordNum as 'snapshotYrProduction.wordNum',
+        sa.platformLogo as 'snapshotAccount.platformLogo',
+        sa.headImageUrlLocal as 'snapshotAccount.headImageUrlLocal', pia.indexUrl as 'platformIPAccount.indexUrl',
+        ois.production as 'orderInfoSeller.production', ois.executeTime as 'orderInfoSeller.executeTime',ois.orderInfoSellerId AS 'orderInfoSeller.orderInfoSellerId',
+        so.price, so.payable, so.sellerServiceRate, so.orderStatus, oib.payStatusValue as 'orderInfoBuyer.payStatusValue',
+        so.createdTime, so.registeredUserInfoId, rui.NickName AS 'registeredUserInfo.NickName',sya.authorImg as 'snapshotYrAuthor.authorImg',
+        sale.RealName AS 'sale.RealName', media.RealName AS 'media.RealName',productSale.RealName AS 'productSale.RealName' ,
+        productMedia.RealName AS 'productMedia.RealName',ois.returnUrl AS 'orderInfoSeller.returnUrl',yp.originalScore AS 'yrProduction.originalScore',
+        ois.returnImg AS 'orderInfoSeller.returnImg',ois.orderSn as 'orderInfoSeller.orderSn' ,so.cancelReason,oib.orderInfoBuyerId AS 'orderInfoBuyer.orderInfoBuyerId',
+        demand.contentForms AS 'demand.contentForms',demand.requireWordNum AS 'demand.requireWordNum',demand.expectNum AS 'demand.expectNum',
+        demand.expectedTime AS 'demand.expectedTime',demand.remark AS 'demand.remark',demand.attachment AS 'demand.attachment',
+        demand.referURL AS 'demand.referURL',di.name AS 'dictInfo.name',demand.registeredUserInfoId AS 'demand.registeredUserInfoId',
+        rui.NickName AS 'saler.NickName',demand.mobile AS 'demand.mobile',demand.saleMark AS 'demand.saleMark',od.basePrice AS 'orderDetail.basePrice',
+        ois.usableDate AS 'orderInfoSeller.usableDate',ois.acceptRemark AS 'orderInfoSeller.acceptRemark',demand.spreadTime AS 'demand.spreadTime'
+        FROM
+            sellerOrder so
+            LEFT JOIN snapshotAccount sa ON sa.orderDetailId = so.orderDetailId
+            LEFT JOIN PlatformIPAccount pia ON pia.id = sa.platformIPAccountId
+            LEFT JOIN snapshotYrAuthor sya ON sya.orderDetailId = so.orderDetailId
+            LEFT JOIN snapshotYrProduction syp ON syp.orderDetailId = so.orderDetailId
+            LEFT JOIN orderDetail od ON od.orderDetailId = so.orderDetailId
+            LEFT JOIN orderInfoBuyer oib ON oib.orderInfoBuyerId = od.orderInfoBuyerId
+            LEFT JOIN orderInfoSeller ois ON ois.orderInfoSellerId = oib.refreId
+            LEFT JOIN demand demand ON demand.demandId = ois.demandId
+            LEFT JOIN DictInfo di on di.id = demand.tradeId
+            LEFT JOIN yrProduction yp on yp.recId = syp.yrProductionId
+            LEFT JOIN AdminUser sale on sale.RecId = ois.saleUserId
+            LEFT JOIN AdminUser media on media.RecId = ois.mediaUserId
+            LEFT JOIN AdminUser productSale on productSale.RecId = oib.saleUserId
+            LEFT JOIN AdminUser productMedia on productMedia.RecId = so.mediaUserId,
+            RegisteredUserInfo rui
+        where so.registeredUserInfoId = rui.RecID
+            AND so.statusIndex =1
+        <if test="data.serialOrderSn != null  and data.serialOrderSn.length>0">
+            AND ois.orderSn =#{data.serialOrderSn}
+        </if>
+        <if test="data.orderSn != null and data.orderSn.length >0">
+            AND so.orderSn =#{data.orderSn}
+        </if>
+        <if test="data.sellerOrderType != null and data.sellerOrderType!=0">
+            AND so.sellerOrderType = #{data.sellerOrderType}
+        </if>
+        <if test="data.registeredUserInfoId != null and data.registeredUserInfoId >0">
+            AND so.registeredUserInfoId = #{data.registeredUserInfoId}
+        </if>
+        <if test="data.nickName != null and data.nickName !=''">
+            AND rui.NickName = #{data.nickName}
+        </if>
+        <if test="data.startCreatedTime != null and data.startCreatedTime !=''">
+            AND so.createdTime &gt;= #{data.startCreatedTime}
+        </if>
+        <if test="data.endCreatedTime != null and data.endCreatedTime !=''">
+            AND so.createdTime &lt;= #{data.endCreatedTime}
+        </if>
+
+        <if test="data.mediaUser != null and data.mediaUser.length >0">
+            AND ois.mediaUser IN
+            <foreach collection="data.mediaUser" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.names != null  and data.names.length>0">
+            AND (
+            sa.name IN
+            <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            OR
+            sya.authorNickname IN
+            <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            OR
+            syp.title IN
+            <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="data.orderStatus != null and data.orderStatus !=''">
+            AND so.orderStatus = #{data.orderStatus}
+        </if>
+         order by so.sellerOrderId desc
+    </select>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.order.SellerOrder">
+        select * from sellerOrder where sellerOrderId = #{id}
+    </select>
+    <select id="getByEntity" parameterType="com.yuanrong.admin.bean.order.SellerOrder"
+            resultType="com.yuanrong.admin.bean.order.SellerOrder">
+        SELECT
+        so.*,
+        sacc.name as 'snapshotAccount.name',
+        sacc.accountID as 'snapshotAccount.accountID',
+        sacc.platformLogo as 'snapshotAccount.platformLogo',
+        sacc.headImageUrlLocal as 'snapshotAccount.headImageUrlLocal',
+        sacc.priceInfo as 'snapshotAccount.priceInfo',
+        sacc.fans as 'snapshotAccount.fans',
+        saut.authorNickname as 'snapshotYrAuthor.authorNickname',
+        saut.authorImg as 'snapshotYrAuthor.authorImg',
+        saut.introduction as 'snapshotYrAuthor.introduction',
+        saut.priceInfo as 'snapshotYrAuthor.priceInfo',
+        os.createdTime as 'orderInfoSeller.createdTime'
+        FROM
+        sellerOrder so
+        LEFT JOIN orderDetail od ON so.orderDetailId = od.orderDetailId
+        LEFT JOIN orderInfoBuyer ob on od.orderInfoBuyerId = ob.orderInfoBuyerId
+        LEFT JOIN orderInfoSeller os on os.orderInfoSellerId = ob.refreId
+        left join snapshotAccount sacc on od.referId = sacc.snapshotAccountId
+        left join snapshotYrAuthor saut on od.referId = saut.snapshotYrAuthorId
+        left join snapshotYrProduction sya on od.referId = sya.snapshotYrProductionId
+        WHERE
+        1=1
+        <if test="demandId != null ">
+            and
+            os.demandId = #{demandId}
+        </if>
+        <if test="webUser != null and webUser.recID!=null">
+            and
+            ru.recID = #{webUser.recID}
+        </if>
+    </select>
+
+    <!--根据orderSn查询信息-->
+    <select id="getByOrderSn" resultType="com.yuanrong.admin.bean.order.SellerOrder" parameterType="java.lang.String">
+        SELECT * FROM sellerOrder where orderSn=#{orderSn}
+    </select>
+
+    <update id="updateSellerOrder" parameterType="com.yuanrong.admin.bean.order.SellerOrder">
+          update sellerOrder set price = #{data.price},payable = #{data.payable},sellerServiceRate=#{data.sellerServiceRate},modifiedTime=now(),modifiedCount=modifiedCount+1
+          where orderSn = #{data.orderSn}
+    </update>
+    <update id="cancelSellOrder" parameterType="java.lang.Integer">
+        update sellerOrder so , orderDetail od  set orderStatus = 3 ,cancelReason = '订单超时未支付，取消订单'
+        where so.orderDetailId =  od.orderDetailId and od.orderInfoBuyerId = #{orderInfoBuyerId}
+    </update>
+
+    <update id="finishSellOrder"  parameterType="java.lang.String">
+        update  mergePayOrder mg , orderInfoBuyer ob , orderDetail od , sellerOrder so
+        set so.orderStatus = 2 ,so.finishTime = now()
+        where mg.orderInfoBuyerId = ob.orderInfoBuyerId and od.orderInfoBuyerId = ob.orderInfoBuyerId
+        and so.orderDetailId = od.orderDetailId and so.sellerOrderType in (1,4) and mg.orderSn = #{payOrderSn}
+    </update>
+
+    <select id="getByPayOrderSn" resultType="com.yuanrong.admin.bean.order.SellerOrder" parameterType="java.lang.String">
+        SELECT so.* from  mergePayOrder mg , orderInfoBuyer ob , orderDetail od , sellerOrder so
+        where mg.orderInfoBuyerId = ob.orderInfoBuyerId and od.orderInfoBuyerId = ob.orderInfoBuyerId
+        and so.orderDetailId = od.orderDetailId and mg.orderSn = #{payOrderSn}
+    </select>
+
+    <select id="getDetailBySn" resultType="com.yuanrong.admin.result.SellerOrderResult" parameterType="com.yuanrong.admin.seach.SellerOrderSearch" >
+        SELECT so.* , ois.createdTime as 'orderInfoSeller.createdTime' ,
+        ois.usableDate  as 'orderInfoSeller.usableDate',ois.executeTime as 'orderInfoSeller.executeTime',ois.acceptRemark as 'orderInfoSeller.acceptRemark',
+        ois.returnUrl as 'orderInfoSeller.returnUrl',ois.returnImg as 'orderInfoSeller.returnImg',ois.orderSn as 'orderInfoSeller.orderSn',
+        off.offerPrice,
+        ois.createdTime as 'orderInfoSeller.createdTime',ois.orderStatusValue as 'orderInfoSeller.orderStatusValue',
+        ois.sellerServiceRate as 'orderInfoSeller.sellerServiceRate', ois.orderTypeValue as 'orderInfoSeller.orderTypeValue' ,
+        sa.name as 'orderDetail.snapshotAccount.name',sa.accountID as 'orderDetail.snapshotAccount.accountID',
+        sa.platformName as 'orderDetail.snapshotAccount.platformName',sa.platformLogo as 'orderDetail.snapshotAccount.platformLogo',
+        sa.headImageUrlLocal as 'orderDetail.snapshotAccount.headImageUrlLocal',
+        sya.authorImg as 'orderDetail.snapshotYrAuthor.authorImg',
+        sya.authorNickname as 'orderDetail.snapshotYrAuthor.authorNickname',
+        syp.wordNum as 'orderDetail.snapshotYrProduction.wordNum',syp.imgNum as 'orderDetail.snapshotYrProduction.imgNum',
+        od.production as 'orderDetail.production',
+        dm.demandName as 'orderInfoSeller.demand.demandName',dm.budgetMoney  as 'orderInfoSeller.demand.budgetMoney',dm.expectedTime as 'orderInfoSeller.demand.expectedTime',
+        dm.contentForms as 'orderInfoSeller.demand.contentForms',dm.requireWordNum  as 'orderInfoSeller.demand.requireWordNum',
+        dm.requireSeconds  as 'orderInfoSeller.demand.requireSeconds',dm.remark as 'orderInfoSeller.demand.remark',dm.attachment as 'orderInfoSeller.demand.attachment',
+        dm.referURL as 'orderInfoSeller.demand.referURL',dm.fans as 'orderInfoSeller.demand.fans',dm.demandTypeIndex as 'orderInfoSeller.demand.demandTypeIndex'
+        , di.name as 'orderInfoSeller.demand.tradeDictinfo.name',
+        dm.demandStatusIndex as 'orderInfoSeller.demand.demandStatusIndex' ,
+        dm.isShow as 'orderInfoSeller.demand.isShow',
+        dm.scenes as 'orderInfoSeller.demand.scenes', dm.yrCategory  as 'orderInfoSeller.demand.yrCategory',
+        dm.platformName as 'orderInfoSeller.demand.platformName',dm.spreadTime as 'orderInfoSeller.demand.spreadTime',
+        ob.cancelReason as 'orderDetail.orderInfoBuyer.cancelReason'
+        from sellerOrder so
+        LEFT JOIN orderDetail od on so.orderDetailId = od.orderDetailId
+        LEFT JOIN orderInfoBuyer ob on ob.orderInfoBuyerId = od.orderInfoBuyerId
+        left join snapshotAccount sa on sa.orderDetailId = od.orderDetailId
+        left join snapshotYrAuthor sya on sya.orderDetailId = od.orderDetailId
+        left join snapshotYrProduction syp on syp.orderDetailId = od.orderDetailId
+        left join orderInfoSeller ois on ois.orderInfoSellerId = ob.refreId
+        left join demand dm on dm.demandId = ois.demandId
+        left join DictInfo di on di.id = dm.tradeId
+        left join (
+        SELECT orderInfoSellerId,GROUP_CONCAT(CONCAT(priceName,'_-_' , price) SEPARATOR '_*_') offerPrice
+        from orderInfoOffer
+        GROUP BY orderInfoSellerId
+        ) off on off.orderInfoSellerId = ois.orderInfoSellerId
+        where so.registeredUserInfoId = #{data.registeredUserInfoId}
+
+        <if test="data.orderSn != '' and data.orderSn != null">
+            and so.orderSn = #{data.orderSn}
+        </if>
+    </select>
+
+    <update id="updateSeller" parameterType="com.yuanrong.admin.bean.order.SellerOrder">
+        update sellerOrder
+        <set >
+            <if test="data.orderDetailId != null" >
+                orderDetailId = #{data.orderDetailId,jdbcType=INTEGER},
+            </if>
+            <if test="data.orderSn != null" >
+                orderSn = #{data.orderSn,jdbcType=VARCHAR},
+            </if>
+            <if test="data.price != null" >
+                price = #{data.price,jdbcType=DECIMAL},
+            </if>
+            <if test="data.payable != null" >
+                payable = #{data.payable,jdbcType=DECIMAL},
+            </if>
+            <if test="data.sellerOrderType != null" >
+                sellerOrderType = #{data.sellerOrderType,jdbcType=INTEGER},
+            </if>
+            <if test="data.orderStatus != null" >
+                orderStatus = #{data.orderStatus,jdbcType=INTEGER},
+            </if>
+            <if test="data.num != null" >
+                num = #{data.num,jdbcType=INTEGER},
+            </if>
+            <if test="data.production != null" >
+                production = #{data.production,jdbcType=VARCHAR},
+            </if>
+            <if test="data.sellerServiceRate != null" >
+                sellerServiceRate = #{data.sellerServiceRate,jdbcType=DECIMAL},
+            </if>
+            <if test="data.registeredUserInfoId != null" >
+                registeredUserInfoId = #{data.registeredUserInfoId,jdbcType=INTEGER},
+            </if>
+            <if test="data.statusIndex != null" >
+                statusIndex = #{data.statusIndex,jdbcType=INTEGER},
+            </if>
+                modifiedTime = now(),
+            <if test="data.channelIndex != null" >
+                channelIndex = #{data.channelIndex,jdbcType=INTEGER},
+            </if>
+            <if test="data.modifiedCount != null" >
+                modifiedCount = #{data.modifiedCount,jdbcType=INTEGER},
+            </if>
+            <if test="data.memo != null" >
+                memo = #{data.memo,jdbcType=VARCHAR},
+            </if>
+            <if test="data.finishTime != null" >
+                finishTime = #{data.finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="data.cancelReason != null" >
+                cancelReason = #{data.cancelReason,jdbcType=VARCHAR},
+            </if>
+            <if test="data.mediaUserId != null" >
+                mediaUserId = #{data.mediaUserId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where sellerOrderId = #{data.sellerOrderId,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="getOrderStatusCount" resultType="java.util.Map"
+            parameterType="com.yuanrong.admin.seach.SellerOrderSearch">
+        SELECT so.orderStatus,count(1) AS countNum
+        FROM
+        sellerOrder so
+        LEFT JOIN snapshotAccount sa ON sa.orderDetailId = so.orderDetailId
+        LEFT JOIN PlatformIPAccount pia ON pia.id = sa.platformIPAccountId
+        LEFT JOIN snapshotYrAuthor sya ON sya.orderDetailId = so.orderDetailId
+        LEFT JOIN snapshotYrProduction syp ON syp.orderDetailId = so.orderDetailId
+        LEFT JOIN yrProduction yp ON yp.recId = syp.yrProductionId
+        LEFT JOIN orderDetail od ON od.orderDetailId = so.orderDetailId
+        LEFT JOIN orderInfoBuyer oib ON oib.orderInfoBuyerId = od.orderInfoBuyerId
+        LEFT JOIN orderInfoSeller ois ON ois.orderInfoSellerId = oib.refreId
+        LEFT JOIN demand demand ON demand.demandId = ois.demandId,
+        RegisteredUserInfo rui
+        where so.registeredUserInfoId = rui.RecID
+        <if test="data.serialOrderSn != null  and data.serialOrderSn.length>0">
+            AND ois.orderSn =#{data.serialOrderSn}
+        </if>
+        <if test="data.orderSn != null and data.orderSn.length >0">
+            AND so.orderSn =#{data.orderSn}
+        </if>
+        <if test="data.sellerOrderType != null and data.sellerOrderType!=0">
+            AND so.sellerOrderType = #{data.sellerOrderType}
+        </if>
+        <if test="data.registeredUserInfoId != null and data.registeredUserInfoId >0">
+            AND so.registeredUserInfoId = #{data.registeredUserInfoId}
+        </if>
+        <if test="data.nickName != null and data.nickName !=''">
+            AND rui.NickName = #{data.nickName}
+        </if>
+        <if test="data.startCreatedTime != null and data.startCreatedTime !=''">
+            AND so.createdTime &gt;= #{data.startCreatedTime}
+        </if>
+        <if test="data.endCreatedTime != null and data.endCreatedTime !=''">
+            AND so.createdTime &lt;= #{data.endCreatedTime}
+        </if>
+
+        <if test="data.mediaUser != null and data.mediaUser.length >0">
+            AND ois.mediaUser IN
+            <foreach collection="data.mediaUser" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="data.names != null  and data.names.length>0">
+            AND (
+            sa.name IN
+            <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            OR
+            sya.authorNickname IN
+            <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            OR
+            syp.title IN
+            <foreach collection="data.names" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="data.orderStatus != null and data.orderStatus !=''">
+            AND so.orderStatus = #{data.orderStatus}
+        </if>
+        group by so.orderStatus
+    </select>
+</mapper>

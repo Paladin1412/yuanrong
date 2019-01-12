@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.trading.TradingRecordDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.trading.TradingRecord">
+
+    </insert>
+
+    <insert id="saveGetKey" parameterType="com.yuanrong.admin.bean.trading.TradingRecord" useGeneratedKeys="true"
+            keyProperty="tradingRecordId">
+        INSERT INTO tradingRecord
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="nickName !=null">
+                nickName ,
+            </if>
+            <if test="tradingDate !=null">
+                tradingDate ,
+            </if>
+            <if test="sellerAccount !=null">
+                sellerAccount ,
+            </if>
+            <if test="accountId !=null">
+                accountId ,
+            </if>
+            <if test="referPlatform !=null">
+                referPlatform ,
+            </if>
+            <if test="servicesContent !=null">
+                servicesContent ,
+            </if>
+            <if test="money !=null">
+                money ,
+            </if>
+            <if test="cooPerationBrand !=null">
+                cooPerationBrand ,
+            </if>
+            <if test=" buyerName !=null">
+                buyerName ,
+            </if>
+            <if test="registeredUserInfoId !=null">
+                registeredUserInfoId ,
+            </if>
+            <if test="channelIndex !=null">
+                channelIndex ,
+            </if>
+            <if test=" heir !=null">
+                heir ,
+            </if>
+            createdTime ,
+            statusIndex ,
+        </trim>
+        <trim prefix="values ( " suffix=")" suffixOverrides=",">
+            <if test="nickName !=null">
+                #{nickName},
+            </if>
+            <if test="tradingDate !=null">
+                #{tradingDate},
+            </if>
+            <if test="sellerAccount !=null">
+                #{sellerAccount},
+            </if>
+            <if test="accountId !=null">
+                #{accountId},
+            </if>
+            <if test="referPlatform !=null">
+                #{referPlatform},
+            </if>
+            <if test="servicesContent !=null">
+                #{servicesContent},
+            </if>
+            <if test="money !=null">
+                #{money},
+            </if>
+            <if test="cooPerationBrand !=null">
+                #{cooPerationBrand},
+            </if>
+            <if test="buyerName !=null">
+                #{buyerName},
+            </if>
+            <if test="registeredUserInfoId !=null">
+                #{registeredUserInfoId,jdbcType=INTEGER},
+            </if>
+            <if test="channelIndex !=null">
+                #{channelIndex},
+            </if>
+            <if test="heir !=null">
+                #{heir},
+            </if>
+            now(),
+            1,
+        </trim>
+    </insert>
+
+    <select id="list" resultType="com.yuanrong.admin.bean.trading.TradingRecord"
+            parameterType="com.yuanrong.admin.bean.trading.TradingRecord">
+        SELECT * from tradingRecord
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.trading.TradingRecord">
+        select * from tradingRecord where tradingRecordId = #{id}
+    </select>
+    <select id="tradingRecordlist" resultType="com.yuanrong.admin.result.TradingRecordResult"
+            parameterType="com.yuanrong.admin.seach.TradingRecordSearch">
+        SELECT * from tradingRecord tR
+        where tR.statusIndex = 1
+        <if test="nickNames != null and nickNames.length!=0">
+            AND
+            <foreach collection="nickNames" item="item" open="(" close=")" separator="or">
+                <if test="item !=''">
+                    tR.NickName LIKE CONCAT('%',#{item},'%')
+                </if>
+            </foreach>
+        </if>
+        <if test="sellerAccounts != null and sellerAccounts.length!=0">
+            AND
+            <foreach collection="sellerAccounts" item="item" open="(" close=")" separator="or">
+                <if test="item !=''">
+                    tR.sellerAccount LIKE CONCAT('%',#{item},'%')
+                </if>
+            </foreach>
+        </if>
+        <if test="registeredUserInfoIds != null and registeredUserInfoIds.length!=0">
+            AND
+            tR.registeredUserInfoId in
+            <foreach collection="registeredUserInfoIds" item="item" open="(" close=")" separator=",">
+                <if test="item !=''">
+                    #{item}
+                </if>
+            </foreach>
+        </if>
+        <if test="referPlatforms != null and referPlatforms.length!=0">
+            AND
+            <foreach collection="referPlatforms" item="item" open="(" close=")" separator="or">
+                <choose>
+                    <when test="item !='' and item == '其他'">
+                        tR.referPlatform Not LIKE '%抖音%' and
+                        tR.referPlatform NOT LIKE '%微信%' and
+                        tR.referPlatform NOT LIKE '%微博%' and
+                        tR.referPlatform NOT LIKE '%快手%' and
+                        tR.referPlatform NOT LIKE '%美拍%' and
+                        tR.referPlatform NOT LIKE '%秒拍%'
+                    </when>
+                    <otherwise>
+                        tR.referPlatform LIKE CONCAT('%',#{item},'%')
+                    </otherwise>
+                </choose>
+
+            </foreach>
+        </if>
+        <!--合作品牌 -->
+        <if test="cooPerationBrands != null and cooPerationBrands.length!=0">
+            AND
+            <foreach collection="cooPerationBrands" item="item" open="(" close=")" separator="or">
+                <if test="item !=''">
+                    tR.cooPerationBrand LIKE CONCAT('%',#{item},'%')
+                </if>
+            </foreach>
+        </if>
+
+        <!--买方 -->
+        <if test="buyerNames != null and buyerNames.length!=0">
+            AND
+            <foreach collection="buyerNames" item="item" open="(" close=")" separator="or">
+                <if test="item !=''">
+                    tR.buyerName LIKE CONCAT('%',#{item},'%')
+                </if>
+            </foreach>
+        </if>
+        <!--上传时间 -->
+        <if test="createdTimeStart != null and createdTimeStart !=''">
+            and DATE_FORMAT(tR.createdTime,'%Y-%m-%d') &gt;= #{createdTimeStart}
+        </if>
+        <if test="createdTimeEnd != null and createdTimeEnd !=''">
+            and DATE_FORMAT(tR.createdTime,'%Y-%m-%d') &lt;= #{createdTimeEnd}
+        </if>
+        <!--执行时间 -->
+        <if test="tradingDateStart != null and tradingDateStart !=''">
+            and  str_to_date(tR.tradingDate, '%Y-%m-%d') &gt;= #{tradingDateStart}
+        </if>
+        <if test="tradingDateEnd != null and tradingDateEnd !=''">
+            and str_to_date(tR.tradingDate, '%Y-%m-%d') &lt;= #{tradingDateEnd}
+        </if>
+        <!-- 数据渠道-->
+        <if test="channelIndex !=null">
+            and
+            tR.channelIndex = #{channelIndex}
+        </if>
+        /* 前台当前注册用户判断*/
+        <if test="webUser != null and webUser.recID!=null">
+            and
+            tR.registeredUserInfoId = #{webUser.recID}
+        </if>
+    </select>
+    <update id="update" parameterType="com.yuanrong.admin.seach.TradingRecordSearch">
+        update tradingRecord
+        <set>
+            <if test="nickName != null ">nickName =#{nickName },</if>
+            <if test="tradingDate != null ">tradingDate =#{tradingDate },</if>
+            <if test="sellerAccount != null ">sellerAccount =#{sellerAccount },</if>
+            <if test="accountId != null ">accountId =#{accountId },</if>
+            <if test="referPlatform != null ">referPlatform =#{referPlatform },</if>
+            <if test="servicesContent != null ">servicesContent =#{servicesContent },</if>
+            <if test="money != null ">money =#{money },</if>
+            <if test="cooPerationBrand != null ">cooPerationBrand =#{cooPerationBrand },</if>
+            <if test="buyerName != null ">buyerName =#{buyerName },</if>
+            <if test="registeredUserInfoId != null ">registeredUserInfoId =#{registeredUserInfoId },</if>
+            <if test="channelIndex != null ">channelIndex =#{channelIndex },</if>
+            <if test="statusIndex != null ">statusIndex =#{statusIndex },</if>
+
+        </set>
+        where
+        <if test="tradingRecordIds != null and tradingRecordIds.length!=0">
+            tradingRecordId in
+            <foreach collection="tradingRecordIds" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tradingRecordId != null ">
+            tradingRecordId  = #{tradingRecordId}
+        </if>
+    </update>
+
+</mapper>

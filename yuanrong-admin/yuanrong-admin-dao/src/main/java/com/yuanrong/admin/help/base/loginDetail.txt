@@ -1,0 +1,25 @@
+1.在applicationContext-dubbo-provider.xml中，添加提供者
+
+<!--登录日志-->
+<bean id="loginDetailServicesI" class="com.yuanrong.admin.rpc.service.impl.base.LoginDetailServicesImpl"></bean>
+<dubbo:service interface="com.yuanrong.admin.rpc.api.base.LoginDetailServicesI" ref="loginDetailServicesI" executes="1000" timeout="1200000"></dubbo:service>
+
+
+2.在applicationContext-dubbo-consumer.xml中，添加消费者
+
+<!--登录日志-->
+<dubbo:reference id="loginDetailServicesI" interface="com.yuanrong.admin.rpc.api.base.LoginDetailServicesI" timeout="1200000" />
+
+
+3.在BaseServicesAbstract中，注入dao
+
+//登录日志
+@Autowired
+public LoginDetailDaoI loginDetailDaoI;
+
+
+4.在BaseController中，注入services
+
+//登录日志
+@Autowired
+public LoginDetailServicesI loginDetailServicesI;

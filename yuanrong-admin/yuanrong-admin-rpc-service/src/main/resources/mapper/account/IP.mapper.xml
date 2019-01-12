@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuanrong.admin.dao.account.IPDaoI" >
+  <resultMap id="BaseResultMap" type="com.yuanrong.admin.bean.account.IP" >
+    <id column="recID" property="recID" jdbcType="INTEGER" />
+    <result column="iPName" property="iPName" jdbcType="VARCHAR" />
+    <result column="iPImageHeadUrl" property="iPImageHeadUrl" jdbcType="VARCHAR" />
+    <result column="iPFans" property="iPFans" jdbcType="INTEGER" />
+    <result column="iPIntroduction" property="iPIntroduction" jdbcType="VARCHAR" />
+    <result column="iPWholeNetworkPrice" property="iPWholeNetworkPrice" jdbcType="DECIMAL" />
+    <result column="createdTime" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="registeredUserInfoID" property="registeredUserInfoID" jdbcType="INTEGER" />
+    <result column="invalidTime" property="invalidTime" jdbcType="TIMESTAMP" />
+    <result column="categoryID" property="categoryID" jdbcType="INTEGER" />
+      <!--<association property="registeredUserInfoID" jdbcType="com.yuanrong.admin.bean.usermanagement.RegisteredUserInfo" >
+
+      </association>-->
+    <result column="isOriginal" property="isOriginal" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    recID, iPName, iPImageHeadUrl, iPFans, iPIntroduction, iPWholeNetworkPrice, createdTime, 
+    registeredUserInfoID, isOriginal, invalidTime, categoryID
+  </sql>
+    <!--通过ID查询IP-->
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+      *
+    from IP
+    where recID = #{recID,jdbcType=INTEGER}
+  </select>
+<!--IP列表-->
+  <select id="listResultMap" resultType="java.util.HashMap" parameterType="com.yuanrong.admin.seach.IPListParamSeach" >
+      SELECT
+          ip.RecID AS IPId,
+          ip.IPName,
+          a.num,
+          b.num as putNum,
+          ru.NickName,
+          ru.RecID AS userId,
+          au.RealName,
+          ip.iPWholeNetworkPrice,
+          ip.invalidTime,
+          ip.categoryID
+      FROM
+          IP ip
+          LEFT JOIN
+          (
+              SELECT
+                  ip.RecID,
+                  count( ip.RecID ) AS num
+              FROM
+                  IP ip,
+                  PlatformIPAccount pa
+              WHERE
+                  ip.RecID = pa.IPID
+                  GROUP BY
+                    ip.RecID
+          ) a ON a.RecID = ip.RecID
+          LEFT JOIN
+          (
+              SELECT
+                  ip.RecID,
+                  count( ip.RecID ) AS num
+              FROM
+                  IP ip,
+                  PlatformIPAccount pa
+              WHERE
+                  ip.RecID = pa.IPID
+                  AND pa.accountStatus = 1
+                  GROUP BY
+                    ip.RecID
+          ) b ON b.RecID = a.recID,
+          RegisteredUserInfo ru,
+          AdminUser au
+      WHERE
+          ru.AdminUserMediaID = au.RecID
+          AND ip.RegisteredUserInfoID = ru.RecID
+        /*IP名称*/
+          <if test="data.iPNames != null and data.iPNames.length!=0">
+              and
+              <foreach collection="data.iPNames" item="item" open="(" close=")" separator="or">
+                  ip.iPName LIKE CONCAT('%',#{item},'%')
+              </foreach>
+          </if>
+        /*IPID*/
+          <if test="data.recIDs != null and data.recIDs.length!=0">
+              and ip.recID IN
+              <foreach collection="data.recIDs" item="item" open="(" close=")" separator=",">
+                  #{item}
+              </foreach>
+          </if>
+          /*账号数Begin*/
+          <if test="data.accountNumBegin != null">
+              and a.num &gt;= #{data.accountNumBegin}
+          </if>
+          /*账号数End*/
+          <if test="data.accountNumEnd != null">
+              and a.num &lt;= #{data.accountNumEnd}
+          </if>
+          /*行业分类*/
+          <if test="data.categoryID != null and data.categoryID > 0">
+                and ip.categoryID  =  #{data.categoryID}
+          </if>
+          /*IP全网发布报价*/
+          <if test="data.priceBegin != null">
+              and ip.iPWholeNetworkPrice &gt;= #{data.priceBegin}
+          </if>
+          /*IP全网发布报价*/
+          <if test="data.priceEnd != null">
+              and ip.iPWholeNetworkPrice &lt;= #{data.priceEnd}
+          </if>
+          /*价格有效期时间Begin*/
+          <if test="data.invalidTimeBegin != null and data.invalidTimeBegin !=''">
+              and DATE_FORMAT(ip.invalidTime,'%Y-%m-%d') &gt;= #{data.invalidTimeBegin}
+          </if>
+          /*价格有效期时间End*/
+          <if test="data.invalidTimeEnd != null and data.invalidTimeEnd !=''">
+              and DATE_FORMAT(ip.invalidTime,'%Y-%m-%d') &lt;= #{data.invalidTimeEnd}
+          </if>
+          /*后台当前登陆用户*/
+          <!--<if test="data.currLoginUser != null and data.currLoginUser.underUser != null and data.currLoginUser.underUser != ''">
+              and ru.AdminUserCreaterID in (${data.currLoginUser.underUser})
+          </if>-->
+  </select>
+
+    <select id="getByIPName" resultType="com.yuanrong.admin.bean.account.IP">
+        SELECT
+          *
+        FROM
+          IP ip
+        WHERE
+          ip.registeredUserInfoID = #{userId}
+          AND ip.iPName = #{ipName}
+    </select>
+
+    <!--根据Ip查账号列表-->
+    <select id="findAccountByIPId" resultType="java.util.HashMap" parameterType="string" >
+        SELECT
+            pa.id,
+            pa.headImageUrlLocal,
+            pa.NAME,
+            pa.accountStatus,
+            p.icoUrl
+        FROM
+            PlatformIPAccount pa,
+            ShortVideoPlatformInfo p
+        WHERE
+            pa.platformID = p.PlatformID
+            AND pa.iPID = #{recID}
+    </select>
+
+    <!--根据IpID查用户-->
+    <select id="findUserByIP" resultType="java.util.HashMap" parameterType="java.lang.Integer" >
+        SELECT
+            ip.recID,
+            ip.iPName,
+            u.UserName,
+            u.NickName,
+            u.RecID AS userId,
+            u.Mobile,
+            u.sellerStatusValue AS userStatus
+        FROM
+            IP ip,
+	        RegisteredUserInfo u
+        WHERE
+            ip.registeredUserInfoID = u.RecID
+            AND ip.recID = #{recID}
+    </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from IP
+    where recID = #{recID,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yuanrong.admin.bean.account.IP" >
+    insert into IP (recID, iPName, iPImageHeadUrl, 
+      iPFans, iPIntroduction, iPWholeNetworkPrice, 
+      createdTime, registeredUserInfoID, isOriginal,
+       invalidTime, categoryID)
+    values (#{recID,jdbcType=INTEGER}, #{iPName,jdbcType=VARCHAR}, #{iPImageHeadUrl,jdbcType=VARCHAR}, 
+      #{iPFans,jdbcType=INTEGER}, #{iPIntroduction,jdbcType=VARCHAR}, #{iPWholeNetworkPrice,jdbcType=DECIMAL}, 
+      now(), #{registeredUserInfoID,jdbcType=INTEGER}, #{isOriginal,jdbcType=INTEGER},
+      #{invalidTime,jdbcType=TIMESTAMP}, #{categoryID,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yuanrong.admin.bean.account.IP" useGeneratedKeys="true" keyProperty="recID">
+    insert into IP
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="recID != null" >
+        recID,
+      </if>
+      <if test="iPName != null" >
+        iPName,
+      </if>
+      <if test="iPImageHeadUrl != null" >
+        iPImageHeadUrl,
+      </if>
+      <if test="iPFans != null" >
+        iPFans,
+      </if>
+      <if test="iPIntroduction != null" >
+        iPIntroduction,
+      </if>
+      <if test="iPWholeNetworkPrice != null" >
+        iPWholeNetworkPrice,
+      </if>
+        createdTime,
+      <if test="registeredUserInfoID != null" >
+        registeredUserInfoID,
+      </if>
+        <if test="invalidTime != null" >
+            invalidTime,
+        </if>
+        <if test="categoryID != null" >
+            categoryID,
+        </if>
+        <if test="isOriginal != null" >
+            isOriginal,
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="recID != null" >
+        #{recID,jdbcType=INTEGER},
+      </if>
+      <if test="iPName != null" >
+        #{iPName,jdbcType=VARCHAR},
+      </if>
+      <if test="iPImageHeadUrl != null" >
+        #{iPImageHeadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="iPFans != null" >
+        #{iPFans,jdbcType=INTEGER},
+      </if>
+      <if test="iPIntroduction != null" >
+        #{iPIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="iPWholeNetworkPrice != null" >
+        #{iPWholeNetworkPrice,jdbcType=DECIMAL},
+      </if>
+        now(),
+      <if test="registeredUserInfoID != null" >
+        #{registeredUserInfoID,jdbcType=INTEGER},
+      </if>
+        <if test="invalidTime != null" >
+            #{invalidTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="categoryID != null" >
+            #{categoryID,jdbcType=INTEGER},
+        </if>
+        <if test="isOriginal != null" >
+            #{isOriginal,jdbcType=INTEGER},
+        </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="com.yuanrong.admin.bean.account.IP" >
+    update IP
+    <set >
+      <if test="iPName != null" >
+        iPName = #{iPName,jdbcType=VARCHAR},
+      </if>
+      <if test="iPImageHeadUrl != null" >
+        iPImageHeadUrl = #{iPImageHeadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="iPFans != null" >
+        iPFans = #{iPFans,jdbcType=INTEGER},
+      </if>
+      <if test="iPIntroduction != null" >
+        iPIntroduction = #{iPIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="iPWholeNetworkPrice != null" >
+        iPWholeNetworkPrice = #{iPWholeNetworkPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createdTime != null" >
+        createdTime = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registeredUserInfoID != null" >
+        registeredUserInfoID = #{registeredUserInfoID,jdbcType=INTEGER},
+      </if>
+        <if test="invalidTime != null" >
+            invalidTime = #{invalidTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="categoryID != null" >
+            categoryID = #{categoryID,jdbcType=INTEGER},
+        </if>
+        <if test="isOriginal != null" >
+            isOriginal = #{isOriginal,jdbcType=INTEGER},
+        </if>
+    </set>
+    where recID = #{recID,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yuanrong.admin.bean.account.IP" >
+    update IP
+    set iPName = #{iPName,jdbcType=VARCHAR},
+      iPImageHeadUrl = #{iPImageHeadUrl,jdbcType=VARCHAR},
+      iPFans = #{iPFans,jdbcType=INTEGER},
+      iPIntroduction = #{iPIntroduction,jdbcType=VARCHAR},
+      iPWholeNetworkPrice = #{iPWholeNetworkPrice,jdbcType=DECIMAL},
+      createdTime = #{createdTime,jdbcType=TIMESTAMP},
+      registeredUserInfoID = #{registeredUserInfoID,jdbcType=INTEGER},
+      invalidTime = #{invalidTime,jdbcType=TIMESTAMP},
+      categoryID = #{categoryID,jdbcType=INTEGER},
+      isOriginal = #{isOriginal,jdbcType=INTEGER}
+    where recID = #{recID,jdbcType=INTEGER}
+  </update>
+</mapper>

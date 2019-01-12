@@ -1,0 +1,193 @@
+
+/* 
+**弹框
+**
+*/
+.common-pop-wrap{
+    display: none;
+    transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+}
+.common-pop-wrap .common-pop-opa{
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 899;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    background-color: #000;
+    transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -webkit-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+}
+.common-pop-wrap .common-pop-con-wrap{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 412px;
+    height: 380px;
+    margin-left: -206px;
+    margin-top: -190px;
+    background: #fff;
+    border-radius: 4px;
+    z-index: 900;
+}
+
+.common-pop-wrap .common-pop-tit-wrap{
+    position: relative;
+}
+.common-pop-wrap .common-pop-tit-wrap div{
+    text-align: center;
+    height: 68px;
+    padding-top: 20px;
+    border-radius: 4px 4px 0 0;
+    color: #5a5a5a;
+    font-size: 24px;
+    font-weight: 550;
+}
+
+.common-pop-wrap .common-pop-tit-wrap span{
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: inline-block;
+    line-height: 50px;
+    padding: 0 20px;
+    cursor: pointer;
+    z-index: 100;
+}
+.common-pop-wrap .common-pop-con-wrap .common-input-wrap{
+    /*padding-top: 24px;*/
+    padding-bottom: 25px;
+    text-align: center;
+}
+.common-pop-wrap .common-pop-con-wrap .common-input-wrap input{
+    border: 1px solid #e4e4e4;
+    border-radius: 4px;
+    background: #fff;
+    text-align: left;
+    height: 42px;
+    line-height: 42px;
+    padding-left: 10px;
+}
+.common-pop-wrap .common-pop-con-wrap .common-input-wrap input.tel{
+    width: 340px;
+    height: 50px;
+
+}
+.common-pop-wrap .common-pop-con-wrap .common-input-wrap input.code{
+    float: left;
+    width: 205px;
+    height: 50px;
+}
+.common-pop-wrap .common-pop-con-wrap .common-input-wrap input.code-btn{
+    float: left;
+    width: 120px;
+    border: 1px solid #e4e4e4;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 4px;
+    margin-left: 15px;
+    cursor: pointer;
+    color: #4f99e8;
+    background: #edf1f7;
+    text-align: center;
+    padding: 0;
+}
+.common-pop-wrap .common-pop-con-wrap .common-code-wrap{
+    padding-left: 40px;
+}
+.common-pop-wrap .common-pop-con-wrap .common-pop-btn{
+    /*width: 220px;*/
+    /*margin: 0 auto 24px;*/
+    /*line-height: 40px;*/
+    width: 340px;
+    height: 50px;
+    line-height: 50px;
+    margin: 0 auto;
+    border-radius: 4px;
+    background: #4f99e8;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+/* 失效遮罩层 */
+.invalid-wrap{
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    /* display: inline-block; */
+    /* opacity: 0.9;
+    filter: alpha(opacity=90); */
+    background-color: #f8f9fb;
+    background: rgba(248, 249, 251, .6);
+}
+/* .invalid-wrap{
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    background-color: #f8f9fb;
+    background: rgba(248, 249, 251, .6);
+    width: 100%;
+    height: 100%;
+} */
+.invalid-tit-wrap,
+.side-invalid-tit-wrap{
+    display: inline-block;
+    text-align: center;
+    border-radius: 2px;
+    color: #64676a;
+    background: #dfe0e1;
+    font-size: 12px;
+}
+
+.article-sign{
+    display: none;
+}
+/* 无效字体颜色 */
+
+.cart-side-panel-wrap .cart-side-content-wrap>ul>li.valid-color{
+    padding-left: 22px;
+}
+.valid-color .side-account-icon{
+    left: 60px;
+}
+.cart-side-panel-wrap .cart-side-content-wrap>ul>li.valid-color,
+.valid-color{
+    background-color: #f8f9fb;
+}
+.valid-color img{
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+.valid-color a,
+.valid-color .li-tit-wrap,
+.valid-color .li-intro,
+.valid-color .color-blue,
+.valid-color .li-account,
+.valid-color .li-article-author,
+.valid-color .li-article-tit-wrap,
+.valid-color .side-tit-wrap>p,
+.valid-color .side-price-wrap{
+    color: #d3d5d9;
+}
+.list-con-main-wrap .valid-color .li-name-wrap>p:hover,
+.list-con-main-wrap>ul.valid-color:hover .li-name-wrap>p{
+    opacity: 1;
+    filter: alpha(opacity=100);
+    color: #d3d5d9;
+    pointer-events: none;
+}
+.pay-num-style{
+    font-weight: 600;
+    font-size: 16px;
+}

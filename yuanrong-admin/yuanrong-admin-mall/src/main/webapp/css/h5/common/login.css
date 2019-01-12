@@ -1,0 +1,103 @@
+.login-wrap {
+	width: 82%;
+	margin: 0 auto;
+}
+.tel {
+	margin-top: 15%;
+	/*border-radius: .09rem;
+    overflow: hidden;*/
+}
+.tel input {
+	width: 100%;
+	height: 1.21rem;
+    background-color: #fff;
+    box-shadow: 0 0 10px #ccc;
+    font-size: .37rem;
+    color: #B2B3B6;
+    padding-left: 4%;
+    border-radius: .09rem;
+}
+/*图片验证码*/
+.img-validate {
+	width: 100%;
+	margin-top: 8%;
+}
+.img-validate input {
+	width: 60%;
+	height: 1.21rem;
+    background-color: #fff;
+    box-shadow: 0 0 10px #ccc;
+    font-size: .37rem;
+    color: #B2B3B6;
+    padding-left: 4%;
+    border-radius: .09rem;
+}
+.img-validate .val-img {
+	width: 35%;
+	height: 1.21rem; 
+	background: #ccc;
+	box-shadow: 0 0 10px #ccc;
+	float: right;
+	border-radius: .09rem;
+	overflow: hidden;
+}
+.val-img img {
+	width: 100%;
+	height: 1.21rem;
+}
+/*手机验证码*/
+.txt-validate {
+	width: 100%;
+	margin-top: 8%;
+}
+.txt-validate input {
+	width: 60%;
+	height: 1.21rem;
+    background-color: #fff;
+    box-shadow: 0 0 10px #ccc;
+    font-size: .37rem;
+    color: #B2B3B6;
+    padding-left: 4%;
+    border-radius: .09rem;
+}
+.txt-validate .get-txt {
+	width: 35%;
+	height: 1.21rem; 
+	background: #edf1f7;
+	color: #4074d4;
+	box-shadow: 0 0 10px #ccc;
+	float: right;
+	border-radius: .09rem;
+	padding-left: 0;
+	text-align: center;
+	line-height: 1.21rem;
+}
+.btn {
+	margin-top: 10%;
+}
+.btn input {
+	width: 100%;
+	height: 1.21rem;
+    background-color: #4393EA;
+    box-shadow: 0 0 10px #ccc;
+    font-size: .37rem;
+    color: #fff;
+    border-radius: .09rem;
+}
+.success {
+	width: 35%;
+	height: 1.21rem;
+	text-align: center;
+	line-height: 1.21rem;
+	margin-top: 19%;
+	background-color: #ccc;
+	font-size: .37rem;
+	color: #fff;
+	margin: 20% auto 10%;
+	border-radius: .09rem;
+	display: none;
+}
+.bot {
+	position: absolute;
+    bottom: 0;
+}

@@ -1,0 +1,656 @@
+/* css reset start*/
+/* 图片自适应 */
+img {
+    vertical-align: middle;
+    border: none;
+}
+/*清除默认样式*/
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, iframe, fieldset, legend, input, button, textarea, p, blockquote, th, td, a, i, del, span, figure, section, header, footer, nav{
+    margin: 0;
+    padding: 0;
+    font-family: "Microsoft YaHei";
+    word-break: break-all;
+    box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+/* 设置HTML5元素为块 */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section{
+    display: block;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: inherit;
+}
+fieldset{
+    border: 0 none;
+}
+address, caption, cite, code, dfn, em, strong, th, var, i {
+    font-style: normal;
+    font-weight: normal;
+}
+li {
+    list-style: none outside none;
+}
+sup {
+    /*vertical-align: text-top;*/
+}
+sub {
+    vertical-align: text-bottom;
+}
+pre, code, kbd, samp, tt {
+    font-family: monospace;
+    line-height: 100%;
+}
+input, textarea, button {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-size: 100%;
+    border: none; 
+    border-radius: 0;
+    background: none;
+    outline: none;
+    resize: none;
+}
+/*textarea::-webkit-scrollbar {width: 0;}*/   
+textarea{word-break: break-all;}
+a{
+    color: #333333;
+}
+a, a:visited{
+    text-decoration: none;
+    cursor:pointer;
+    outline: none;
+}
+a:hover, a:focus {
+    text-decoration: none;
+}
+a:link {
+    text-decoration: none;
+}       /* 未访问的链接 */
+a:visited {
+    text-decoration: none;
+}   /* 已访问的链接 */
+a:hover {
+    text-decoration: none;
+}   /* 鼠标移动到链接上 */
+a:active {
+    text-decoration: none;
+}   /* 选定的链接 */
+q:before, q:after {
+    content: "";
+}
+/*设置body样式*/
+html,body{
+    background: #eceff4;
+    width: 100%;
+}
+body {
+    font-family: "Microsoft YaHei";
+    color: #333333;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: none;
+}
+/* 清除浮动 */
+.fixedClear:after{
+    content: '';
+    display: block;
+    height: 0;
+    overflow: hidden;
+    clear: both;
+}
+.fixedClear{
+    zoom: 1;
+}
+/*css reset end*/
+
+
+
+/*头部*/
+header {
+	position: relative;
+	padding: 0.4rem;
+	color: #fff;
+}
+.banner {
+	position: relative;
+	width: 100%;
+	/*height: 16.10rem;*/
+	background: url('../../bgImg/h5/banner.jpg') left no-repeat;
+	background-size: 100% 100%;
+	-webkit-background-size: 100% 100%;  
+	background-color: #ccc;
+}
+.head-l {
+	float: left;
+	font-size: 0.315rem;
+
+}
+.head-l img {
+	width: 2.026rem;
+	height: 0.733rem;
+}
+.head-l-p {
+	display: inline-block;
+	vertical-align: top;
+	font-size: 0.26rem;
+}
+.head-r {
+	/*width: 2.933rem;*/
+	float: right;
+	font-size: 0.24rem;
+	border-radius: 0.03rem;
+	overflow: hidden;
+}
+.head-r p {
+	float: right;
+	padding: 2px 4px;
+	background: rgba(0,0,0,0.3);
+}
+.head-r span {
+	float: right;
+	width: 1px;
+	height: 0.35rem;
+    background: #fff;
+    opacity: .3;
+    filter: Alpha(opacity=30);  
+    vertical-align: middle;
+}
+/*头部-中间*/
+.banner h1 {
+	font-size: 0.693rem;
+	text-align: center;
+	font-weight: normal;
+	color: #fff;
+	margin-top: 1.86rem;
+	margin-bottom: 0.16rem;
+}
+.row-line {
+	display: block;
+	width: 4rem;
+	height: .02rem;
+	background: #fff;
+	margin: 0 auto;
+	opacity: 0.3;
+}
+.yuanrong-bg {
+	width: 9rem;
+    height: 8rem;
+	background: url('../../bgImg/h5/yr_bg.png') center no-repeat;
+	background-size: cover;
+	-webkit-background-size: cover;  
+	margin: 0 auto;
+}
+/*头部-底*/
+.bottom dl {
+	width: 32%;
+	/*height: 1.946rem;*/
+	background: #3976E2;
+	color: #fff;
+	text-align: center;
+	float: left;
+	margin-left: 1%;
+	border: 1px solid #3B7CE4;
+}
+.bottom dl dt {
+	margin-left: 25%;
+	font-size: 0.3rem;
+	padding: 2% 0;
+}
+.banner .bottom dl dt img {
+	display: block;
+	width: 0.773rem;
+	height: 0.773rem;
+	float: left;
+	padding-top: 2%;
+}
+.banner .bottom dl dt div {
+	float: left;
+}
+.bottom dl dd {
+	width: 100%;
+	background: #3B7DE5;
+	padding: 3%;
+	opacity: 0.6;
+}
+.bottom-wrap {
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+}
+/*下箭头动画*/
+.arr-img-wrap{
+	text-align: center;
+	padding: 20px 0;
+}
+.arr-img-wrap img{
+    animation: arrMove .8s infinite alternate;
+    -webkit-animation: arrMove .8s infinite alternate;
+}
+@keyframes arrMove {
+    0% {
+        opacity: 0.1;
+        transform: translateY(1px);
+        -webkit-transform: translateY(1px);
+    }
+    25% {
+        opacity: .25;
+        transform: translateY(2px);
+        -webkit-transform: translateY(2px);
+    }
+    50% {
+        opacity: .5;
+        transform: translateY(3px);
+        -webkit-transform: translateY(3px);
+    }
+    75% {
+        opacity: .75;
+        transform: translateY(4px);
+        -webkit-transform: translateY(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(5px);
+        -webkit-transform: translateY(5px);
+    }
+}
+@-webkit-keyframes arrMove {
+    0% {
+        opacity: 0.1;
+        transform: translateY(1px);
+        -webkit-transform: translateY(1px);
+    }
+    25% {
+        opacity: .25;
+        transform: translateY(2px);
+        -webkit-transform: translateY(2px);
+    }
+    50% {
+        opacity: .5;
+        transform: translateY(3px);
+        -webkit-transform: translateY(3px);
+    }
+    75% {
+        opacity: .75;
+        transform: translateY(4px);
+        -webkit-transform: translateY(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(5px);
+        -webkit-transform: translateY(5px);
+    }
+}
+
+/*全链条内容交易服务start*/
+.trade-wrap {
+	background-color: #F4F7FC;
+
+}
+/*上*/
+.con-trade {
+	text-align: center;
+	padding: .2rem 0 .6rem;
+}
+.con-trade h1 {
+	font-size: 0.5rem;
+	margin-top: 0.8rem;
+	font-weight: normal;
+}
+.con-trade span {
+	display: block;
+	width: 1.3rem;
+	height: 0.04rem;
+	background: #4C8DF3;
+	margin: 0.266rem auto;
+}
+.con-trade p {
+	margin: 0 1.17rem;
+	font-size: 0.293rem;
+}
+/*下*/
+.trade-wrap div:nth-child(2) {
+	background: url(../../bgImg/h5/trade_bg1.jpg);
+	background-size: 100% 100%;
+	-webkit-background-size: 100% 100%; 
+}
+.trade-wrap div:nth-child(3) {
+	background: url(../../bgImg/h5/trade_bg2.jpg);
+	background-size: 100% 100%;
+	-webkit-background-size: 100% 100%; 
+}
+.trade-wrap div:nth-child(4) {
+	background: url(../../bgImg/h5/trade_bg3.jpg);
+	background-size: 100% 100%;
+	-webkit-background-size: 100% 100%; 
+}
+.trade-more {
+	margin: 0 auto 0.4rem;
+	width: 6.52rem;
+	height: 7.04rem;
+	background: #ccc;
+	text-align: center;
+	border-radius: 0.09rem;
+	box-shadow: 0 0 17px #ccc ;
+	color: #fff;
+}
+.trade-more>img {
+	display: inline-block;
+	width: 1.386rem;
+	height: 1.462rem;
+	margin-top: 1.2rem;
+}
+.trade-more h2 {
+	font-size: 0.453rem;
+	margin-bottom: 0.226rem;
+	font-weight: normal;
+}
+.trade-more span {
+	display: block;
+	margin: 0.21rem auto 0.21rem;
+	width: 0.546rem;
+	height: 0.04rem;
+	background: #fff;
+}
+.trade-more p {
+	font-size: 0.373rem;
+	margin-top: 0.426rem;
+}
+.trade-more p img {
+	display: inline-block;
+	padding-right: 0.08rem;
+}
+.trade-more .trade-more-ip {
+	text-align: left;
+	padding-left: 36%;
+}
+/*全链条内容交易服务end
+/*权威价值评估体系start*/
+/*上*/
+.value-wrap {
+	background: #fff;
+	padding-bottom: 1%;
+}
+.con-value {
+	text-align: center;
+	padding: .2rem 0 .8rem;
+	background: url(../../bgImg/h5/un_logo.png) center center no-repeat;
+	background-size: cover;
+	-webkit-background-size: cover;  
+}
+.con-value h1 {
+	font-size: 0.5rem;
+	margin-top: 0.8rem;
+	font-weight: normal;
+}
+.con-value>span {
+	display: block;
+	width: 1.3rem;
+	height: 0.04rem;
+	background: #4C8DF3;
+	margin: 0.266rem auto;
+}
+.con-value p {
+	margin: 0 1.17rem;
+	font-size: 0.293rem;
+}
+.con-value p span {
+	color: #5693F4;
+}
+/*下*/
+.value-more {
+	text-align: center;
+}
+.value-more>img {
+	width: 10%; 
+}
+.value-more h2 {
+	font-size: 0.4rem;
+	margin-top: 0.2rem;
+	margin-bottom: 0.29rem;
+	font-weight: normal;
+}
+.value-more-con {
+	width: 6.533rem;
+	height: 4.093rem;
+	margin: 0.36rem auto 0.56rem;
+	background: url(../../bgImg/h5/value-bg1.png);
+	background-size: 100% 100%;
+	-webkit-background-size: 100% 100%;  
+	text-align: left;
+	padding-top: 0.6rem;
+}
+.value-more-m {
+	text-align: center;
+	margin: 0.36rem auto 0.56rem;
+	background: url(../../bgImg/h5/value-bg2.png);
+	background-size: 100% 100%;
+	-webkit-background-size: 100% 100%; 
+}
+.value-more-b {
+	margin: 0.36rem auto 0.56rem;
+	background: url(../../bgImg/h5/value-bg3.png);
+	background-size: 100% 100%;
+	-webkit-background-size: 100% 100%; 
+}
+.value-more-con p {
+	font-size: 0.32rem;
+	margin: 0.29rem auto 0.29rem;
+	width: 47%;
+	color: #fff;
+}
+.value-more-con p>img{
+    padding-right: 0.2rem;
+    width: 7%;
+}
+/*权威价值评估体系end*/
+/*海量优质资源按需匹配start*/
+.high-quality {
+	height: 10rem;
+	text-align: center;
+	padding: .2rem 0 .6rem;
+	background: url(../../bgImg/h5/high_quality.png);
+	background-size: 100% 100%;
+	/*margin-top: 0.8rem;*/
+	color: #fff;
+}
+.high-quality h1 {
+	font-size: 0.5rem;
+	margin-top: 0.8rem;
+	font-weight: normal;
+}
+.high-quality>span {
+	display: block;
+	width: 1.3rem;
+	height: 0.04rem;
+	background: #4C8DF3;
+	margin: 0.266rem auto;
+}
+.high-quality p {
+	margin: 0 1.17rem;
+	font-size: 0.293rem;
+	color: #ccc;
+}
+.high-con dl {
+	float: left;
+    width: 50%;
+    margin-top: 20%;
+}
+.high-con dl span {
+	display: block;
+	width: 0.8rem;
+	height: 0.04rem;
+	background: #9DA2AB;
+	margin: 0.1rem auto;
+}
+.high-con dl dt {
+	font-size: 0.933rem;
+	color: #00E3AA;
+	font-weight: bold;
+}
+.high-con dl dt i{
+	color: #498EF1;
+	font-weight: bold;
+}
+.high-con dl dd {
+	font-size: 0.4rem;
+	color: #fff;
+}
+/*海量优质资源按需匹配end*/
+/*在这里，发现你的价值start*/
+.here {
+	width: 100%;
+	height: 10.25rem;
+	background: url(../../bgImg/h5/here_bg.png);
+	background-size: 100% 100%;
+	text-align: center;
+}
+.here-value {
+	padding-top: 1.8rem;
+}
+.here-value h1 {
+	font-size: 0.5rem;
+	font-weight: normal;
+}
+.here-value span {
+	display: block;
+	width: 1.3rem;
+	height: 0.04rem;
+	background: #4C8DF3;
+	margin: 0.266rem auto;
+}
+.here-jion {
+	margin-top: 1.2rem;
+}
+.here-jion img {
+	display: inline-block;
+	width: 1.186rem;
+	height: 1.28rem;
+	margin: 1rem 0 0.1rem;
+}
+.here-jion p {
+	font-size: 0.42rem;
+	color: #fff;
+}
+.here-jion-l {
+	float: left;
+	width: 39%;
+	height: 4.823rem;
+	background: url(../../bgImg/h5/join_bg.png);
+	background-size: 100% 100%;
+	text-align: center;
+	border-radius: 0.09rem;
+	box-shadow: 0 0 15px #ccc;
+	margin-left: 9.3%;
+	position: relative;
+}
+
+.here-jion-l span,.here-jion-r span {
+	display: block;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: .74rem;
+    background: #316BCD;
+    font-size: 0.36rem;
+    color: #fff;
+    line-height: .74rem;
+    border-radius: 0.09rem;
+}
+.here-jion-r {
+	float: right;
+	width: 39%;
+	height: 4.823rem;
+	background: url(../../bgImg/h5/join_bg.png);
+	background-size: 100% 100%;
+	text-align: center;
+	border-radius: 0.09rem;
+	box-shadow: 0 0 15px #ccc;
+	margin-right: 9.3%;
+	position: relative;
+}
+/*在这里，发现你的价值end*/
+/*合作伙伴start*/
+.partner {
+	width: 100%;
+	height: 12.89rem;
+	background: #F4F7FC;
+	text-align: center;
+	padding-top: 0.8rem;
+}
+.partner-tit h1 {
+	font-size: 0.5rem;
+	font-weight: normal;
+}
+.partner-tit span {
+	display: block;
+	width: 1.3rem;
+	height: 0.04rem;
+	background: #4C8DF3;
+	margin: 0.266rem auto;
+}
+.nice-partners {
+	margin-top: .8rem;
+}
+.nice-partners ul li {
+	width: 2.733rem;
+	height: 1.333rem;
+	background: #fff;
+	float: left;
+    margin-left: 4.5%;
+    margin-bottom: 3.06%;
+    border-radius: 0.09rem;
+    box-shadow: 0 0 15px #ccc;
+}
+.nice-partners ul li img {
+	width: 100%;
+    height: 100%;
+} 
+/*合作伙伴end*/
+/*底部start*/
+.bot {
+	width: 100%;
+	/*height: 3.2rem;*/
+	background: #373D41;
+}
+.bot-top {
+	height: 1.73rem;
+	text-align: center;
+	padding-top: 3%;
+
+}
+.bot-top>img {
+	width: 21%;
+}
+.bot-top span>img{
+	height: 60%;
+}
+
+
+.bot-foot {
+	width: 100%;
+	border-top: .01rem solid #3F4549;
+	text-align: center;
+	padding: 3%;
+}
+.bot-foot p:nth-child(1) {
+	font-size: .24rem;
+	color: #8D8E8F;
+}
+.bot-foot p:nth-child(2) {
+	font-size: .21rem;
+	color: #6E7275;
+}
+/*底部end*/
+
+
+a[title= '站长统计'] {
+    display: none;
+}
+.dis{
+    display: none;
+}

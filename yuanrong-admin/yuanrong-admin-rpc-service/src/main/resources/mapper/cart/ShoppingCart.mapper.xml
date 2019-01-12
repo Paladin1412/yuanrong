@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanrong.admin.dao.cart.ShoppingCartDaoI">
+    <insert id="save" parameterType="com.yuanrong.admin.bean.cart.ShoppingCart" useGeneratedKeys="true" keyProperty="data.shoppingCartId">
+        INSERT INTO `shoppingCart`(`cartTypeIndex`, `productId`, `num`, `registeredUserInfoId`, `createdTime`, `statusIndex`)
+        VALUES (#{data.cartTypeIndex}, #{data.productId}, #{data.num}, #{data.registeredUserInfoId}, now(), 1)
+    </insert>
+
+    <select id="listAuthorShoppingCart" resultType="com.yuanrong.admin.result.ShoppingCartResult" parameterType="com.yuanrong.admin.seach.ShoppingCartSearch">
+        SELECT sc.* , ya.authorImg as 'yrAuthor.authorImg' , ya.authorNickname as 'yrAuthor.authorNickname',
+        ya.authorStatus as 'yrAuthor.authorStatus' , ycf.contentForm as 'yrAuthor.contentForm', yrg.category as 'yrAuthor.category' ,
+        ya.Introduction as 'yrAuthor.Introduction' , ya.createdPrice as 'yrAuthor.createdPrice'
+        from  yrAuthor ya , shoppingCart sc left JOIN
+        (
+            SELECT yac.yrAuthorId , GROUP_CONCAT(di.`name` SEPARATOR '、') as 'category'  from DictInfo di ,yrAuthorArticleCategory yac
+            where di.id = yac.categoryId
+            GROUP BY yac.yrAuthorId
+        ) yrg on yrg.yrAuthorId = sc.productId
+        left join (
+            SELECT ycr.userId , GROUP_CONCAT(cf.contentFormName SEPARATOR '、') as 'contentForm' from ContentForm cf ,yrAuthorContentFormRelation ycr
+            where cf.Id = ycr.contentformId
+            GROUP BY ycr.userId
+        ) ycf on ycf.userId = sc.productId
+        where sc.cartTypeIndex = 1 and sc.productId = ya.recId
+        and sc.registeredUserInfoId = #{data.registeredUserInfoId}
+        <if test="data.shoppingCartIds !=null and data.shoppingCartIds.length > 0">
+            and sc.shoppingCartId in
+            <foreach collection="data.shoppingCartIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by sc.shoppingCartId desc
+    </select>
+
+    <select id="listProductShoppingCart" resultType="com.yuanrong.admin.result.ShoppingCartResult" parameterType="com.yuanrong.admin.seach.ShoppingCartSearch">
+       SELECT sc.* , yp.coverLocalUrl as 'yrProduction.coverLocalUrl', yp.title as 'yrProduction.title' ,
+        yp.publishStatusIndex  as 'yrProduction.publishStatusIndex',
+        yp.yrProductionStatusIndex as 'yrProduction.yrProductionStatusIndex',
+        yp.wordNum as 'yrProduction.wordNum', cf.contentFormName as 'yrProduction.contentForm.contentFormName',
+        ya.authorNickname  as 'yrProduction.yrAuthor.authorNickname', yp.productQuotedPrice  as 'yrProduction.productQuotedPrice',
+        di.name as 'yrProduction.yrCategory.name'
+        from shoppingCart sc  , yrAuthor ya ,   yrProduction yp
+        left join ContentForm cf on cf.Id = yp.contentFormId
+        left join DictInfo di on di.id = yp.yrCategoryId
+        where sc.cartTypeIndex = 2 and yp.yrAuthorId = ya.recId and yp.recId = sc.productId
+        and sc.registeredUserInfoId = #{data.registeredUserInfoId}
+        <if test="data.publishStatus != null and data.publishStatus == 1 ">
+            and yp.publishStatusIndex = 1
+        </if>
+
+        <if test="data.publishStatus != null and data.publishStatus == 0 ">
+            and yp.publishStatusIndex = 0
+        </if>
+        <if test="data.shoppingCartIds !=null and data.shoppingCartIds.length > 0">
+            and sc.shoppingCartId in
+            <foreach collection="data.shoppingCartIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by sc.shoppingCartId desc
+    </select>
+
+    <select id="listAccountShoppingCart" resultType="com.yuanrong.admin.result.ShoppingCartResult" parameterType="com.yuanrong.admin.seach.ShoppingCartSearch">
+         SELECT a.accountOnlyId ,
+         a.fans as 'platformIPAccount.fans' , a.headImageUrlLocal as 'platformIPAccount.headImageUrlLocal',
+        a.icoUrl as 'platformIPAccount.shortVideoPlatformInfo.icoUrl' , a.`name` as 'platformIPAccount.name',
+        a.PlatformName as 'platformIPAccount.shortVideoPlatformInfo.platformname', a.platformID as 'platformIPAccount.platformID' ,
+        a.indexUrl as 'platformIPAccount.indexUrl' , a.avgCommontCount as 'platformIPAccount.avgCommontCount',a.avgForwardCount as 'platformIPAccount.avgForwardCount',
+        a.avgLikeCount as 'platformIPAccount.avgLikeCount', a.avgPlayCount as 'platformIPAccount.avgPlayCount' ,
+        a.avgReadCount as 'platformIPAccount.avgReadCount',a.invalidTime as 'platformIPAccount.invalidTime', a.introduction as 'platformIPAccount.introduction',
+        a.accountID as 'platformIPAccount.accountID', a.shelvesNum, a.shoppingCartId , a.cartTypeIndex ,a.productId , a.num , a.registeredUserInfoId ,
+         GROUP_CONCAT(CONCAT(a.priceName,'_-_' , a.price ,'_-_' ,ifnull(a.isOriginal , 0 ),'_-_' , a.id,'_-_' , a.platformPriceNameID,'_-_' , a.`offerName`) SEPARATOR '-_-') priceInfo
+        from (
+          select sc.* , pi.accountOnlyId , max(pi.fans) as 'fans' , pi.headImageUrlLocal  , svp.icoUrl  , pi.`name` , pi.accountID ,svp.PlatformName,
+        pi.indexUrl, pi.avgCommontCount ,pi.avgForwardCount ,pi.avgLikeCount , pi.avgPlayCount , pi.avgReadCount,pi.invalidTime ,
+        pi.introduction, pi.platformID ,
+          count(if(pi.accountStatus=1 ,true , null) ) as 'shelvesNum',  ppn.priceName,  min(pip.price) as price , ifnull(pip.isOriginal , 0 ) as isOriginal , pip.id ,  pip.platformPriceNameID, di.`name` as 'offerName'
+            from PlatformIPAccountPrice pip , PlatformPriceName ppn , DictInfo di , PlatformIPAccount pi ,  ShortVideoPlatformInfo svp , shoppingCart sc
+            where pip.platformPriceNameID =  ppn.id and di.id = pip.source and pi.id = pip.iPAcctountID and pip.price > 0 and svp.RecID = pi.platformID
+            and pi.accountOnlyId != '' and sc.productId = pi.accountOnlyId and sc.cartTypeIndex = 3
+        <!--只获取圆融价格-->
+        and pip.source = 13
+        and sc.registeredUserInfoId =  #{data.registeredUserInfoId}
+            <if test="data.platformIndex != null">
+                <if test="data.platformIndex ==1 ">
+                    and pi.platformID = 12
+                </if>
+                <if test="data.platformIndex ==2 ">
+                    and pi.platformID = 13
+                </if>
+                <if test="data.platformIndex ==3 ">
+                    and svp.StatusValue = 1
+                </if>
+            </if>
+
+            <if test="data.shoppingCartIds !=null and data.shoppingCartIds.length > 0">
+                and sc.shoppingCartId in
+                <foreach collection="data.shoppingCartIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            GROUP BY pi.accountOnlyId , pip.source , pip.platformPriceNameID
+        )  a
+         GROUP BY a.accountOnlyId
+      order by a.shoppingCartId desc
+    </select>
+
+ <select id="getById" parameterType="java.lang.Integer" resultType="com.yuanrong.admin.bean.cart.ShoppingCart">
+        select * from shoppingCart where shoppingCartId = #{id}
+    </select>
+
+    <select id="isExistProduct" parameterType="com.yuanrong.admin.bean.cart.ShoppingCart" resultType="com.yuanrong.admin.bean.cart.ShoppingCart">
+        select * from shoppingCart where productId = #{data.productId} and cartTypeIndex = #{data.cartTypeIndex} and registeredUserInfoId = #{data.registeredUserInfoId}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE from shoppingCart where shoppingCartId = #{id}
+    </delete>
+
+    <delete id="deleteFailureYrAuthor" parameterType="com.yuanrong.admin.seach.ShoppingCartSearch">
+        delete sc from shoppingCart sc , yrAuthor ya where sc.cartTypeIndex = 1
+        and ya.recId = sc.productId
+        and ya.authorStatus != 2
+        and sc.registeredUserInfoId = #{data.registeredUserInfoId}
+    </delete>
+
+    <delete id="deleteFailureProduction" parameterType="com.yuanrong.admin.seach.ShoppingCartSearch">
+        delete sc from shoppingCart sc , yrProduction yp where sc.cartTypeIndex = 2
+        and yp.recId = sc.productId
+        and yp.yrProductionStatusIndex != 2
+        and sc.registeredUserInfoId = #{data.registeredUserInfoId}
+    </delete>
+
+    <!--提交订单 - 查询无效商品-->
+    <select id="countInvalidProduction" resultType="java.lang.Integer"  parameterType="com.yuanrong.admin.seach.ShoppingCartSearch">
+      SELECT count(*) from shoppingCart sc , yrProduction yp where sc.cartTypeIndex = 2
+        and yp.recId = sc.productId
+        and yp.yrProductionStatusIndex != 2
+        and sc.registeredUserInfoId = #{data.registeredUserInfoId}
+        and sc.shoppingCartId in
+        <foreach collection="data.shoppingCartIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="getProductByShppingCartIdssAndUserId" resultType="com.yuanrong.admin.result.ShoppingCartResult" parameterType="com.yuanrong.admin.seach.ShoppingCartSearch">
+        SELECT sc.* , yp.coverLocalUrl as 'yrProduction.coverLocalUrl', yp.title as 'yrProduction.title' ,
+        yp.publishStatusIndex  as 'yrProduction.publishStatusIndex',
+        yp.yrProductionStatusIndex as 'yrProduction.yrProductionStatusIndex',
+        ya.authorNickname  as 'yrProduction.yrAuthor.authorNickname', yp.productQuotedPrice  as 'yrProduction.productQuotedPrice',
+        ya.registeredUserInfoID as 'yrProduction.registeredUserInfoId' ,
+        yp.yrProductionStatusIndex as 'yrProduction.yrProductionStatusIndex',
+        yp.recId as 'yrProduction.recId',
+        yp.sellPrice as 'yrProduction.sellPrice'
+        from shoppingCart sc , yrProduction yp , yrAuthor ya
+        where sc.cartTypeIndex = 2 and yp.yrAuthorId = ya.recId and yp.recId = sc.productId
+        and sc.registeredUserInfoId = #{data.registeredUserInfoId}
+        and sc.shoppingCartId in
+        <foreach collection="data.shoppingCartIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteFailureAccount" parameterType="com.yuanrong.admin.seach.ShoppingCartSearch">
+      delete sc from shoppingCart sc where sc.productId in (
+		SELECT a.accountOnlyId from (
+			SELECT  pip.accountOnlyId from PlatformIPAccount pip , shoppingCart sc
+      where pip.accountOnlyId = sc.productId and sc.cartTypeIndex = 3 and sc.registeredUserInfoId = #{data.registeredUserInfoId}
+			GROUP BY pip.accountOnlyId HAVING count(if(pip.accountStatus =1,true,null)) = 0
+		)a
+      )
+    </delete>
+
+    <delete id="batchDeleteByIds">
+        DELETE from shoppingCart where registeredUserInfoId = #{registeredUserInfoId}
+        and shoppingCartId in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+              #{id}
+         </foreach>
+
+    </delete>
+
+    <select id="shoppingCartNum" resultType="java.util.Map" parameterType="java.lang.Integer">
+        SELECT cartTypeIndex , count(*) num FROM shoppingCart
+        where registeredUserInfoId = #{registeredUserInfoId}
+        GROUP BY cartTypeIndex
+    </select>
+
+    <delete id="batchDelete">
+        DELETE from shoppingCart where registeredUserInfoId = #{registeredUserInfoId} and shoppingCartId in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="removeAllByRegisterUserId">
+        DELETE from shoppingCart where registeredUserInfoId = #{registeredUserInfoId}
+    </delete>
+
+    <select id="getAccountTypeCount" resultType="java.util.Map">
+        SELECT svp.PlatformName , ac.shortVideoPlatformInfoId , count(*) as 'num' FROM shoppingCart sc, account ac  ,ShortVideoPlatformInfo svp
+        where ac.accountId = sc.productId and  sc.cartTypeIndex = 3 and svp.RecID = ac.shortVideoPlatformInfoId
+        and sc.registeredUserInfoId = #{registeredUserInfoId}
+        GROUP BY ac.shortVideoPlatformInfoId
+    </select>
+
+    <select id="cartNumByType" resultType="java.lang.Integer" parameterType="com.yuanrong.admin.bean.cart.ShoppingCart">
+        SELECT COUNT(*) from shoppingCart where cartTypeIndex = #{data.cartTypeIndex} and registeredUserInfoId = #{data.registeredUserInfoId}
+    </select>
+</mapper>

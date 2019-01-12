@@ -1,0 +1,194 @@
+<!-- <#include "../commonFragments/basic/meta.ftl"/> -->
+<title>确认订单_圆融内容银行交易服务中心</title>
+<meta http-equiv="keywords" content='创作者文章详情,圆融,内容银行,内容创作者,内容创业' />
+<meta http-equiv="description" content="★创作者文章详情☆圆融,内容银行,内容创作者,内容创业,圆融由中国传媒大学,内容银行重点实验室成立,圆融内容银行交易服务中心:短视频广告营销(秒拍，美拍，快手，抖音)，微信变现，微博赚钱,类似：微播易,新榜,Robin8,短视频营销,内容生产创作,微信营销,微博营销,自媒体变现,内容营销,KOL自媒体,内容创业），目的是构建内容生产、传播、变现、资产化、证券化的一站式交易平台，面向内容创作者、广告主、代理公司、投融资机构等产业各方，提供内容价值评估、需求对接、资产孵化、交易保障、版权保护等服务，打造内容产业新生态。" />
+<!-- <#include "../commonFragments/basic/css_link.ftl"/> -->
+<!--<link rel="stylesheet" href="${request.contextPath}/css/pay/order_confirm.css?${mdc_version}">-->
+<style>
+    *{
+        padding: 0; margin: 0; list-style: none;
+    }
+    #content{
+        width: 1170px;
+        margin: 0 auto;
+    }
+    .order-wrap{
+        width: 1140px;
+        margin: 0 auto;
+        padding-top: 20px;
+    }
+    .order-wrap table{
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+        border: none;
+    }
+    .order-wrap table thead{
+        background: #F4F6F9;
+        line-height: 40px;
+        color: #303132;
+    }
+    .order-wrap .cell{
+        padding: 0 4px;  
+    }
+    .order-wrap table tbody{
+        color: #64676A;
+    }
+    .order-wrap table tbody tr{
+    }
+    .order-wrap table tbody tr td{
+        border-bottom: 1px solid #EFF1F3;
+        padding: 20px 0;
+    }
+    .order-detail-lt-wrap{
+        display: inline-block;
+        padding-right: 10px;
+    }
+    .order-detail-rt-wrap{
+        display: inline-block;
+        border-left: 1px solid #EAEDF0;
+        padding-left: 10px;
+        color: #82868A;
+    }
+    .order-detail-lt-wrap p,
+    .order-detail-rt-wrap p{
+        line-height: 20px;
+    }
+    .order-img-wrap{
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #eee;
+    }
+    .img-wrap img{
+        width: 100%;
+    }
+    .order-person-info-wrap{
+        display: inline-block;
+        padding-left: 8px;
+    }
+    .order-price-wrap{
+        color: #64676A;
+        font-size: 12px;
+        padding-top: 20px;
+        text-align: right;
+    }
+    .price-totle-wrap{
+        padding-top: 8px;
+        border-top: 1px solid #EFF1F3;
+    }
+    .price-totle-wrap span{
+        font-size: 16px;
+        color: #F5A623;
+    }
+    .price-item-wrap{
+        line-height: 22px;
+    }
+    .price-item-wrap2{
+        padding-bottom: 6px;
+    }
+    .order-btn-wrap{
+        text-align: center;
+        padding-bottom: 20px;
+    }
+    .order-btn-wrap div{
+        display: inline-block;
+        cursor: pointer;
+    }
+    .order-confirm-btn{
+        margin-left: 20px;
+        background: #4895E7;
+        border-radius: 2px;
+        padding: 10px 18px;
+        color: #fff;
+        font-size: 14px;
+    }
+    .order-back-btn{
+        font-size: 12px;
+        color: #64676A;
+    }
+</style>
+</head>
+<body style="position:relative;">
+<!-- <#include "../commonFragments/basic/top.ftl"/> 	 -->
+<div class="wrap">
+    <div id="content">
+        <!--导航-->
+        <!-- <#include "/pay/common/top.ftl"/> -->
+        <div class="order-wrap">
+            <table style="">
+                <thead>
+                    <tr>
+                        <td><div class="cell">序号</div></td>
+                        <td><div class="cell">订单类型</div></td>
+                        <td><div class="cell">订单内容</div></td>
+                        <td><div class="cell">订单金额</div></td>
+                        <td><div class="cell">税额</div></td>
+                        <td><div class="cell">订单总计</div></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><div class="cell">订单总计</div></td>
+                        <td><div class="cell">订单总计</div></td>
+                        <td><div class="cell">订单总计</div></td>
+                        <td><div class="cell">订单总计</div></td>
+                        <td><div class="cell">订单总计</div></td>
+                        <td><div class="cell">订单总计</div></td>
+                    </tr>
+                    <tr>
+                        <td><div class="cell">订单总计</div></td>
+                        <td><div class="cell">订单总计</div></td>
+                        <td>
+                            <div class="cell fixedClear">
+                                <div class="order-detail-lt-wrap fixedClear">
+                                    <div class="order-img-wrap">
+                                        <img src="" alt="">
+                                    </div>
+                                    <div class="order-person-info-wrap">
+                                        <p>999</p>
+                                        <p>0000</p>
+                                    </div>
+                                </div>
+                                <div class="order-detail-rt-wrap">
+                                    <p>999</p>
+                                    <p>0000</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td><div class="cell">订单总计</div></td>
+                        <td><div class="cell">订单总计</div></td>
+                        <td><div class="cell">订单总计</div></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="order-price-wrap">
+                <div class="price-item-wrap price-item-wrap1">订单总金额：￥<span>999</span></div>
+                <div class="price-item-wrap price-item-wrap2">订单总金额：￥<span>999</span></div>
+                <div class="price-totle-wrap">订单总金额：<span>￥</span><span>999</span></div>
+            </div>
+            <div class="order-btn-wrap">
+                <div class="order-back-btn"><span>图标</span> 返回上一页</div>
+                <div class="order-confirm-btn" id="js-order-confirm-btn">提交订单</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- <#include "../commonFragments/basic/footer.ftl"/> -->
+<!-- 热线电话 -->
+<!-- <#--<#include "../commonFragments/hotline.ftl"/>--> 
+</body>
+<!-- <#include "../commonFragments/basic/js_script.ftl"/> -->
+<script type="text/javascript">
+
+</script>
+</html>
+
+
+
+
+

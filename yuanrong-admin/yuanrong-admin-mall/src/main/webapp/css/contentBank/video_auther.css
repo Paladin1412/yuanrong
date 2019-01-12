@@ -1,0 +1,199 @@
+/*短视频作者详情页*/
+#content{
+	height: auto;
+	margin-top: 100px;
+}
+/*短视频作者详情导航*/
+.nav-author{
+	width: 1200px;
+	padding-bottom: 16px;
+	margin:0 auto;
+}
+.nav-author>a{
+	color: #666;
+	font-size: 14px;
+}
+.a-details{
+	color:#4977d3;
+	font-size: 14px;
+}
+.a-details:hover{
+	font-size: 14px;
+	cursor: default;
+}
+
+/*短视频作者详情*/
+.con-details{
+	width: 1200px;
+	margin: 0 auto 40px;
+}
+.video-author{
+	width: 1200px;
+	padding: 30px 30px;
+	background: #fff;
+    overflow: hidden;
+/*url("http://localhost:8080/images/contentBank/online-price.png") no-repeat right center*/
+}
+.video-author>dl>dt{
+	width:100px;
+	height: 100px;
+	border-radius: 50%;
+	background: #ccc;
+	margin-top: 5px;
+}
+.video-author>dl>dt img{
+	width: 100px;  
+    height: 100px;  
+    max-width: 100%;  
+    max-height: 100%;
+	border-radius: 50%;
+	margin:0 auto;
+	display: block;
+}
+.video-author>dl>dd{
+	width: 960px;
+	margin-left: 20px;
+}
+.video-author-rcp{
+	font-size: 14px;
+	font-weight: bold;
+	width:1000px;
+	padding: 10px 0;
+	height: 40px;
+}
+.video-author-call{
+	display: inline-block;
+	width:70px;
+	text-align: center;
+	border-radius: 10px;
+	color:#f86d22; 
+	margin-left: 15px;
+	border:1px solid #f86d22;
+	cursor: default;
+	padding: 2px 0 3px;
+	font-size: 12px;
+	font-weight: normal;
+}
+.video-author-scly{
+	font-size: 14px;
+}
+.video-author-intro{
+	width:900px;
+    margin-top: 10px;
+	/*height: 40px;*/
+	/*line-height: 40px;*/
+	font-size: 14px;
+	/*overflow: hidden;*/
+	/*text-overflow: ellipsis;*/
+	/*white-space: nowrap;*/
+}
+
+/*短视频详情*/
+.works{
+	width: 1200px;
+	margin-top: 20px;
+}
+.works-video{
+	list-style: none;
+	margin-left: -15px;
+}
+.works-video>li{
+	float: left;
+	width:290px;
+	height: 400px;
+	padding: 10px;
+	margin-left: 13px;
+	margin-bottom: 12px;
+	background: #fff;
+}
+.works-video-list{
+	width: 270px;
+	height: 380px;
+	/*border:1px solid #ccc;*/
+	/*background: #ccc;*/
+}
+.works-video-list>dt{
+	/*width: 270px;*/
+	/*height: 290px;*/
+	width: 260px;
+	height: 260px;
+	margin: 0 auto;
+	background: rgba(0,0,0,0.8);
+	position: relative;
+}
+.works-video-list>dt>a>img{
+	width: 100%;
+	height: 100%;
+	max-width: 100%;
+	max-height: 100%;
+}
+.video-ico{
+	width: 22px;
+	height: 22px;
+	position: absolute;
+	left: 11px;
+	bottom: 11px;
+	background: #333;
+	border-radius: 50px;
+}
+.video-ico-triangle{
+	display: block;
+  	height: 0px;
+  	width: 0px;
+  	border-top: 5px solid transparent;
+  	border-left: 8px solid #fff;
+  	border-bottom: 5px solid transparent;
+	margin:6px 0 0 8px;
+}
+.works-video-type{
+	margin-top: 12px;
+	font-size: 14px;
+	font-weight: bold;
+}
+.works-video-intro{
+	margin-top: 8px;
+	width:260px;
+	height: 16px;
+	line-height: 14px;
+	font-size: 12px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.works-video-call{
+	margin-top: 30px;
+	/*height : 15px;*/
+    height: 16px;
+    line-height: 16px;
+}
+.online-price{
+	float: left;
+	margin-left: 30px;
+	background: url("http://localhost:8080/images/contentBank/online-price.png") no-repeat left center;
+	cursor: default;
+	padding-left: 25px;
+	background-size: 20px 20px;
+	color: #f8742c;
+	cursor: pointer;
+}
+.consult{
+	float: left;
+	/*margin-left: 40px;*/
+    margin-left: 20px;
+	/*background: url("http://localhost:8080/images/contentBank/consult.png") no-repeat left center;*/
+	cursor: default;
+	padding-left: 25px;
+	background-size: 20px 20px;
+	/*color: #f8742c;*/
+	cursor: pointer;
+}
+.empty-div{
+	height: 320px;
+	background: #fff;
+	margin-top: 1px;
+	line-height: 200px;
+	text-align: center;
+	font-size: 16px;
+	color: gray;
+	display: none;
+}

@@ -1,0 +1,56 @@
+.nav-author a {
+	color: #64676a;
+}
+.nav-author span {
+	color: #bbbfc4;
+}
+#abnormal-wrap{
+	width:1172px;
+	height:264px;
+	background: #fff;
+	text-align:center;
+}
+#abnormal-wrap>img{
+	margin-top:20px;
+}
+
+.back{
+	float:right;
+}
+.similar-author-wrap{
+	margin-top:20px;
+}
+.similar-author-wrap>p{
+	border-bottom:1px solid #eff1f3;
+	line-height: 47px;
+	color:#64676a;
+	padding:0 30px;
+	font-size:16px;
+	background: #fff;
+}
+.chan-batch{
+	float:right;
+	font-size:12px;
+	cursor: pointer;
+}
+.creator-content-list-wrap{
+	margin-top:0;
+}
+.changeBta{
+	margin-top:2px;
+	position: relative;
+	top:1px;
+}
+.xiajia{
+	display: block;
+}
+.intro {
+	float: left;
+    width: 424px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    cursor: pointer;
+}
